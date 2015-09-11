@@ -1,4 +1,4 @@
-package com.itc.mn.Screens;
+package com.itc.mn.Pantallas;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -15,9 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.itc.mn.Misc.Const;
+import com.itc.mn.Cosas.Const;
 
 /**
  * Created by zero_ on 10/09/2015.
@@ -34,7 +33,7 @@ public class ExampleScreen implements Screen {
     private double[][] valores;
 
     public ExampleScreen(Game game, double[][] valores){
-        // Sólo para tener una referencia al manejador de pantallas
+        // Solo para tener una referencia al manejador de pantallas
         this.game = game;
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
@@ -46,7 +45,7 @@ public class ExampleScreen implements Screen {
         camera.setToOrtho(false);
         camera.position.set(0, 0, 0);
         camera.update();
-        // Definimos el Stage para entradas táctiles
+        // Definimos el Stage para entradas tactiles
         stage = new Stage();
         stage.setViewport(viewport);
         // Test
@@ -81,7 +80,7 @@ public class ExampleScreen implements Screen {
     }
 
     private void renderArreglo(){
-        // Para que se renderize con la cámara
+        // Para que se renderize con la camara
         shapeRenderer.setProjectionMatrix(camera.combined);
         // Para comenzar el renderizado
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -124,7 +123,7 @@ public class ExampleScreen implements Screen {
         // Renderizan X e Y
         shapeRenderer.line(0, -camera.viewportHeight + camera.position.y , 0, camera.viewportHeight + camera.position.y);
         shapeRenderer.line(-camera.viewportWidth + camera.position.x, 0, camera.viewportWidth + camera.position.x, 0);
-        // Renderiza la graduación de los ejejejes
+        // Renderiza la graduacion de los ejejejes
         for (int i = 0; i < camera.viewportWidth; i+=10){
             shapeRenderer.line(i, -2, i, 2);
             shapeRenderer.line(-i, -2, -i, 2);

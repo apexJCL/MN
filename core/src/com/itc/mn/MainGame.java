@@ -1,7 +1,7 @@
 package com.itc.mn;
 
 import com.badlogic.gdx.Game;
-import com.itc.mn.Screens.ExampleScreen;
+import com.itc.mn.Pantallas.ExampleScreen;
 
 public class MainGame extends Game {
 
@@ -10,7 +10,7 @@ public class MainGame extends Game {
 	
 	@Override
 	public void create () {
-		// Código para probar la clase renderizadora
+		// Codigo para probar la clase renderizadora
 		valoresPrueba = new double[2000][2000];
 		for (int i = 0; i < 2000; i++) {
 			valoresPrueba[i][0] = i;

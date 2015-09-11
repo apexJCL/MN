@@ -1,4 +1,4 @@
-package com.itc.mn.Misc;
+package com.itc.mn.Cosas;
 
 /**
  * Created by zero_ on 10/09/2015.
