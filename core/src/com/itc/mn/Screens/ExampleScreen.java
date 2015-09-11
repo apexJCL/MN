@@ -64,18 +64,17 @@ public class ExampleScreen implements Screen {
         stage.addListener(new InputListener(){
             @Override
             public boolean keyTyped(InputEvent event, char character) {
-                if(character == Input.Keys.PLUS) {
-                    camera.zoom += 1;
-                    System.out.println("Zoom!");
+                if(event.getKeyCode() == Input.Keys.M) {
+                    camera.zoom += ( camera.zoom < 1) ? 0.1f: 0;
+                    System.out.println(camera.zoom);
                     return true;
                 }
-                else{
-                    if(character == Input.Keys.MINUS){
-                        camera.zoom -= 1;
+                else
+                    if(event.getKeyCode() == Input.Keys.N){
+                        camera.zoom -= (camera.zoom > 0.1f) ? 0.1f : 0f;
+                        System.out.println(camera.zoom);
                         return true;
                     }
-                }
-                System.out.println(character);
                 return super.keyTyped(event, character);
             }
         });
@@ -89,8 +88,8 @@ public class ExampleScreen implements Screen {
         // Obviamente define el color
         shapeRenderer.setColor(Color.BLUE);
         // Procesando arreglo
-        for (int i = 0; i < valores.length; i++)
-            shapeRenderer.circle((float) valores[i][0], (float) valores[i][1], 0.5f);
+        for (int i = 0; i < valores.length - 1; i++)
+            shapeRenderer.line((float) valores[i][0], (float) valores[i][1], (float) valores[i+1][0], (float) valores[i+1][1]);
         // Para finalizar el renderizado
         shapeRenderer.end();
     }
