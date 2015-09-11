@@ -114,11 +114,23 @@ public class ExampleScreen implements Screen {
         renderArreglo();
 
         // Renderizamos los ejes X e Y
+        renderEjes();
+    }
+
+    private void renderEjes(){
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(0.5f, 0.5f, 0.5f, 0.5f);
+        // Renderizan X e Y
         shapeRenderer.line(0, -camera.viewportHeight + camera.position.y , 0, camera.viewportHeight + camera.position.y);
         shapeRenderer.line(-camera.viewportWidth + camera.position.x, 0, camera.viewportWidth + camera.position.x, 0);
+        // Renderiza la graduación de los ejejejes
+        for (int i = 0; i < camera.viewportWidth; i+=10){
+            shapeRenderer.line(i, -2, i, 2);
+            shapeRenderer.line(-i, -2, -i, 2);
+            shapeRenderer.line(-2, i, 2, i);
+            shapeRenderer.line(-2, -i, 2, -i);
+        }
         shapeRenderer.end();
     }
 
