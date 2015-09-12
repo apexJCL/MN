@@ -7,7 +7,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -30,8 +29,8 @@ public class RenderScreen implements Screen {
     private FitViewport viewport;
     private SpriteBatch batch;
     private ShapeRenderer shapeRenderer;
-    private double[][] valores;
-    private ArrayList<double[][]> funciones;
+    private float[][] valores;
+    private ArrayList<float[][]> funciones;
     private Color[] colores = {Color.BLUE, Color.GREEN, Color.CYAN, Color.YELLOW,  Color.FIREBRICK, Color.ROYAL, Color.RED, Color.SALMON, Color.MAGENTA, Color.LIME, Color.TAN, Color.TEAL, Color.VIOLET};
     // Default
     {
@@ -72,10 +71,10 @@ public class RenderScreen implements Screen {
             @Override
             public boolean keyTyped(InputEvent event, char character) {
                 if (event.getKeyCode() == Input.Keys.M) {
-                    camera.zoom += (camera.zoom < 1) ? 0.1f : 0;
+                    camera.zoom += (camera.zoom < 1) ? 0.01f : 0;
                     return true;
                 } else if (event.getKeyCode() == Input.Keys.N) {
-                    camera.zoom -= (camera.zoom > 0.1f) ? 0.1f : 0;
+                    camera.zoom -= (camera.zoom > 0.03f) ? 0.01f : 0;
                     return true;
                 }
                 return super.keyTyped(event, character);
@@ -88,7 +87,7 @@ public class RenderScreen implements Screen {
      * @param game Referencia a Game para manejo de pantallas
      * @param valores Valores de la funcion
      */
-    public RenderScreen(Game game, double[][] valores){
+    public RenderScreen(Game game, float[][] valores){
         // Solo para tener una referencia al manejador de pantallas
         this.game = game;
         this.valores = valores;
@@ -99,7 +98,7 @@ public class RenderScreen implements Screen {
      * @param game Referencia a Game para manejo de pantallas
      * @param funciones ArrayList con arreglos de valores para cada funcion
      */
-    public RenderScreen(Game game, ArrayList<double[][]> funciones){
+    public RenderScreen(Game game, ArrayList<float[][]> funciones){
         // Solo para tener una referencia al manejador de pantallas
         this.game = game;
         this.funciones = funciones;
@@ -109,18 +108,18 @@ public class RenderScreen implements Screen {
         // Para que se renderize con la camara
         shapeRenderer.setProjectionMatrix(camera.combined);
         // Para comenzar el renderizado
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Point);
         // Para renderizar solo cuando tenemos el arreglo sencillo de valores
         if(valores != null) {
             // Obviamente define el color
             shapeRenderer.setColor(Color.CYAN);
             // Procesando arreglo
-            for (int i = 0; i < valores.length - 1; i++)
-                shapeRenderer.line((float) valores[i][0], (float) valores[i][1], (float) valores[i + 1][0], (float) valores[i + 1][1]);
+            for (int i = 0; i < valores.length; i++)
+                shapeRenderer.point(valores[i][0], valores[i][1], 0);
         }
         else{
             int counter = 0;
-            for (double[][] funcion : funciones) {
+            for (float[][] funcion : funciones) {
                 if (counter < funciones.size())
                     counter++;
                 else
@@ -143,12 +142,12 @@ public class RenderScreen implements Screen {
         shapeRenderer.line(-camera.viewportWidth + camera.position.x, 0, camera.viewportWidth + camera.position.x, 0);
         // Renderiza la graduacion de los ejejejes
         for (int i = 0; i < camera.viewportWidth + Math.abs(camera.position.x); i+=10){
-            shapeRenderer.line(i, -2, i, 2);
-            shapeRenderer.line(-i, -2, -i, 2);
+            shapeRenderer.line(i, -1, i, 1);
+            shapeRenderer.line(-i, -1, -i, 1);
         }
         for (int i = 0; i < camera.viewportHeight + Math.abs(camera.position.y); i+=10){
-            shapeRenderer.line(-2, i, 2, i);
-            shapeRenderer.line(-2, -i, 2, -i);
+            shapeRenderer.line(-1, i, 1, i);
+            shapeRenderer.line(-1, -i, 1, -i);
         }
         shapeRenderer.end();
     }
@@ -164,7 +163,7 @@ public class RenderScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         // Aplicamos el viewport
         viewport.apply();
-        // Actualizamos la cámara
+        // Actualizamos la camara
         camera.update();
         // Batch
         batch.setProjectionMatrix(camera.combined);
@@ -179,7 +178,8 @@ public class RenderScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height);
+        viewport.update(1920, 1080);
+        camera.position.set(camera.viewportWidth/4f, camera.viewportHeight/4f, 0);
     }
 
     @Override

@@ -13,6 +13,5 @@ public class DesktopLauncher {
 		config.height = Const.HEIGHT;
 		config.resizable = false;
 		config.backgroundFPS = -1;
-		config.samples = 2;
 	}
 }

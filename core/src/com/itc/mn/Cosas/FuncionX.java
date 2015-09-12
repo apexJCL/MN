@@ -66,21 +66,21 @@ public class FuncionX {
      * @param paso Medida del paso
      * @return double[][] valores
      */
-    public double[][] obtenerRango(double inicio, double fin, double paso){
-        double precision = Math.abs(fin - inicio) / paso;
-        double[][] tmp = new double[(int)precision + 1][2];
+    public float[][] obtenerRango(float inicio, float fin, float paso){
+        int precision = (int)(Math.abs(fin - inicio) / paso);
+        float[][] tmp = new float[(int)precision + 1][2];
         // Lo usamos para evaluar del menor al mayor
-        double menor = menor(inicio, fin);
-        for (int i = 0; i <= precision; i+=paso) {
-            double valor_x = menor + i;
+        float menor = menor(inicio, fin);
+        for (int i = 0; i <= precision; i++) {
+            float valor_x = menor + (paso*i);
             parser.addVariable(variable, valor_x);
             tmp[i][0] = valor_x;
-            tmp[i][1] = parser.getValue();
+            tmp[i][1] = (float)parser.getValue();
         }
         return tmp;
     }
 
-    private double menor(double a, double b){
+    private float menor(float a, float b){
         return (a < b) ? a: b;
     }
 

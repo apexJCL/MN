@@ -1,7 +1,6 @@
 package com.itc.mn;
 
 import com.badlogic.gdx.Game;
-import com.itc.mn.Cosas.Funcion;
 import com.itc.mn.Cosas.FuncionX;
 import com.itc.mn.Pantallas.RenderScreen;
 
@@ -41,11 +40,8 @@ public class MainGame extends Game {
          **/
 
 		// Prueba de arreglo de valores
-		FuncionX fx = new FuncionX("(x^2)/6");
-		double[][] res = fx.obtenerRango(-10, 10, 1f);
-        for (double[] valores : res) {
-            System.out.println("x: "+valores[0]+" y: "+valores[1]);
-        }
+		FuncionX fx = new FuncionX("sin(x)");
+		float[][] res = fx.obtenerRango(-10, 10, .001f);
         this.setScreen(new RenderScreen(this,res));
 	}
 
