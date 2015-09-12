@@ -22,13 +22,13 @@ public class Funcion {
         // Habilitamos la multiplicacion implicita
         parser.setImplicitMul(true);
         // Inicializamos un arreglo para las variables
-        variables = new ArrayList<>(1);
+        variables = new ArrayList(1);
         // Parseamos la ecuacion
         parser.parseExpression(ecuacion);
     }
 
     /**
-     * Añade una variable con un valor que se encuentra en la ecuacion
+     * Agrega una variable con un valor que se encuentra en la ecuacion
      * @param variable Variable a agregar
      * @param valorDefecto Valor defecto
      * @return Cierto si se agrega, falso porque ya existe
@@ -50,7 +50,7 @@ public class Funcion {
     }
 
     /**
-     * Verifica si una variable ya está declarada dentro de las variables actuales
+     * Verifica si una variable ya esta declarada dentro de las variables actuales
      * @param variable variable a buscar
      * @return boolean
      */

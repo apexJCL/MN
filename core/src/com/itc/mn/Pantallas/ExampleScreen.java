@@ -18,6 +18,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.itc.mn.Cosas.Const;
 
+import java.util.ArrayList;
+
 /**
  * Created by zero_ on 10/09/2015.
  */
@@ -31,13 +33,13 @@ public class ExampleScreen implements Screen {
     private ShapeRenderer shapeRenderer;
     private Sprite sprite;
     private double[][] valores;
-
-    public ExampleScreen(Game game, double[][] valores){
-        // Solo para tener una referencia al manejador de pantallas
-        this.game = game;
+    private ArrayList<double[][]> funciones;
+    private Color[] colores = {Color.BLUE, Color.GREEN, Color.CYAN, Color.YELLOW,  Color.FIREBRICK, Color.ROYAL, Color.RED, Color.SALMON, Color.MAGENTA, Color.LIME, Color.TAN, Color.TEAL, Color.VIOLET};
+    // Default
+    {
+        // Cosas a generar por defecto
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
-        this.valores = valores;
         // Definimos el viewport
         viewport = new FitViewport(Const.WIDTH, Const.HEIGHT);
         // Creamos las cosas para renderizar
@@ -48,35 +50,53 @@ public class ExampleScreen implements Screen {
         // Definimos el Stage para entradas tactiles
         stage = new Stage();
         stage.setViewport(viewport);
-        // Test
-        sprite = new Sprite(new Texture(Gdx.files.internal("badlogic.jpg")));
-        sprite.setPosition(0, 0);
         // For moving
         Gdx.input.setInputProcessor(stage);
         stage.addListener(new ActorGestureListener(){
             @Override
             public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
                 super.pan(event, x, y, deltaX, deltaY);
-                camera.position.set(camera.position.x - deltaX, camera.position.y - deltaY, 0);
+                camera.position.set(camera.position.x - deltaX * camera.zoom, camera.position.y - deltaY*camera.zoom, 0);
             }
         });
-        stage.addListener(new InputListener(){
+        stage.addListener(new InputListener() {
             @Override
             public boolean keyTyped(InputEvent event, char character) {
-                if(event.getKeyCode() == Input.Keys.M) {
-                    camera.zoom += ( camera.zoom < 1) ? 0.1f: 0;
+                if (event.getKeyCode() == Input.Keys.M) {
+                    camera.zoom += (camera.zoom < 1) ? 0.1f : 0;
+                    System.out.println(camera.zoom);
+                    return true;
+                } else if (event.getKeyCode() == Input.Keys.N) {
+                    camera.zoom -= (camera.zoom > 0.1f) ? 0.1f : 0f;
                     System.out.println(camera.zoom);
                     return true;
                 }
-                else
-                    if(event.getKeyCode() == Input.Keys.N){
-                        camera.zoom -= (camera.zoom > 0.1f) ? 0.1f : 0f;
-                        System.out.println(camera.zoom);
-                        return true;
-                    }
                 return super.keyTyped(event, character);
             }
         });
+    }
+
+    /**
+     * Recibe el arrreglo de valores de una funcion y lo grafica
+     * @param game Referencia a Game para manejo de pantallas
+     * @param valores Valores de la funcion
+     */
+    public ExampleScreen(Game game, double[][] valores){
+        // Solo para tener una referencia al manejador de pantallas
+        this.game = game;
+        this.valores = valores;
+    }
+
+    /**
+     * Recibe un ArrayList de varias funciones, para graficacion multiple
+     * @param game Referencia a Game para manejo de pantallas
+     * @param funciones ArrayList con arreglos de valores para cada funcion
+     */
+    public ExampleScreen(Game game, ArrayList<double[][]> funciones){
+        // Solo para tener una referencia al manejador de pantallas
+        this.game = game;
+        this.funciones = funciones;
+        System.out.println(funciones.size());
     }
 
     private void renderArreglo(){
@@ -84,12 +104,47 @@ public class ExampleScreen implements Screen {
         shapeRenderer.setProjectionMatrix(camera.combined);
         // Para comenzar el renderizado
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        // Obviamente define el color
-        shapeRenderer.setColor(Color.BLUE);
-        // Procesando arreglo
-        for (int i = 0; i < valores.length - 1; i++)
-            shapeRenderer.line((float) valores[i][0], (float) valores[i][1], (float) valores[i+1][0], (float) valores[i+1][1]);
+        // Para renderizar solo cuando tenemos el arreglo sencillo de valores
+        if(valores != null) {
+            // Obviamente define el color
+            shapeRenderer.setColor(Color.BLUE);
+            // Procesando arreglo
+            for (int i = 0; i < valores.length - 1; i++)
+                shapeRenderer.line((float) valores[i][0], (float) valores[i][1], (float) valores[i + 1][0], (float) valores[i + 1][1]);
+        }
+        else{
+            int counter = 0;
+            for (double[][] funcion : funciones) {
+                if (counter < funciones.size())
+                    counter++;
+                else
+                    counter = 0;
+                shapeRenderer.setColor(colores[counter]);
+                for (int i = 0; i < funcion.length - 1; i++)
+                    shapeRenderer.line((float) funcion[i][0], (float) funcion[i][1], (float) funcion[i + 1][0], (float) funcion[i + 1][1]);
+            }
+        }
         // Para finalizar el renderizado
+        shapeRenderer.end();
+    }
+
+    private void renderEjes(){
+        shapeRenderer.setProjectionMatrix(camera.combined);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(1, 1, 1, 1);
+        // Renderizan X e Y
+        shapeRenderer.line(0, -camera.viewportHeight + camera.position.y , 0, camera.viewportHeight + camera.position.y);
+        shapeRenderer.line(-camera.viewportWidth + camera.position.x, 0, camera.viewportWidth + camera.position.x, 0);
+        // Renderiza la graduacion de los ejejejes
+        for (int i = 0; i < camera.viewportWidth + Math.abs(camera.position.x); i+=10){
+            shapeRenderer.line(i, -2, i, 2);
+            shapeRenderer.line(-i, -2, -i, 2);
+        }
+        System.out.println(camera.position.x);
+        for (int i = 0; i < camera.viewportHeight + Math.abs(camera.position.y); i+=10){
+            shapeRenderer.line(-2, i, 2, i);
+            shapeRenderer.line(-2, -i, 2, -i);
+        }
         shapeRenderer.end();
     }
 
@@ -100,7 +155,7 @@ public class ExampleScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(1, 1, 1, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         // Actualizamos la cámara
         camera.update();
@@ -111,26 +166,8 @@ public class ExampleScreen implements Screen {
         stage.draw();
         // Renderizamos con el shapeRenderer
         renderArreglo();
-
         // Renderizamos los ejes X e Y
         renderEjes();
-    }
-
-    private void renderEjes(){
-        shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(0.5f, 0.5f, 0.5f, 0.5f);
-        // Renderizan X e Y
-        shapeRenderer.line(0, -camera.viewportHeight + camera.position.y , 0, camera.viewportHeight + camera.position.y);
-        shapeRenderer.line(-camera.viewportWidth + camera.position.x, 0, camera.viewportWidth + camera.position.x, 0);
-        // Renderiza la graduacion de los ejejejes
-        for (int i = 0; i < camera.viewportWidth; i+=10){
-            shapeRenderer.line(i, -2, i, 2);
-            shapeRenderer.line(-i, -2, -i, 2);
-            shapeRenderer.line(-2, i, 2, i);
-            shapeRenderer.line(-2, -i, 2, -i);
-        }
-        shapeRenderer.end();
     }
 
     @Override
