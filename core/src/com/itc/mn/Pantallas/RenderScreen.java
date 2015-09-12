@@ -7,7 +7,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -23,7 +22,7 @@ import java.util.ArrayList;
 /**
  * Created by zero_ on 10/09/2015.
  */
-public class ExampleScreen implements Screen {
+public class RenderScreen implements Screen {
 
     private OrthographicCamera camera;
     private Stage stage;
@@ -31,7 +30,6 @@ public class ExampleScreen implements Screen {
     private FitViewport viewport;
     private SpriteBatch batch;
     private ShapeRenderer shapeRenderer;
-    private Sprite sprite;
     private double[][] valores;
     private ArrayList<double[][]> funciones;
     private Color[] colores = {Color.BLUE, Color.GREEN, Color.CYAN, Color.YELLOW,  Color.FIREBRICK, Color.ROYAL, Color.RED, Color.SALMON, Color.MAGENTA, Color.LIME, Color.TAN, Color.TEAL, Color.VIOLET};
@@ -58,17 +56,26 @@ public class ExampleScreen implements Screen {
                 super.pan(event, x, y, deltaX, deltaY);
                 camera.position.set(camera.position.x - deltaX * camera.zoom, camera.position.y - deltaY*camera.zoom, 0);
             }
+
+            @Override
+            public void zoom(InputEvent event, float initialDistance, float distance) {
+                super.zoom(event, initialDistance, distance);
+                float diff = initialDistance-distance;
+                if( diff > 0)
+                    camera.zoom += (camera.zoom < 1) ? 0.01f : 0;
+                else
+                    camera.zoom -= (camera.zoom > 0.1f) ? 0.01f : 0;
+
+            }
         });
         stage.addListener(new InputListener() {
             @Override
             public boolean keyTyped(InputEvent event, char character) {
                 if (event.getKeyCode() == Input.Keys.M) {
                     camera.zoom += (camera.zoom < 1) ? 0.1f : 0;
-                    System.out.println(camera.zoom);
                     return true;
                 } else if (event.getKeyCode() == Input.Keys.N) {
-                    camera.zoom -= (camera.zoom > 0.1f) ? 0.1f : 0f;
-                    System.out.println(camera.zoom);
+                    camera.zoom -= (camera.zoom > 0.1f) ? 0.1f : 0;
                     return true;
                 }
                 return super.keyTyped(event, character);
@@ -81,7 +88,7 @@ public class ExampleScreen implements Screen {
      * @param game Referencia a Game para manejo de pantallas
      * @param valores Valores de la funcion
      */
-    public ExampleScreen(Game game, double[][] valores){
+    public RenderScreen(Game game, double[][] valores){
         // Solo para tener una referencia al manejador de pantallas
         this.game = game;
         this.valores = valores;
@@ -92,11 +99,10 @@ public class ExampleScreen implements Screen {
      * @param game Referencia a Game para manejo de pantallas
      * @param funciones ArrayList con arreglos de valores para cada funcion
      */
-    public ExampleScreen(Game game, ArrayList<double[][]> funciones){
+    public RenderScreen(Game game, ArrayList<double[][]> funciones){
         // Solo para tener una referencia al manejador de pantallas
         this.game = game;
         this.funciones = funciones;
-        System.out.println(funciones.size());
     }
 
     private void renderArreglo(){
@@ -107,7 +113,7 @@ public class ExampleScreen implements Screen {
         // Para renderizar solo cuando tenemos el arreglo sencillo de valores
         if(valores != null) {
             // Obviamente define el color
-            shapeRenderer.setColor(Color.BLUE);
+            shapeRenderer.setColor(Color.CYAN);
             // Procesando arreglo
             for (int i = 0; i < valores.length - 1; i++)
                 shapeRenderer.line((float) valores[i][0], (float) valores[i][1], (float) valores[i + 1][0], (float) valores[i + 1][1]);
@@ -140,7 +146,6 @@ public class ExampleScreen implements Screen {
             shapeRenderer.line(i, -2, i, 2);
             shapeRenderer.line(-i, -2, -i, 2);
         }
-        System.out.println(camera.position.x);
         for (int i = 0; i < camera.viewportHeight + Math.abs(camera.position.y); i+=10){
             shapeRenderer.line(-2, i, 2, i);
             shapeRenderer.line(-2, -i, 2, -i);
@@ -157,6 +162,8 @@ public class ExampleScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        // Aplicamos el viewport
+        viewport.apply();
         // Actualizamos la cámara
         camera.update();
         // Batch
@@ -172,7 +179,7 @@ public class ExampleScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
+        viewport.update(width, height);
     }
 
     @Override
@@ -192,6 +199,7 @@ public class ExampleScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        stage.dispose();
+        batch.dispose();
     }
 }
