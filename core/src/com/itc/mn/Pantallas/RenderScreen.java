@@ -1,9 +1,6 @@
 package com.itc.mn.Pantallas;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -13,8 +10,10 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.itc.mn.Cosas.Const;
+import com.itc.mn.Cosas.MyListener;
 
 import java.util.ArrayList;
 
@@ -49,35 +48,50 @@ public class RenderScreen implements Screen {
         stage.setViewport(viewport);
         // For moving
         Gdx.input.setInputProcessor(stage);
-        stage.addListener(new ActorGestureListener(){
+        stage.addListener(new ActorGestureListener() {
             @Override
             public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
                 super.pan(event, x, y, deltaX, deltaY);
-                camera.position.set(camera.position.x - deltaX * camera.zoom, camera.position.y - deltaY*camera.zoom, 0);
+                camera.position.set(camera.position.x - deltaX * camera.zoom, camera.position.y - deltaY * camera.zoom, 0);
+                System.out.println("Camera X: " + camera.position.x + " Camera Y: " + camera.position.y);
             }
 
             @Override
             public void zoom(InputEvent event, float initialDistance, float distance) {
                 super.zoom(event, initialDistance, distance);
-                float diff = initialDistance-distance;
-                if( diff > 0)
+                float diff = initialDistance - distance;
+                if (diff > 0)
                     camera.zoom += (camera.zoom < 1) ? 0.01f : 0;
                 else
-                    camera.zoom -= (camera.zoom > 0.1f) ? 0.01f : 0;
+                    camera.zoom -= (camera.zoom > 0.02f) ? 0.01f : 0;
 
             }
         });
         stage.addListener(new InputListener() {
             @Override
             public boolean keyTyped(InputEvent event, char character) {
-                if (event.getKeyCode() == Input.Keys.M) {
+                // Esto se encarga de controlar el zoom con el teclado
+                // El Zoom de la camara va de 0f a 1f, siendo 0f lo mas cercano, pero
+                // causa problemas al renderizar, por eso se limita a 0.02f
+                if (event.getKeyCode() == Input.Keys.DOWN) { // Zoom menos
                     camera.zoom += (camera.zoom < 1) ? 0.01f : 0;
+                    System.out.println("Camera Zoom: " + camera.zoom);
                     return true;
-                } else if (event.getKeyCode() == Input.Keys.N) {
-                    camera.zoom -= (camera.zoom > 0.03f) ? 0.01f : 0;
+                } else if (event.getKeyCode() == Input.Keys.UP) { // Zoom mas
+                    camera.zoom -= (camera.zoom > 0.02f) ? 0.01f : 0;
+                    System.out.println("Camera Zoom: " + camera.zoom);
                     return true;
                 }
                 return super.keyTyped(event, character);
+            }
+
+            @Override
+            public boolean scrolled(InputEvent event, float x, float y, int amount) {
+                if (amount > 0)
+                    camera.zoom += (camera.zoom < 1) ? 0.01f: 0;
+                else
+                    camera.zoom += (camera.zoom > 0.02f) ? -0.01f: 0;
+                return super.scrolled(event, x, y, amount);
             }
         });
     }
@@ -115,7 +129,7 @@ public class RenderScreen implements Screen {
             shapeRenderer.setColor(Color.CYAN);
             // Procesando arreglo
             for (int i = 0; i < valores.length; i++)
-                shapeRenderer.point(valores[i][0], valores[i][1], 0);
+                shapeRenderer.point((valores[i][0]*Const.scaling), (valores[i][1]*Const.scaling), 0);
         }
         else{
             int counter = 0;
@@ -126,7 +140,7 @@ public class RenderScreen implements Screen {
                     counter = 0;
                 shapeRenderer.setColor(colores[counter]);
                 for (int i = 0; i < funcion.length - 1; i++)
-                    shapeRenderer.line((float) funcion[i][0], (float) funcion[i][1], (float) funcion[i + 1][0], (float) funcion[i + 1][1]);
+                    shapeRenderer.point(funcion[i][0]*Const.scaling, funcion[i][1]*Const.scaling, 0);
             }
         }
         // Para finalizar el renderizado
@@ -141,11 +155,11 @@ public class RenderScreen implements Screen {
         shapeRenderer.line(0, -camera.viewportHeight + camera.position.y , 0, camera.viewportHeight + camera.position.y);
         shapeRenderer.line(-camera.viewportWidth + camera.position.x, 0, camera.viewportWidth + camera.position.x, 0);
         // Renderiza la graduacion de los ejejejes
-        for (int i = 0; i < camera.viewportWidth + Math.abs(camera.position.x); i+=10){
+        for (int i = 0; i < camera.viewportWidth + Math.abs(camera.position.x); i+=Const.scaling){
             shapeRenderer.line(i, -1, i, 1);
             shapeRenderer.line(-i, -1, -i, 1);
         }
-        for (int i = 0; i < camera.viewportHeight + Math.abs(camera.position.y); i+=10){
+        for (int i = 0; i < camera.viewportHeight + Math.abs(camera.position.y); i+=Const.scaling){
             shapeRenderer.line(-1, i, 1, i);
             shapeRenderer.line(-1, -i, 1, -i);
         }
@@ -178,8 +192,8 @@ public class RenderScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(1920, 1080);
-        camera.position.set(camera.viewportWidth/4f, camera.viewportHeight/4f, 0);
+        viewport.update(width, height);
+        camera.zoom = 0.3f;
     }
 
     @Override

@@ -7,5 +7,6 @@ public class Const {
 
     public static int WIDTH = 960;
     public static int HEIGHT = 540;
+    public static float scaling = 10f;
 
 }

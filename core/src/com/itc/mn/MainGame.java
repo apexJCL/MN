@@ -1,9 +1,11 @@
 package com.itc.mn;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.itc.mn.Cosas.FuncionX;
 import com.itc.mn.Pantallas.RenderScreen;
 
+import javax.swing.*;
 import java.util.ArrayList;
 
 public class MainGame extends Game {
@@ -38,9 +40,15 @@ public class MainGame extends Game {
          System.out.println(funciones.size());
          this.setScreen(new RenderScreen(this, funciones));
          **/
+		String fun = "";
+		// Prueba
+		switch (Gdx.app.getType()){
+			case Desktop:
+				fun = JOptionPane.showInputDialog("Ingrese la ecuacion a graficar: ");
+		}
 
 		// Prueba de arreglo de valores
-		FuncionX fx = new FuncionX("sin(x)");
+		FuncionX fx = new FuncionX(fun);
 		float[][] res = fx.obtenerRango(-10, 10, .001f);
         this.setScreen(new RenderScreen(this,res));
 	}
