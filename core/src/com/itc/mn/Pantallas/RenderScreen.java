@@ -1,9 +1,6 @@
 package com.itc.mn.Pantallas;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -130,6 +127,15 @@ public class RenderScreen implements Screen {
         this.funciones = funciones;
     }
 
+    /**
+     * Constructor defecto, solo hace la instancia con una grafica default de x
+     * @param game Instancia de Game que controla las pantallas
+     */
+    public RenderScreen(Game game){
+        this.game = game;
+        valores = new FuncionX("x").obtenerRango(-10, 10, 0.001f);
+    }
+
     private void renderArreglo(){
         // Para que se renderize con la camara
         shapeRenderer.setProjectionMatrix(camera.combined);
@@ -183,7 +189,6 @@ public class RenderScreen implements Screen {
         visui.load();
         // Una tabla para gobernarlos a todos... muahahahaha
         VisTable table = new VisTable();
-        table.setFillParent(true);
         table.setPosition(-camera.viewportWidth / 2f, -camera.viewportHeight / 2f);
         // Un panel de entrada para re-evaluar
         VisLabel funcion = new VisLabel("Funcion: ");
@@ -267,6 +272,8 @@ public class RenderScreen implements Screen {
             // Android es Java 6, asi que no hay switch de Strings :(
             if(actor.getName().equals("entrada")){ // Aqui borramos el texto por defecto del campo
                 ((VisTextField)actor).setText("");
+                if(Gdx.app.getType().equals(Application.ApplicationType.Android))
+                    Gdx.input.getTextInput(new MyTextListener(), "Funcion", "", "f(x) = ");
             }
             else{
 
@@ -294,6 +301,19 @@ public class RenderScreen implements Screen {
             super.touchUp(event, x, y, pointer, button);
         }
 
+    }
+
+    private class MyTextListener implements Input.TextInputListener{
+
+        @Override
+        public void input(String text) {
+
+        }
+
+        @Override
+        public void canceled() {
+
+        }
     }
 
 }
