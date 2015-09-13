@@ -5,7 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.itc.mn.Cosas.FuncionX;
 import com.itc.mn.Pantallas.RenderScreen;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
 import java.util.ArrayList;
 
 public class MainGame extends Game {

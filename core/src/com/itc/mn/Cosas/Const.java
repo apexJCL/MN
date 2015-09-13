@@ -5,8 +5,8 @@ package com.itc.mn.Cosas;
  */
 public class Const {
 
-    public static int WIDTH = 960;
-    public static int HEIGHT = 540;
+    public static final int WIDTH = 960;
+    public static final int HEIGHT = 540;
     public static float scaling = 10f;
 
 }
