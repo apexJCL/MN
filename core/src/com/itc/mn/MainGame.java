@@ -45,6 +45,9 @@ public class MainGame extends Game {
 		switch (Gdx.app.getType()){
 			case Desktop:
 				fun = JOptionPane.showInputDialog("Ingrese la ecuacion a graficar: ");
+				if (fun.equals(""))
+					fun = "x";
+				break;
 		}
 
 		// Prueba de arreglo de valores

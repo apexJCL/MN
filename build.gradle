@@ -46,8 +46,8 @@ project(":core") {
 
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        compile "com.underwaterapps.overlap2druntime:overlap2d-runtime-libgdx:0.1.0"
         compile "jep:jep:2.24"
+        compile 'com.kotcrab.vis:vis-ui:0.8.2'
     }
 }
 

@@ -4,7 +4,7 @@ import org.nfunk.jep.JEP;
 
 /**
  *  Es una ecuacion en funcion de x por defecto.
- *  Se puede definir otra variable (para expresarse en terminos de otra, como en terminos de y ó t)
+ *  Se puede definir otra variable (para expresarse en terminos de otra, como en terminos de y o t)
  */
 public class FuncionX {
 

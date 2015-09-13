@@ -9,12 +9,19 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.itc.mn.Cosas.Const;
+import com.itc.mn.Cosas.FuncionX;
+import com.kotcrab.vis.ui.VisUI;
+import com.kotcrab.vis.ui.widget.VisLabel;
+import com.kotcrab.vis.ui.widget.VisTable;
+import com.kotcrab.vis.ui.widget.VisTextField;
 
 import java.util.ArrayList;
 
@@ -32,7 +39,11 @@ public class RenderScreen implements Screen {
     private float[][] valores;
     private ArrayList<float[][]> funciones;
     private Color[] colores = {Color.BLUE, Color.GREEN, Color.CYAN, Color.YELLOW,  Color.FIREBRICK, Color.ROYAL, Color.RED, Color.SALMON, Color.MAGENTA, Color.LIME, Color.TAN, Color.TEAL, Color.VIOLET};
-    // Default
+    private String funcion;
+    // Test
+    private VisUI visui; // VisUI es una skin para Scene2D
+
+    // Default, se ejecutara siempre, independientemente del constructor
     {
         // Cosas a generar por defecto
         batch = new SpriteBatch();
@@ -54,7 +65,6 @@ public class RenderScreen implements Screen {
             public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
                 super.pan(event, x, y, deltaX, deltaY);
                 camera.position.set(camera.position.x - deltaX * camera.zoom, camera.position.y - deltaY * camera.zoom, 0);
-                System.out.println("Camera X: " + camera.position.x + " Camera Y: " + camera.position.y);
             }
 
             @Override
@@ -62,9 +72,9 @@ public class RenderScreen implements Screen {
                 super.zoom(event, initialDistance, distance);
                 float diff = initialDistance - distance;
                 if (diff > 0)
-                    camera.zoom += (camera.zoom < 1) ? 0.01f : 0;
+                    camera.zoom += (camera.zoom < 1) ? camera.zoom * 0.01f : 0;
                 else
-                    camera.zoom -= (camera.zoom > 0.02f) ? 0.01f : 0;
+                    camera.zoom -= (camera.zoom > 0.02f) ? camera.zoom * 0.01f : 0;
 
             }
         });
@@ -76,11 +86,9 @@ public class RenderScreen implements Screen {
                 // causa problemas al renderizar, por eso se limita a 0.02f
                 if (event.getKeyCode() == Input.Keys.DOWN) { // Zoom menos
                     camera.zoom += (camera.zoom < 1) ? 0.01f : 0;
-                    System.out.println("Camera Zoom: " + camera.zoom);
                     return true;
                 } else if (event.getKeyCode() == Input.Keys.UP) { // Zoom mas
                     camera.zoom -= (camera.zoom > 0.02f) ? 0.01f : 0;
-                    System.out.println("Camera Zoom: " + camera.zoom);
                     return true;
                 }
                 return super.keyTyped(event, character);
@@ -89,12 +97,15 @@ public class RenderScreen implements Screen {
             @Override
             public boolean scrolled(InputEvent event, float x, float y, int amount) {
                 if (amount > 0)
-                    camera.zoom += (camera.zoom < 1) ? 0.01f: 0;
+                    camera.zoom += (camera.zoom < 1) ? 0.01f : 0;
                 else
-                    camera.zoom += (camera.zoom > 0.02f) ? -0.01f: 0;
+                    camera.zoom += (camera.zoom > 0.02f) ? -0.01f : 0;
                 return super.scrolled(event, x, y, amount);
             }
         });
+
+        // Construimos nuestra GUI
+        construyeGUI();
     }
 
     /**
@@ -167,6 +178,30 @@ public class RenderScreen implements Screen {
         shapeRenderer.end();
     }
 
+    private void construyeGUI(){
+        // Inicializamos VisUI
+        visui.load();
+        // Una tabla para gobernarlos a todos... muahahahaha
+        VisTable table = new VisTable();
+        table.setFillParent(true);
+        table.setPosition(-camera.viewportWidth / 2f, -camera.viewportHeight / 2f);
+        // Un panel de entrada para re-evaluar
+        VisLabel funcion = new VisLabel("Funcion: ");
+        VisTextField entrada = new VisTextField("f(x) = ");
+        entrada.pack();
+        // Le agregamos un nombre para que pueda ser identificado
+        entrada.setName("entrada");
+        entrada.addListener(new UIListener(entrada));
+        // Los agregamos a la tabla
+        table.add(funcion).expandY().bottom().left().pad(4);
+        table.add(entrada).expandY().bottom().left().pad(4);
+        // Para ajustar la tabla
+        table.pack();
+        // Agregamos la tabla al stage
+        stage.addActor(table);
+        // stage.setDebugAll(true);
+    }
+
     @Override
     public void show() {
 
@@ -216,5 +251,49 @@ public class RenderScreen implements Screen {
     public void dispose() {
         stage.dispose();
         batch.dispose();
+        visui.dispose();
     }
+
+    private class UIListener extends ClickListener {
+
+        private final Actor actor;
+
+        public UIListener(Actor actor){
+            this.actor = actor;
+        }
+
+        @Override
+        public void clicked(InputEvent event, float x, float y) {
+            // Android es Java 6, asi que no hay switch de Strings :(
+            if(actor.getName().equals("entrada")){ // Aqui borramos el texto por defecto del campo
+                ((VisTextField)actor).setText("");
+            }
+            else{
+
+            }
+            super.clicked(event, x, y);
+        }
+
+        @Override
+        public boolean keyTyped(InputEvent event, char character) {
+            if(actor.getName().equals("entrada"))
+                if(event.getKeyCode() == Input.Keys.ENTER){
+                    final FuncionX fx = new FuncionX(((VisTextField)actor).getText());
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            valores = fx.obtenerRango(-10, 10, 0.001f);
+                        }
+                    });
+                }
+            return super.keyTyped(event, character);
+        }
+
+        @Override
+        public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+            super.touchUp(event, x, y, pointer, button);
+        }
+
+    }
+
 }
