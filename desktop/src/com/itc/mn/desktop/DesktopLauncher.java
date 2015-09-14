@@ -1,5 +1,7 @@
 package com.itc.mn.desktop;
 
+import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.itc.mn.MainGame;
@@ -13,5 +15,7 @@ public class DesktopLauncher {
 		config.height = Const.HEIGHT;
 		config.resizable = false;
 		config.backgroundFPS = -1;
+		config.addIcon("icon.png", Files.FileType.Internal);
+		config.title = "Graph";
 	}
 }
