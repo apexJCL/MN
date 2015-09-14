@@ -6,19 +6,16 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.itc.mn.Cosas.Const;
 import com.itc.mn.Cosas.FuncionX;
 import com.kotcrab.vis.ui.VisUI;
-import com.kotcrab.vis.ui.widget.VisLabel;
-import com.kotcrab.vis.ui.widget.VisTable;
-import com.kotcrab.vis.ui.widget.VisTextField;
+import com.kotcrab.vis.ui.widget.*;
 
 import java.util.ArrayList;
 
@@ -37,8 +34,10 @@ public class RenderScreen implements Screen {
     private ArrayList<float[][]> funciones;
     private Color[] colores = {Color.BLUE, Color.GREEN, Color.CYAN, Color.YELLOW,  Color.FIREBRICK, Color.ROYAL, Color.RED, Color.SALMON, Color.MAGENTA, Color.LIME, Color.TAN, Color.TEAL, Color.VIOLET};
     private String funcion;
+    private float scaleX, scaleY;
     // Test
     private VisUI visui; // VisUI es una skin para Scene2D
+    private VisSlider ejeX, ejeY;
 
     // Default, se ejecutara siempre, independientemente del constructor
     {
@@ -61,7 +60,8 @@ public class RenderScreen implements Screen {
             @Override
             public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
                 super.pan(event, x, y, deltaX, deltaY);
-                camera.position.set(camera.position.x - deltaX * camera.zoom, camera.position.y - deltaY * camera.zoom, 0);
+                if (y > -230) // Zona muerta para que al interactuar con los sliders o el TextField, no haga panning
+                    camera.position.set(camera.position.x - deltaX * camera.zoom, camera.position.y - deltaY * camera.zoom, 0);
             }
 
             @Override
@@ -73,6 +73,11 @@ public class RenderScreen implements Screen {
                 else
                     camera.zoom -= (camera.zoom > 0.02f) ? camera.zoom * 0.01f : 0;
 
+            }
+
+            @Override
+            public boolean handle(Event e) {
+                return super.handle(e);
             }
         });
         stage.addListener(new InputListener() {
@@ -100,6 +105,9 @@ public class RenderScreen implements Screen {
                 return super.scrolled(event, x, y, amount);
             }
         });
+
+        scaleX = 10;
+        scaleY = 10;
 
         // Construimos nuestra GUI
         construyeGUI();
@@ -147,7 +155,7 @@ public class RenderScreen implements Screen {
             shapeRenderer.setColor(Color.CYAN);
             // Procesando arreglo
             for (int i = 0; i < valores.length; i++)
-                shapeRenderer.point((valores[i][0]*Const.scaling), (valores[i][1]*Const.scaling), 0);
+                shapeRenderer.point((valores[i][0]*scaleX), (valores[i][1]*scaleY), 0);
         }
         else{
             int counter = 0;
@@ -158,7 +166,7 @@ public class RenderScreen implements Screen {
                     counter = 0;
                 shapeRenderer.setColor(colores[counter]);
                 for (int i = 0; i < funcion.length - 1; i++)
-                    shapeRenderer.point(funcion[i][0]*Const.scaling, funcion[i][1]*Const.scaling, 0);
+                    shapeRenderer.point(funcion[i][0]*scaleX, funcion[i][1]*scaleY, 0);
             }
         }
         // Para finalizar el renderizado
@@ -173,11 +181,11 @@ public class RenderScreen implements Screen {
         shapeRenderer.line(0, -camera.viewportHeight + camera.position.y , 0, camera.viewportHeight + camera.position.y);
         shapeRenderer.line(-camera.viewportWidth + camera.position.x, 0, camera.viewportWidth + camera.position.x, 0);
         // Renderiza la graduacion de los ejejejes
-        for (int i = 0; i < camera.viewportWidth + Math.abs(camera.position.x); i+=Const.scaling){
+        for (float i = 0; i < camera.viewportWidth + Math.abs(camera.position.x); i+=scaleX){
             shapeRenderer.line(i, -1, i, 1);
             shapeRenderer.line(-i, -1, -i, 1);
         }
-        for (int i = 0; i < camera.viewportHeight + Math.abs(camera.position.y); i+=Const.scaling){
+        for (float i = 0; i < camera.viewportHeight + Math.abs(camera.position.y); i+=scaleY){
             shapeRenderer.line(-1, i, 1, i);
             shapeRenderer.line(-1, -i, 1, -i);
         }
@@ -189,7 +197,14 @@ public class RenderScreen implements Screen {
         visui.load();
         // Una tabla para gobernarlos a todos... muahahahaha
         VisTable table = new VisTable();
-        table.setPosition(-camera.viewportWidth / 2f, -camera.viewportHeight / 2f);
+        if (Gdx.app.getType().equals(Application.ApplicationType.Android)) {
+            table.setSize(Gdx.graphics.getWidth()* 0.6f, Gdx.graphics.getHeight());
+            table.setPosition((-Gdx.graphics.getWidth() / 2f) * .7f, (-Gdx.graphics.getHeight() / 2f) * .7f);
+        }
+        else {
+            table.setSize(camera.viewportWidth * 0.95f, camera.viewportHeight);
+            table.setPosition(-camera.viewportWidth / 2f, -camera.viewportHeight / 2f);
+        }
         // Un panel de entrada para re-evaluar
         VisLabel funcion = new VisLabel("Funcion: ");
         VisTextField entrada = new VisTextField("f(x) = ");
@@ -198,10 +213,49 @@ public class RenderScreen implements Screen {
         entrada.setName("entrada");
         entrada.addListener(new UIListener(entrada));
         // Los agregamos a la tabla
-        table.add(funcion).expandY().bottom().left().pad(4);
-        table.add(entrada).expandY().bottom().left().pad(4);
-        // Para ajustar la tabla
-        table.pack();
+        table.add(funcion).bottom().left().pad(4);
+        table.add(entrada).expand().bottom().left().pad(4);
+        // Para ajustar la grafica
+        ejeX = new VisSlider(0.1f, 50, 0.001f, false);
+        ejeX.setValue(scaleX);
+        // Agregamos un escuchador de eventos
+        ejeX.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                scaleX = ((VisSlider) actor).getValue();
+            }
+        });
+        ejeY = new VisSlider(0.1f, 50, 0.001f, false);
+        ejeY.setValue(scaleY);
+        // Agregamos un escuchador de eventos
+        ejeY.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                scaleY = ((VisSlider) actor).getValue();
+            }
+        });
+        // Los agregamos a la tabla
+        VisLabel ajuste = new VisLabel("Ajuste ejes");
+        table.add(ajuste).bottom().right().pad(4f);
+        table.add(ejeX).expandY().bottom().left().pad(5f);
+        table.add(ejeY).expandY().bottom().left().pad(5f);
+        // Para reestablecer escala
+        VisTextButton restablece = new VisTextButton("Reinicia ejes");
+        restablece.addListener(new ClickListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        ejeX.setValue(10);
+                        ejeY.setValue(10);
+                    }
+                });
+                return true;
+            }
+        });
+        // Agregamos el boton
+        table.add(restablece).right().expandY().bottom().pad(5f);
         // Agregamos la tabla al stage
         stage.addActor(table);
         // stage.setDebugAll(true);
@@ -225,10 +279,10 @@ public class RenderScreen implements Screen {
         // Actualizamos el Stage
         stage.act();
         stage.draw();
-        // Renderizamos con el shapeRenderer
-        renderArreglo();
         // Renderizamos los ejes X e Y
         renderEjes();
+        // Renderizamos con el shapeRenderer
+        renderArreglo();
     }
 
     @Override
@@ -273,7 +327,7 @@ public class RenderScreen implements Screen {
             if(actor.getName().equals("entrada")){ // Aqui borramos el texto por defecto del campo
                 ((VisTextField)actor).setText("");
                 if(Gdx.app.getType().equals(Application.ApplicationType.Android))
-                    Gdx.input.getTextInput(new MyTextListener(), "Funcion", "", "f(x) = ");
+                    Gdx.input.getTextInput(new MyTextListener(actor), "Funcion", "", "f(x) = ");
             }
             else{
 
@@ -292,6 +346,8 @@ public class RenderScreen implements Screen {
                             valores = fx.obtenerRango(-10, 10, 0.001f);
                         }
                     });
+                    ejeX.setValue(10);
+                    ejeY.setValue(10);
                 }
             return super.keyTyped(event, character);
         }
@@ -305,9 +361,24 @@ public class RenderScreen implements Screen {
 
     private class MyTextListener implements Input.TextInputListener{
 
+        private Actor actor;
+
+        public MyTextListener(Actor actor){
+            this.actor = actor;
+        }
+
         @Override
         public void input(String text) {
-
+            ((VisTextField)actor).setText(text);
+            final FuncionX fx = new FuncionX(text);
+            Gdx.app.postRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    valores = fx.obtenerRango(-10, 10, 0.001f);
+                }
+            });
+            ejeX.setValue(10);
+            ejeY.setValue(10);
         }
 
         @Override
