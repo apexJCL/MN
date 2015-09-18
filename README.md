@@ -1,3 +1,2 @@
 # MN
-Para la materia de Métodos Numéricos
-:D
+Un proyecto que engloba un graficador basado en LibGDX para la materia de Métodos Numéricos.
