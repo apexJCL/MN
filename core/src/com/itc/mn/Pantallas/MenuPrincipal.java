@@ -15,6 +15,10 @@ public class MenuPrincipal extends Pantalla {
     private Game game;
     private MenuBar menubar;
     private VisTable table;
+    private static String[] nombreMenu = {"Archivo", "Herramientas"}; // Se encarga de los menues normales
+    private static String[][] contenidoMenu = {{"Metodo>", "Salir"}, {"Graficador"}}; // Cada uno es el contenido de cada menu declarado arriba
+    private Menu[] menues;
+    private MenuItem[] subMenues;
 
     public MenuPrincipal(Game game){
         this.game = game;
@@ -35,12 +39,16 @@ public class MenuPrincipal extends Pantalla {
         construyeGUI();
         // Creamos el menu
         menubar = new MenuBar();
+        // Definimos el contenedor de menues
+        menues = new Menu[nombreMenu.length];
         // Agregamos menues basicos
-        Menu metodos = new Menu("M\u00E9todos");
-        // Agregamos submenus padres al menuBar
-        menubar.addMenu(metodos);
+        for (int i = 0; i < nombreMenu.length; i++)
+            menues[i] = new Menu(nombreMenu[i]);
+        // Agregamos los menues creados a la barra
+        for (Menu menu : menues)
+            menubar.addMenu(menu);
         // Agregando el menu al table
-        table.add(menubar.getTable()).top().fillX().expandX().row();
+        table.add(menubar.getTable()).fillX().expand().top().row();
         stage.addActor(table);
     }
 
