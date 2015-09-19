@@ -187,14 +187,8 @@ public class RenderScreen extends Pantalla {
     private void construyeGUI(){
         // Una tabla para gobernarlos a todos... muahahahaha
         VisTable table = new VisTable();
-        if (Gdx.app.getType().equals(Application.ApplicationType.Android)) {
-            table.setSize(Gdx.graphics.getWidth()* 0.6f, Gdx.graphics.getHeight());
-            table.setPosition((-Gdx.graphics.getWidth() / 2f) * .7f, (-Gdx.graphics.getHeight() / 2f) * .7f);
-        }
-        else {
-            table.setSize(camera.viewportWidth * 0.95f, camera.viewportHeight);
-            table.setPosition(0, 0);
-        }
+        table.setSize(Gdx.graphics.getWidth()* 0.95f, Gdx.graphics.getHeight());
+        table.setPosition((Gdx.graphics.getWidth() - table.getWidth())/2f, (Gdx.graphics.getHeight() - table.getHeight())/2f);
         if(isInputVisible) {
             // Un panel de entrada para re-evaluar
             VisLabel funcion = new VisLabel("Funcion: ");
