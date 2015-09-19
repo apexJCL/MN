@@ -13,5 +13,8 @@ public class AndroidLauncher extends AndroidApplication {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		initialize(new MainGame(), config);
 		config.useImmersiveMode = true;
+		config.useAccelerometer = false;
+		config.useCompass = false;
+		config.numSamples = 2;
 	}
 }

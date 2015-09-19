@@ -22,40 +22,22 @@ import java.util.ArrayList;
 /**
  * Created by zero_ on 10/09/2015.
  */
-public class RenderScreen implements Screen {
+public class RenderScreen extends Pantalla {
 
-    private OrthographicCamera camera;
-    private Stage stage;
     private Game game;
-    private FitViewport viewport;
-    private SpriteBatch batch;
-    private ShapeRenderer shapeRenderer;
     private float[][] valores;
     private ArrayList<float[][]> funciones;
     private Color[] colores = {Color.BLUE, Color.GREEN, Color.CYAN, Color.YELLOW,  Color.FIREBRICK, Color.ROYAL, Color.RED, Color.SALMON, Color.MAGENTA, Color.LIME, Color.TAN, Color.TEAL, Color.VIOLET};
     private String funcion;
     private float scaleX, scaleY;
     // Test
-    private VisUI visui; // VisUI es una skin para Scene2D
     private VisSlider ejeX, ejeY;
+    private boolean isInputVisible;
 
     // Default, se ejecutara siempre, independientemente del constructor
     {
-        // Cosas a generar por defecto
-        batch = new SpriteBatch();
-        shapeRenderer = new ShapeRenderer();
-        // Definimos el viewport
-        viewport = new FitViewport(Const.WIDTH, Const.HEIGHT);
-        // Creamos las cosas para renderizar
-        camera = new OrthographicCamera(Const.WIDTH, Const.HEIGHT);
-        camera.setToOrtho(false);
-        camera.position.set(0, 0, 0);
-        camera.update();
-        // Definimos el Stage para entradas tactiles
-        stage = new Stage();
-        stage.setViewport(viewport);
-        // For moving
-        Gdx.input.setInputProcessor(stage);
+        // Configurando la visibilidad de la barra de entrada
+        isInputVisible = true;
         stage.addListener(new ActorGestureListener() {
             @Override
             public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
@@ -118,10 +100,14 @@ public class RenderScreen implements Screen {
      * @param game Referencia a Game para manejo de pantallas
      * @param valores Valores de la funcion
      */
-    public RenderScreen(Game game, float[][] valores){
+    public RenderScreen(Game game, float[][] valores, boolean isInputVisible){
+        // Llamada a super para habilitar el debug del VisUI
+        super(false);
         // Solo para tener una referencia al manejador de pantallas
         this.game = game;
         this.valores = valores;
+        // Este valor es por si se desea mostrar para "graficar" al vuelo o sólo se quieren ver resultados
+        this.isInputVisible = isInputVisible;
     }
 
     /**
@@ -129,10 +115,14 @@ public class RenderScreen implements Screen {
      * @param game Referencia a Game para manejo de pantallas
      * @param funciones ArrayList con arreglos de valores para cada funcion
      */
-    public RenderScreen(Game game, ArrayList<float[][]> funciones){
+    public RenderScreen(Game game, ArrayList<float[][]> funciones, boolean isInputVisible){
+        // Llamada a super para habilitar el debug del VisUI
+        super(false);
         // Solo para tener una referencia al manejador de pantallas
         this.game = game;
         this.funciones = funciones;
+        // Este valor es por si se desea mostrar para "graficar" al vuelo o sólo se quieren ver resultados
+        this.isInputVisible = isInputVisible;
     }
 
     /**
@@ -140,6 +130,8 @@ public class RenderScreen implements Screen {
      * @param game Instancia de Game que controla las pantallas
      */
     public RenderScreen(Game game){
+        // Llamada a super para habilitar el debug del VisUI
+        super(false);
         this.game = game;
         valores = new FuncionX("x").obtenerRango(-10, 10, 0.001f);
     }
@@ -193,8 +185,6 @@ public class RenderScreen implements Screen {
     }
 
     private void construyeGUI(){
-        // Inicializamos VisUI
-        visui.load();
         // Una tabla para gobernarlos a todos... muahahahaha
         VisTable table = new VisTable();
         if (Gdx.app.getType().equals(Application.ApplicationType.Android)) {
@@ -203,18 +193,20 @@ public class RenderScreen implements Screen {
         }
         else {
             table.setSize(camera.viewportWidth * 0.95f, camera.viewportHeight);
-            table.setPosition(-camera.viewportWidth / 2f, -camera.viewportHeight / 2f);
+            table.setPosition(0, 0);
         }
-        // Un panel de entrada para re-evaluar
-        VisLabel funcion = new VisLabel("Funcion: ");
-        VisTextField entrada = new VisTextField("f(x) = ");
-        entrada.pack();
-        // Le agregamos un nombre para que pueda ser identificado
-        entrada.setName("entrada");
-        entrada.addListener(new UIListener(entrada));
-        // Los agregamos a la tabla
-        table.add(funcion).bottom().left().pad(4);
-        table.add(entrada).expand().bottom().left().pad(4);
+        if(isInputVisible) {
+            // Un panel de entrada para re-evaluar
+            VisLabel funcion = new VisLabel("Funcion: ");
+            VisTextField entrada = new VisTextField("f(x) = ");
+            entrada.pack();
+            // Le agregamos un nombre para que pueda ser identificado
+            entrada.setName("entrada");
+            entrada.addListener(new UIListener(entrada));
+            // Los agregamos a la tabla
+            table.add(funcion).bottom().left().pad(4);
+            table.add(entrada).expand().bottom().left().pad(4);
+        }
         // Para ajustar la grafica
         ejeX = new VisSlider(0.1f, 50, 0.001f, false);
         ejeX.setValue(scaleX);
@@ -262,33 +254,12 @@ public class RenderScreen implements Screen {
     }
 
     @Override
-    public void show() {
-
-    }
-
-    @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        // Aplicamos el viewport
-        viewport.apply();
-        // Actualizamos la camara
-        camera.update();
-        // Batch
-        batch.setProjectionMatrix(camera.combined);
-        // Actualizamos el Stage
-        stage.act();
-        stage.draw();
+        super.render(delta);
         // Renderizamos los ejes X e Y
         renderEjes();
         // Renderizamos con el shapeRenderer
         renderArreglo();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        viewport.update(width, height);
-        camera.zoom = 0.3f;
     }
 
     @Override
@@ -304,13 +275,6 @@ public class RenderScreen implements Screen {
     @Override
     public void hide() {
 
-    }
-
-    @Override
-    public void dispose() {
-        stage.dispose();
-        batch.dispose();
-        visui.dispose();
     }
 
     private class UIListener extends ClickListener {
