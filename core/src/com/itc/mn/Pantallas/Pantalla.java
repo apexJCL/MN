@@ -11,7 +11,9 @@ import com.itc.mn.Cosas.Const;
 import com.kotcrab.vis.ui.VisUI;
 
 /**
- * Created by zero_ on 18/09/2015.
+ * Esta es la clase principal para manejar las ventanas en la aplicacion.
+ * Cualquier otra ventana a desplegar debera extender de esta misma para
+ * ahorrar recursos, manejo de camaras especificas entre otras cosas.
  */
 public class Pantalla implements Screen {
 
@@ -20,6 +22,7 @@ public class Pantalla implements Screen {
     protected FitViewport viewport;
     protected VisUI visui;
     protected ShapeRenderer shapeRenderer;
+    protected boolean debugEnabled;
 
 
     {
@@ -42,13 +45,9 @@ public class Pantalla implements Screen {
         visui.load();
     }
 
-    public Pantalla(boolean debug){
-        if(debug)// Modo debug
-            stage.setDebugAll(true);
-    }
-
     @Override
     public void show() {
+        stage.setDebugAll(debugEnabled);
         camera.position.set(0, 0, 0);
     }
 

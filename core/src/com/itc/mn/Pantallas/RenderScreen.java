@@ -101,12 +101,10 @@ public class RenderScreen extends Pantalla {
      * @param valores Valores de la funcion
      */
     public RenderScreen(Game game, float[][] valores, boolean isInputVisible){
-        // Llamada a super para habilitar el debug del VisUI
-        super(false);
         // Solo para tener una referencia al manejador de pantallas
         this.game = game;
         this.valores = valores;
-        // Este valor es por si se desea mostrar para "graficar" al vuelo o sólo se quieren ver resultados
+        // Este valor es por si se desea mostrar para "graficar" al vuelo o solo se quieren ver resultados
         this.isInputVisible = isInputVisible;
     }
 
@@ -116,12 +114,10 @@ public class RenderScreen extends Pantalla {
      * @param funciones ArrayList con arreglos de valores para cada funcion
      */
     public RenderScreen(Game game, ArrayList<float[][]> funciones, boolean isInputVisible){
-        // Llamada a super para habilitar el debug del VisUI
-        super(false);
         // Solo para tener una referencia al manejador de pantallas
         this.game = game;
         this.funciones = funciones;
-        // Este valor es por si se desea mostrar para "graficar" al vuelo o sólo se quieren ver resultados
+        // Este valor es por si se desea mostrar para "graficar" al vuelo o solo se quieren ver resultados
         this.isInputVisible = isInputVisible;
     }
 
@@ -130,8 +126,6 @@ public class RenderScreen extends Pantalla {
      * @param game Instancia de Game que controla las pantallas
      */
     public RenderScreen(Game game){
-        // Llamada a super para habilitar el debug del VisUI
-        super(false);
         this.game = game;
         valores = new FuncionX("x").obtenerRango(-10, 10, 0.001f);
     }
