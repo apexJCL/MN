@@ -2,6 +2,8 @@ package com.itc.mn;
 
 import com.badlogic.gdx.Game;
 import com.itc.mn.Pantallas.MenuPrincipal;
+import com.itc.mn.Pantallas.RenderScreen;
+
 import java.util.ArrayList;
 
 public class MainGame extends Game {
@@ -13,7 +15,8 @@ public class MainGame extends Game {
 	
 	@Override
 	public void create () {
-        this.setScreen(new MenuPrincipal(this));
+        //this.setScreen(new MenuPrincipal(this));
+		this.setScreen(new RenderScreen(this));
 	}
 
 	@Override

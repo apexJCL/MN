@@ -14,6 +14,9 @@ import com.kotcrab.vis.ui.VisUI;
  * Esta es la clase principal para manejar las ventanas en la aplicacion.
  * Cualquier otra ventana a desplegar debera extender de esta misma para
  * ahorrar recursos, manejo de camaras especificas entre otras cosas.
+ *
+ * Procura redimensionar los elementos en el metodo resize
+ * para que la aplicacion se muestre correctamente en el escritorio
  */
 public class Pantalla implements Screen {
 

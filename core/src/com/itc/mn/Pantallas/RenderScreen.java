@@ -140,8 +140,18 @@ public class RenderScreen extends Pantalla {
             // Obviamente define el color
             shapeRenderer.setColor(Color.CYAN);
             // Procesando arreglo
-            for (int i = 0; i < valores.length; i++)
-                shapeRenderer.point((valores[i][0]*scaleX), (valores[i][1]*scaleY), 0);
+            for (int i = 0; i < valores.length; i++) {
+                shapeRenderer.point((valores[i][0] * scaleX), (valores[i][1] * scaleY), 0);
+                if(valores[i][1] == 0 || (valores[i][1] < 0.001 && valores[i][1] > - 0.001)){
+                    shapeRenderer.end();
+                    shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+                    shapeRenderer.setColor(0, 255, 0, 0.1f);
+                    shapeRenderer.circle(valores[i][0] * scaleX, valores[i][1] * scaleY, 5*camera.zoom, 50);
+                    shapeRenderer.setColor(Color.CYAN);
+                    shapeRenderer.end();
+                    shapeRenderer.begin(ShapeRenderer.ShapeType.Point);
+                }
+            }
         }
         else{
             int counter = 0;

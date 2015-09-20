@@ -11,6 +11,8 @@ public class FuncionX {
     private JEP parser;
     private String ecuacion, variable;
     private double valorVariable;
+    private float inicio, fin;
+    private float[][] ultimoCalulado;
 
     {
         parser = new JEP();
@@ -22,6 +24,8 @@ public class FuncionX {
         parser.setImplicitMul(true);
         variable = "x";
         valorVariable = 0;
+        inicio = -10;
+        fin = 10;
     }
 
     /**
@@ -67,8 +71,11 @@ public class FuncionX {
      * @return double[][] valores
      */
     public float[][] obtenerRango(float inicio, float fin, float paso){
+        // Guardamos los valores de inicio o fin, para uso en otras funciones
+        this.inicio = inicio;
+        this.fin = fin;
         int precision = (int)(Math.abs(fin - inicio) / paso);
-        float[][] tmp = new float[(int)precision + 1][2];
+        float[][] tmp = new float[precision + 1][2];
         // Lo usamos para evaluar del menor al mayor
         float menor = menor(inicio, fin);
         for (int i = 0; i <= precision; i++) {
@@ -78,6 +85,21 @@ public class FuncionX {
             tmp[i][1] = (float)parser.getValue();
         }
         return tmp;
+    }
+
+    /**
+     * Devuelve el valor entre un rango dado, con un paso entre valores de 0.01
+     * @param inicio Inicio del rango
+     * @param fin Fin del rango
+     * @return Valores de la expresion evaluada en el rango dado
+     */
+    public float[][] obtenerRango(float inicio, float fin){
+        return obtenerRango(inicio, fin, 0.001f);
+    }
+
+    public float[][] obtenerRaices() {
+        if(ultimoCalulado == null)
+            ultimoCalulado = obtenerRango(inicio, fin);
     }
 
     private float menor(float a, float b){
