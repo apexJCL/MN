@@ -26,6 +26,7 @@ public class RenderScreen extends Pantalla {
 
     private Game game;
     private float[][] valores;
+    private float[] raices;
     private ArrayList<float[][]> funciones;
     private Color[] colores = {Color.BLUE, Color.GREEN, Color.CYAN, Color.YELLOW,  Color.FIREBRICK, Color.ROYAL, Color.RED, Color.SALMON, Color.MAGENTA, Color.LIME, Color.TAN, Color.TEAL, Color.VIOLET};
     private String funcion;
@@ -108,6 +109,12 @@ public class RenderScreen extends Pantalla {
         this.isInputVisible = isInputVisible;
     }
 
+    public RenderScreen(Game game, float[][] valores, float[] raices){
+        this.game = game;
+        this.valores = valores;
+        this.raices = raices;
+    }
+
     /**
      * Recibe un ArrayList de varias funciones, para graficacion multiple
      * @param game Referencia a Game para manejo de pantallas
@@ -142,11 +149,12 @@ public class RenderScreen extends Pantalla {
             // Procesando arreglo
             for (int i = 0; i < valores.length; i++) {
                 shapeRenderer.point((valores[i][0] * scaleX), (valores[i][1] * scaleY), 0);
-                if(valores[i][1] == 0 || (valores[i][1] < 0.001 && valores[i][1] > - 0.001)){
+                if(raices != null){
                     shapeRenderer.end();
                     shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
                     shapeRenderer.setColor(0, 255, 0, 0.1f);
-                    shapeRenderer.circle(valores[i][0] * scaleX, valores[i][1] * scaleY, 5*camera.zoom, 50);
+                    for (float raiz : raices)
+                        shapeRenderer.circle(raiz * scaleX, raiz* scaleY, 5*camera.zoom, 50);
                     shapeRenderer.setColor(Color.CYAN);
                     shapeRenderer.end();
                     shapeRenderer.begin(ShapeRenderer.ShapeType.Point);
