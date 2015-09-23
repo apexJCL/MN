@@ -97,10 +97,10 @@ public class FuncionX {
         return obtenerRango(inicio, fin, 0.001f);
     }
 
-    public float[][] obtenerRaices() {
-        if(ultimoCalulado == null)
-            ultimoCalulado = obtenerRango(inicio, fin);
-    }
+//    public float[][] obtenerRaices() {
+//        if(ultimoCalulado == null)
+//            ultimoCalulado = obtenerRango(inicio, fin);
+//    }
 
     private float menor(float a, float b){
         return (a < b) ? a: b;

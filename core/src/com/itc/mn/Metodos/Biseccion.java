@@ -11,7 +11,4 @@ public class Biseccion {
         this.a = a;
         this.b = b;
     }
-
-    public float obtenerRaiz(float ep){}
-
 }
