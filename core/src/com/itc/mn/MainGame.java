@@ -17,7 +17,7 @@ public class MainGame extends Game {
 	@Override
 	public void create () {
         //this.setScreen(new MenuPrincipal(this));
-		PFijo prueba = new PFijo("3/(x-2)", 1, 0.000001d);
+		PFijo prueba = new PFijo("3/(x-2)", 1, 0.1d);
 		System.out.println("Raiz: "+prueba.obtenerRaiz()[0]);
 		this.setScreen(new RenderScreen(this));
 	}

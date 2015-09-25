@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.itc.mn.Cosas.FuncionX;
+import com.itc.mn.Metodos.PFijo;
 import com.kotcrab.vis.ui.widget.*;
 
 import java.util.ArrayList;
@@ -32,59 +33,8 @@ public class RenderScreen extends Pantalla {
     {
         // Configurando la visibilidad de la barra de entrada
         isInputVisible = true;
-        stage.addListener(new ActorGestureListener() {
-            @Override
-            public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
-                super.pan(event, x, y, deltaX, deltaY);
-                if (y > -230) // Zona muerta para que al interactuar con los sliders o el TextField, no haga panning
-                    camera.position.set(camera.position.x - deltaX * camera.zoom, camera.position.y - deltaY * camera.zoom, 0);
-            }
-
-            @Override
-            public void zoom(InputEvent event, float initialDistance, float distance) {
-                super.zoom(event, initialDistance, distance);
-                float diff = initialDistance - distance;
-                if (diff > 0)
-                    camera.zoom += (camera.zoom < 1) ? camera.zoom * 0.01f : 0;
-                else
-                    camera.zoom -= (camera.zoom > 0.02f) ? camera.zoom * 0.01f : 0;
-
-            }
-
-            @Override
-            public boolean handle(Event e) {
-                return super.handle(e);
-            }
-        });
-        stage.addListener(new InputListener() {
-            @Override
-            public boolean keyTyped(InputEvent event, char character) {
-                // Esto se encarga de controlar el zoom con el teclado
-                // El Zoom de la camara va de 0f a 1f, siendo 0f lo mas cercano, pero
-                // causa problemas al renderizar, por eso se limita a 0.02f
-                if (event.getKeyCode() == Input.Keys.DOWN) { // Zoom menos
-                    camera.zoom += (camera.zoom < 1) ? 0.01f : 0;
-                    return true;
-                } else if (event.getKeyCode() == Input.Keys.UP) { // Zoom mas
-                    camera.zoom -= (camera.zoom > 0.02f) ? 0.01f : 0;
-                    return true;
-                }
-                return super.keyTyped(event, character);
-            }
-
-            @Override
-            public boolean scrolled(InputEvent event, float x, float y, int amount) {
-                if (amount > 0)
-                    camera.zoom += (camera.zoom < 1) ? 0.01f : 0;
-                else
-                    camera.zoom += (camera.zoom > 0.02f) ? -0.01f : 0;
-                return super.scrolled(event, x, y, amount);
-            }
-        });
-
         scaleX = 10;
         scaleY = 10;
-
         // Construimos nuestra GUI
         construyeGUI();
         stage.setDebugAll(true);
@@ -110,6 +60,8 @@ public class RenderScreen extends Pantalla {
         this.valores = valores;
         this.raices = raices;
     }
+
+    public RenderScreen(Game game, )
 
     /**
      * Recibe un ArrayList de varias funciones, para graficacion multiple

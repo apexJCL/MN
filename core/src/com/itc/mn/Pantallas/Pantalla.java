@@ -1,11 +1,14 @@
 package com.itc.mn.Pantallas;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.itc.mn.Cosas.Const;
@@ -29,10 +32,9 @@ public class Pantalla implements Screen {
     protected ShapeRenderer shapeRenderer;
     protected boolean debugEnabled;
     protected VisTable table;
-    private MenuBar menu;
     protected double precision;
-    private Menu metodos, herramientas;
-    private MenuItem h_config;
+    private PopupMenu menu, m_metodos;
+    private MenuItem metodos, metodos_PFijo;
 
     {
         // Creamos el shaperenderer
@@ -52,6 +54,72 @@ public class Pantalla implements Screen {
         Gdx.input.setInputProcessor(stage);
         // Importamos el VisUI
         visui.load();
+
+        // Agregamos los escuchadores del stage
+        stage.addListener(new ActorGestureListener() {
+            @Override
+            public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
+                super.pan(event, x, y, deltaX, deltaY);
+                if (y > -230) // Zona muerta para que al interactuar con los sliders o el TextField, no haga panning
+                    camera.position.set(camera.position.x - deltaX * camera.zoom, camera.position.y - deltaY * camera.zoom, 0);
+            }
+
+            @Override
+            public void zoom(InputEvent event, float initialDistance, float distance) {
+                super.zoom(event, initialDistance, distance);
+                float diff = initialDistance - distance;
+                if (diff > 0)
+                    camera.zoom += (camera.zoom < 1) ? camera.zoom * 0.01f : 0;
+                else
+                    camera.zoom -= (camera.zoom > 0.02f) ? camera.zoom * 0.01f : 0;
+
+            }
+
+            @Override
+            public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                // Para eventos tactiles de android, usamos puntero, para PC usamos button
+                if (button == 1)
+                    menu.showMenu(stage, x, y);
+            }
+
+            @Override
+            public boolean longPress(Actor actor, float x, float y) {
+                menu.showMenu(stage, x, y);
+                return true;
+            }
+
+            @Override
+            public boolean handle(Event e) {
+                return super.handle(e);
+            }
+        });
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean keyTyped(InputEvent event, char character) {
+                // Esto se encarga de controlar el zoom con el teclado
+                // El Zoom de la camara va de 0f a 1f, siendo 0f lo mas cercano, pero
+                // causa problemas al renderizar, por eso se limita a 0.02f
+                if (event.getKeyCode() == Input.Keys.DOWN) { // Zoom menos
+                    camera.zoom += (camera.zoom < 1) ? 0.01f : 0;
+                    return true;
+                } else if (event.getKeyCode() == Input.Keys.UP) { // Zoom mas
+                    camera.zoom -= (camera.zoom > 0.02f) ? 0.01f : 0;
+                    return true;
+                }
+                return super.keyTyped(event, character);
+            }
+
+            @Override
+            public boolean scrolled(InputEvent event, float x, float y, int amount) {
+                if (amount > 0)
+                    camera.zoom += (camera.zoom < 1) ? 0.01f : 0;
+                else
+                    camera.zoom += (camera.zoom > 0.02f) ? -0.01f : 0;
+                return super.scrolled(event, x, y, amount);
+            }
+
+
+        });
     }
 
     public void construyeGUI(){
@@ -60,23 +128,31 @@ public class Pantalla implements Screen {
         table.setSize(Gdx.graphics.getWidth() * 0.95f, Gdx.graphics.getHeight());
         table.setPosition((Gdx.graphics.getWidth() - table.getWidth()) / 2f, (Gdx.graphics.getHeight() - table.getHeight()) / 2f);
         // Agregando un menu en comun
-        menu = new MenuBar();
-        // Creando los menues principales
-        metodos = new Menu("Metodos");
-        herramientas = new Menu("Herramientas");
-        // Agregando los menues a la barra
-        menu.addMenu(metodos);
-        menu.addMenu(herramientas);
-        // Creamos los submenues
-        h_config = new MenuItem("Configuracion");
-        h_config.setShortcut("Ctrl+P");
-        // Agregamos las cosas
-        herramientas.add(h_config);
-        // Agregamos el menu a la tabla
-        table.add(menu.getTable()).fillX().expandX().colspan(7).row();
+        menu = new PopupMenu();
+        // Instanciamos los submenues
+        m_metodos = new PopupMenu();
+        creaItems();
         // Agregamos la tabla al stage
         stage.addActor(table);
-        menu.getTable().setDebug(true);
+    }
+
+    private void creaItems(){
+        metodos = new MenuItem("Metodos");
+        metodos.setSubMenu(m_metodos);
+
+        // Instanciamos los elemenos del submenu metodos
+        metodos_PFijo = new MenuItem("Punto Fijo");
+
+        // Asignamos eventos a cada item
+        asignaEventos();
+         // Agregamos los submenues al menu principal
+        menu.addItem(metodos);
+        // Agregamos los elementos de los submenues
+        m_metodos.addItem(metodos_PFijo);
+    }
+
+    private void asignaEventos(){
+        metodos_PFijo.addListener(new ClickListener());
     }
 
     @Override

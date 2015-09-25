@@ -7,19 +7,22 @@ import java.util.ArrayList;
 /**
  * Created by zero_ on 23/09/2015.
  */
-public class PFijo {
+public class PFijo extends Metodo{
 
     private FuncionX g;
-    private String f;
     private double vInicial, ep;
     private ArrayList<double[]> resultados;
     private int counter;
 
+    {
+        tipo = Tipo.PUNTO_FIJO;
+    }
+
     public PFijo (String fun, double vInicial, double ep){
-        this.f = fun;
+        funcion = fun;
         this.vInicial = vInicial;
         this.ep = ep;
-        g= new FuncionX(fun);
+        g= new FuncionX(funcion);
         g.valorVariable(vInicial);
         // Inicializamos el ArrayList para guardar los valores de las iteraciones
         resultados = new ArrayList(0);
