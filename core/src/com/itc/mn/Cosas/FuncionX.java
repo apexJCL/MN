@@ -24,8 +24,8 @@ public class FuncionX {
         parser.setImplicitMul(true);
         variable = "x";
         valorVariable = 0;
-        inicio = -10;
-        fin = 10;
+        inicio = -20;
+        fin = 20;
     }
 
     /**

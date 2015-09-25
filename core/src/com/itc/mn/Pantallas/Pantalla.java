@@ -6,12 +6,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.itc.mn.Cosas.Const;
 import com.kotcrab.vis.ui.VisUI;
-import com.kotcrab.vis.ui.widget.Menu;
-import com.kotcrab.vis.ui.widget.MenuBar;
-import com.kotcrab.vis.ui.widget.VisTable;
+import com.kotcrab.vis.ui.widget.*;
 
 /**
  * Esta es la clase principal para manejar las ventanas en la aplicacion.
@@ -32,6 +31,8 @@ public class Pantalla implements Screen {
     protected VisTable table;
     private MenuBar menu;
     protected double precision;
+    private Menu metodos, herramientas;
+    private MenuItem h_config;
 
     {
         // Creamos el shaperenderer
@@ -60,11 +61,22 @@ public class Pantalla implements Screen {
         table.setPosition((Gdx.graphics.getWidth() - table.getWidth()) / 2f, (Gdx.graphics.getHeight() - table.getHeight()) / 2f);
         // Agregando un menu en comun
         menu = new MenuBar();
-        menu.addMenu(new Menu("Hey!"));
+        // Creando los menues principales
+        metodos = new Menu("Metodos");
+        herramientas = new Menu("Herramientas");
+        // Agregando los menues a la barra
+        menu.addMenu(metodos);
+        menu.addMenu(herramientas);
+        // Creamos los submenues
+        h_config = new MenuItem("Configuracion");
+        h_config.setShortcut("Ctrl+P");
+        // Agregamos las cosas
+        herramientas.add(h_config);
         // Agregamos el menu a la tabla
-        table.add(menu.getTable()).fillX().expandX().colspan(6).row();
+        table.add(menu.getTable()).fillX().expandX().colspan(7).row();
         // Agregamos la tabla al stage
         stage.addActor(table);
+        menu.getTable().setDebug(true);
     }
 
     @Override
