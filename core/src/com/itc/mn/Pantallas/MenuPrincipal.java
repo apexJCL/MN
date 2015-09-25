@@ -62,14 +62,8 @@ public class MenuPrincipal extends Pantalla {
         table.add(label).expand().center();
     }
 
-    private void construyeGUI(){
-        // Creamos la tabla que contendra el menu principal
-        table = new VisTable();
-        // Definimos su tamano
-        table.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        // Definimos su posicion
-        table.setPosition((Gdx.graphics.getWidth() - table.getWidth())/2f, (Gdx.graphics.getHeight() - table.getHeight())/2f);
-        stage.addActor(table);
+    public void construyeGUI(){
+        super.construyeGUI();
     }
 
 }

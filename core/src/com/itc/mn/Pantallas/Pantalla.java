@@ -9,6 +9,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.itc.mn.Cosas.Const;
 import com.kotcrab.vis.ui.VisUI;
+import com.kotcrab.vis.ui.widget.Menu;
+import com.kotcrab.vis.ui.widget.MenuBar;
+import com.kotcrab.vis.ui.widget.VisTable;
 
 /**
  * Esta es la clase principal para manejar las ventanas en la aplicacion.
@@ -26,7 +29,9 @@ public class Pantalla implements Screen {
     protected VisUI visui;
     protected ShapeRenderer shapeRenderer;
     protected boolean debugEnabled;
-
+    protected VisTable table;
+    private MenuBar menu;
+    protected double precision;
 
     {
         // Creamos el shaperenderer
@@ -48,12 +53,30 @@ public class Pantalla implements Screen {
         visui.load();
     }
 
+    public void construyeGUI(){
+        // Una tabla para gobernarlos a todos... muahahahaha
+        table = new VisTable();
+        table.setSize(Gdx.graphics.getWidth() * 0.95f, Gdx.graphics.getHeight());
+        table.setPosition((Gdx.graphics.getWidth() - table.getWidth()) / 2f, (Gdx.graphics.getHeight() - table.getHeight()) / 2f);
+        // Agregando un menu en comun
+        menu = new MenuBar();
+        menu.addMenu(new Menu("Hey!"));
+        // Agregamos el menu a la tabla
+        table.add(menu.getTable()).fillX().expandX().colspan(6).row();
+        // Agregamos la tabla al stage
+        stage.addActor(table);
+    }
+
     @Override
     public void show() {
         stage.setDebugAll(debugEnabled);
         camera.position.set(0, 0, 0);
     }
 
+    /**
+     * Renderiza por defecto, SIEMPRE MANDE LLAMAR renderTop al ultimo, es necesario para que la GUI este encima de todo
+     * @param delta
+     */
     @Override
     public void render(float delta) {
         Gdx.gl20.glClearColor(0, 0, 0, 1);
@@ -63,6 +86,9 @@ public class Pantalla implements Screen {
         // Actualizamos la camara
         camera.update();
         // Actualizamos el Stage
+    }
+
+    public void renderTop(){
         stage.act();
         stage.draw();
     }

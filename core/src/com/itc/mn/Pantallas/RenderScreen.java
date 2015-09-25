@@ -2,19 +2,12 @@ package com.itc.mn.Pantallas;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.itc.mn.Cosas.Const;
 import com.itc.mn.Cosas.FuncionX;
-import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.*;
 
 import java.util.ArrayList;
@@ -94,6 +87,7 @@ public class RenderScreen extends Pantalla {
 
         // Construimos nuestra GUI
         construyeGUI();
+        stage.setDebugAll(true);
     }
 
     /**
@@ -102,6 +96,7 @@ public class RenderScreen extends Pantalla {
      * @param valores Valores de la funcion
      */
     public RenderScreen(Game game, float[][] valores, boolean isInputVisible){
+        super();
         // Solo para tener una referencia al manejador de pantallas
         this.game = game;
         this.valores = valores;
@@ -110,6 +105,7 @@ public class RenderScreen extends Pantalla {
     }
 
     public RenderScreen(Game game, float[][] valores, float[] raices){
+        super();
         this.game = game;
         this.valores = valores;
         this.raices = raices;
@@ -196,11 +192,9 @@ public class RenderScreen extends Pantalla {
         shapeRenderer.end();
     }
 
-    private void construyeGUI(){
-        // Una tabla para gobernarlos a todos... muahahahaha
-        VisTable table = new VisTable();
-        table.setSize(Gdx.graphics.getWidth()* 0.95f, Gdx.graphics.getHeight());
-        table.setPosition((Gdx.graphics.getWidth() - table.getWidth())/2f, (Gdx.graphics.getHeight() - table.getHeight())/2f);
+    @Override
+    public void construyeGUI(){
+        super.construyeGUI();
         if(isInputVisible) {
             // Un panel de entrada para re-evaluar
             VisLabel funcion = new VisLabel("Funcion: ");
@@ -256,7 +250,7 @@ public class RenderScreen extends Pantalla {
         table.add(restablece).right().expandY().bottom().pad(5f);
         // Agregamos la tabla al stage
         stage.addActor(table);
-        // stage.setDebugAll(true);
+        stage.setDebugAll(true);
     }
 
     @Override
@@ -266,6 +260,8 @@ public class RenderScreen extends Pantalla {
         renderEjes();
         // Renderizamos con el shapeRenderer
         renderArreglo();
+        // NECESARIO PARA QUE LA GUI ESTE SOBRE DE TODO
+        renderTop();
     }
 
     @Override

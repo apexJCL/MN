@@ -64,6 +64,16 @@ public class FuncionX {
     }
 
     /**
+     * Regresa el valor de la funcion directamente en el valor asignado
+     * @param valorVariable valor a poner en la variable actual
+     * @return
+     */
+    public double obtenerValor(double valorVariable){
+        valorVariable(valorVariable);
+        return obtenerValor();
+    }
+
+    /**
      * Evalua la funcion en un rango dado y devuelve los valores para graficar
      * @param inicio Inicio del rango
      * @param fin Fin del rango
@@ -80,9 +90,8 @@ public class FuncionX {
         float menor = menor(inicio, fin);
         for (int i = 0; i <= precision; i++) {
             float valor_x = menor + (paso*i);
-            parser.addVariable(variable, valor_x);
             tmp[i][0] = valor_x;
-            tmp[i][1] = (float)parser.getValue();
+            tmp[i][1] = (float)obtenerValor(valor_x);
         }
         return tmp;
     }
