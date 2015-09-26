@@ -4,11 +4,10 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.itc.mn.Cosas.FuncionX;
-import com.itc.mn.Metodos.PFijo;
+import com.itc.mn.Metodos.Metodo;
 import com.kotcrab.vis.ui.widget.*;
 
 import java.util.ArrayList;
@@ -18,25 +17,19 @@ import java.util.ArrayList;
  */
 public class RenderScreen extends Pantalla {
 
-    private Game game;
     private float[][] valores;
-    private float[] raices;
+    private double[] raices;
     private ArrayList<float[][]> funciones;
     private Color[] colores = {Color.BLUE, Color.GREEN, Color.CYAN, Color.YELLOW,  Color.FIREBRICK, Color.ROYAL, Color.RED, Color.SALMON, Color.MAGENTA, Color.LIME, Color.TAN, Color.TEAL, Color.VIOLET};
     private String funcion;
     private float scaleX, scaleY;
-    // Test
     private VisSlider ejeX, ejeY;
-    private boolean isInputVisible;
-
+    private volatile boolean isInputVisible;
+    private Metodo metodo;
     // Default, se ejecutara siempre, independientemente del constructor
     {
-        // Configurando la visibilidad de la barra de entrada
-        isInputVisible = true;
         scaleX = 10;
         scaleY = 10;
-        // Construimos nuestra GUI
-        construyeGUI();
         stage.setDebugAll(true);
     }
 
@@ -52,16 +45,29 @@ public class RenderScreen extends Pantalla {
         this.valores = valores;
         // Este valor es por si se desea mostrar para "graficar" al vuelo o solo se quieren ver resultados
         this.isInputVisible = isInputVisible;
+        // Construimos nuestra GUI
+        construyeGUI();
     }
 
-    public RenderScreen(Game game, float[][] valores, float[] raices){
+    public RenderScreen(Game game, float[][] valores, double[] raices){
         super();
         this.game = game;
         this.valores = valores;
         this.raices = raices;
+        // Construimos nuestra GUI
+        construyeGUI();
     }
 
-    public RenderScreen(Game game, )
+    public RenderScreen(Game game, Metodo metodo){
+        super();
+        this.metodo = metodo;
+        this.game = game;
+        this.valores = metodo.obtenerRango();
+        this.raices = metodo.getRaices();
+        System.out.println(raices[0]);
+        // Construimos nuestra GUI
+        construyeGUI();
+    }
 
     /**
      * Recibe un ArrayList de varias funciones, para graficacion multiple
@@ -74,6 +80,8 @@ public class RenderScreen extends Pantalla {
         this.funciones = funciones;
         // Este valor es por si se desea mostrar para "graficar" al vuelo o solo se quieren ver resultados
         this.isInputVisible = isInputVisible;
+        // Construimos nuestra GUI
+        construyeGUI();
     }
 
     /**
@@ -82,7 +90,15 @@ public class RenderScreen extends Pantalla {
      */
     public RenderScreen(Game game){
         this.game = game;
-        valores = new FuncionX("x").obtenerRango(-10, 10, 0.001f);
+        valores = new FuncionX("sin(x*cos((pi^x)*tan(e^pi*x)))").obtenerRango(-10, 10, 0.001f);
+        isInputVisible = true;
+        // Construimos nuestra GUI
+        construyeGUI();
+        camera.zoom = 0.5f;
+    }
+
+    public void setInputVisible(boolean flag){
+        isInputVisible = flag;
     }
 
     private void renderArreglo(){
@@ -95,19 +111,8 @@ public class RenderScreen extends Pantalla {
             // Obviamente define el color
             shapeRenderer.setColor(Color.CYAN);
             // Procesando arreglo
-            for (int i = 0; i < valores.length; i++) {
+            for (int i = 0; i < valores.length; i++)
                 shapeRenderer.point((valores[i][0] * scaleX), (valores[i][1] * scaleY), 0);
-                if(raices != null){
-                    shapeRenderer.end();
-                    shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-                    shapeRenderer.setColor(0, 255, 0, 0.1f);
-                    for (float raiz : raices)
-                        shapeRenderer.circle(raiz * scaleX, raiz* scaleY, 5*camera.zoom, 50);
-                    shapeRenderer.setColor(Color.CYAN);
-                    shapeRenderer.end();
-                    shapeRenderer.begin(ShapeRenderer.ShapeType.Point);
-                }
-            }
         }
         else{
             int counter = 0;
@@ -123,6 +128,19 @@ public class RenderScreen extends Pantalla {
         }
         // Para finalizar el renderizado
         shapeRenderer.end();
+    }
+
+    private void renderRaiz(){
+        if(raices != null) {
+            // Para que se renderize con la camara
+            shapeRenderer.setProjectionMatrix(camera.combined);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(0, 255, 0, 0.7f);
+            for (double raiz : raices)
+                shapeRenderer.circle((float) raiz * scaleX, 0, 5 * camera.zoom, 50);
+            shapeRenderer.setColor(Color.CYAN);
+            shapeRenderer.end();
+        }
     }
 
     private void renderEjes(){
@@ -147,6 +165,7 @@ public class RenderScreen extends Pantalla {
     @Override
     public void construyeGUI(){
         super.construyeGUI();
+        System.out.println(isInputVisible);
         if(isInputVisible) {
             // Un panel de entrada para re-evaluar
             VisLabel funcion = new VisLabel("Funcion: ");
@@ -212,6 +231,8 @@ public class RenderScreen extends Pantalla {
         renderEjes();
         // Renderizamos con el shapeRenderer
         renderArreglo();
+        // Renderizamos las raices
+        renderRaiz();
         // NECESARIO PARA QUE LA GUI ESTE SOBRE DE TODO
         renderTop();
     }

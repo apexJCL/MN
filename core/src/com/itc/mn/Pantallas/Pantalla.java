@@ -1,5 +1,6 @@
 package com.itc.mn.Pantallas;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -12,6 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.itc.mn.Cosas.Const;
+import com.itc.mn.Metodos.Metodo;
+import com.itc.mn.Metodos.PFijo;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.*;
 
@@ -27,6 +30,7 @@ public class Pantalla implements Screen {
 
     protected final OrthographicCamera camera;
     protected final Stage stage;
+    protected Game game;
     protected FitViewport viewport;
     protected VisUI visui;
     protected ShapeRenderer shapeRenderer;
@@ -34,7 +38,8 @@ public class Pantalla implements Screen {
     protected VisTable table;
     protected double precision;
     private PopupMenu menu, m_metodos;
-    private MenuItem metodos, metodos_PFijo;
+    private MenuItem metodos, metodos_PFijo, graficador;
+    private VisWindow window;
 
     {
         // Creamos el shaperenderer
@@ -112,9 +117,9 @@ public class Pantalla implements Screen {
             @Override
             public boolean scrolled(InputEvent event, float x, float y, int amount) {
                 if (amount > 0)
-                    camera.zoom += (camera.zoom < 1) ? 0.01f : 0;
+                    camera.zoom += (camera.zoom < 1) ? 0.015f : 0;
                 else
-                    camera.zoom += (camera.zoom > 0.02f) ? -0.01f : 0;
+                    camera.zoom += (camera.zoom > 0.02f) ? -0.015f : 0;
                 return super.scrolled(event, x, y, amount);
             }
 
@@ -137,8 +142,10 @@ public class Pantalla implements Screen {
     }
 
     private void creaItems(){
+        // Creamos los elementos del menu
         metodos = new MenuItem("Metodos");
         metodos.setSubMenu(m_metodos);
+        graficador = new MenuItem("Graficador");
 
         // Instanciamos los elemenos del submenu metodos
         metodos_PFijo = new MenuItem("Punto Fijo");
@@ -147,12 +154,62 @@ public class Pantalla implements Screen {
         asignaEventos();
          // Agregamos los submenues al menu principal
         menu.addItem(metodos);
+        menu.addItem(graficador);
         // Agregamos los elementos de los submenues
         m_metodos.addItem(metodos_PFijo);
     }
 
     private void asignaEventos(){
-        metodos_PFijo.addListener(new ClickListener());
+        graficador.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                RenderScreen s = new RenderScreen(game);
+                game.setScreen(s);
+            }
+        });
+        metodos_PFijo.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (window == null || !stage.getActors().contains(window, true))
+                    mpfijo_gui();
+            }
+        });
+    }
+
+    private void mpfijo_gui(){
+        window = new VisWindow("Punto Fijo");
+        // Declaramos las cosas de entrada
+        VisTextField funcion1 = new VisTextArea();
+        VisTextField funcion2 = new VisTextArea();
+        VisTextField valor_inicial = new VisTextArea();
+        VisTextField ep = new VisTextArea();
+        VisTextButton aceptar = new VisTextButton("Aceptar");
+        // Agregamos el escuchador al boton
+        aceptar.addListener(new Proceso(window, Metodo.Tipo.PUNTO_FIJO));
+        // Definimos su hint
+        funcion1.setMessageText("Funcion original");
+        funcion2.setMessageText("Funcion despejada");
+        valor_inicial.setMessageText("Valor inicial");
+        ep.setMessageText("Error (0-100)");
+        // Identificadores para extraer datos
+        funcion1.setName("f1");
+        funcion2.setName("f2");
+        valor_inicial.setName("vi");
+        ep.setName("ep");
+        // Agregamos a la ventana
+        window.add(funcion1).expandX().center().pad(1f).row();
+        window.add(funcion2).expandX().center().pad(1f).row();
+        window.add(valor_inicial).expandX().center().pad(1f).row();
+        window.add(ep).expandX().center().pad(1f).row();
+        window.add(aceptar).expandX().center().pad(1f).row();
+        // Agregamos botón de cerrar y cerrar con Esc
+        window.closeOnEscape();
+        window.addCloseButton();
+        // Definimos su posicion
+        window.setPosition((stage.getWidth()-window.getWidth())/2f, (stage.getHeight()-window.getHeight())/2f);
+        // Ajustamos
+        window.pack();
+        stage.addActor(window.fadeIn(0.3f));
     }
 
     @Override
@@ -206,4 +263,44 @@ public class Pantalla implements Screen {
         stage.dispose();
         visui.dispose();
     }
+
+    private class Proceso extends ClickListener {
+
+        private final Metodo.Tipo tipo;
+        private final VisWindow window;
+        private String f1, f2, vi, ep;
+
+        public Proceso(VisWindow window, Metodo.Tipo tipo){
+            this.window = window;
+            this.tipo = tipo;
+        }
+
+        @Override
+        public void clicked(InputEvent event, float x, float y) {
+            switch (tipo){
+                case PUNTO_FIJO:
+                    String name;
+                    for (Actor a : window.getChildren()) {
+                        name = a.getName();
+                        if(name != null){
+                            if (name.equals("f1"))
+                                f1 = ((VisTextField) a).getText();
+                            else if (name.equals("f2"))
+                                f2 = ((VisTextField) a).getText();
+                            else if (name.equals("vi"))
+                                vi = ((VisTextField) a).getText();
+                            else if (name.equals("ep"))
+                                ep = ((VisTextField) a).getText();
+                        }
+                    }
+                    try {
+                        game.setScreen(new RenderScreen(game, new PFijo(f1, f2, Double.parseDouble(vi), Double.parseDouble(ep) / 100)));
+                    } catch (Exception e){}
+                    break;
+                case BISECCION:
+                    break;
+            }
+        }
+    }
+
 }

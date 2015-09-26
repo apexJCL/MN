@@ -2,7 +2,11 @@ package com.itc.mn.Pantallas;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.kotcrab.vis.ui.widget.*;
+import com.kotcrab.vis.ui.widget.Menu;
+import com.kotcrab.vis.ui.widget.MenuBar;
+import com.kotcrab.vis.ui.widget.MenuItem;
+import com.kotcrab.vis.ui.widget.VisTable;
+import com.kotcrab.vis.ui.widget.VisLabel;
 
 /**
  * Created by zero_ on 18/09/2015.
