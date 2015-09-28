@@ -1,18 +1,15 @@
 package com.itc.mn.Pantallas;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.itc.mn.Cosas.Const;
+import com.itc.mn.Cosas.TablaResultados;
 import com.itc.mn.Metodos.Metodo;
 import com.itc.mn.Metodos.PFijo;
 import com.kotcrab.vis.ui.VisUI;
@@ -29,7 +26,7 @@ import com.kotcrab.vis.ui.widget.*;
 public class Pantalla implements Screen {
 
     protected final OrthographicCamera camera;
-    protected final Stage stage;
+    protected final Stage gui_stage, camera_stage;
     protected Game game;
     protected FitViewport viewport;
     protected VisUI visui;
@@ -37,9 +34,11 @@ public class Pantalla implements Screen {
     protected boolean debugEnabled;
     protected VisTable table;
     protected double precision;
+    protected TablaResultados tabla_res;
     private PopupMenu menu, m_metodos;
-    private MenuItem metodos, metodos_PFijo, graficador;
+    private MenuItem metodos, metodos_PFijo, graficador, tabla_iter;
     private VisWindow window;
+    private InputMultiplexer multiplexer;
 
     {
         // Creamos el shaperenderer
@@ -53,15 +52,19 @@ public class Pantalla implements Screen {
         camera.update();
         // Definimos un viewport, para que el contenido se escale a la pantalla en la que corra
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        // Creamos el stage, el cual albergara los botones entre otras cosas
-        stage = new Stage(viewport);
-        // Definimos que el InputProcessor sera el stage
-        Gdx.input.setInputProcessor(stage);
+        // Creamos el gui_stage, el cual albergara los botones entre otras cosas
+        gui_stage = new Stage(viewport);
+        // Inicializamos el camera_Stage que contendra los elementos de la gui
+        camera_stage = new Stage(viewport);
+        // Creamos el multiplexer para la captura de eventos
+        multiplexer = new InputMultiplexer(gui_stage, camera_stage);
+        // Definimos como procesador el multiplexer
+        Gdx.input.setInputProcessor(multiplexer);
         // Importamos el VisUI
         visui.load();
 
-        // Agregamos los escuchadores del stage
-        stage.addListener(new ActorGestureListener() {
+        // Agregamos los escuchadores del gui_stage
+        camera_stage.addListener(new ActorGestureListener() {
             @Override
             public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
                 super.pan(event, x, y, deltaX, deltaY);
@@ -84,12 +87,12 @@ public class Pantalla implements Screen {
             public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 // Para eventos tactiles de android, usamos puntero, para PC usamos button
                 if (button == 1)
-                    menu.showMenu(stage, x, y);
+                    menu.showMenu(gui_stage, x, y);
             }
 
             @Override
             public boolean longPress(Actor actor, float x, float y) {
-                menu.showMenu(stage, x, y);
+                menu.showMenu(gui_stage, x, y);
                 return true;
             }
 
@@ -98,7 +101,7 @@ public class Pantalla implements Screen {
                 return super.handle(e);
             }
         });
-        stage.addListener(new InputListener() {
+        camera_stage.addListener(new InputListener() {
             @Override
             public boolean keyTyped(InputEvent event, char character) {
                 // Esto se encarga de controlar el zoom con el teclado
@@ -137,8 +140,8 @@ public class Pantalla implements Screen {
         // Instanciamos los submenues
         m_metodos = new PopupMenu();
         creaItems();
-        // Agregamos la tabla al stage
-        stage.addActor(table);
+        // Agregamos la tabla al gui_stage
+        gui_stage.addActor(table);
     }
 
     private void creaItems(){
@@ -146,6 +149,7 @@ public class Pantalla implements Screen {
         metodos = new MenuItem("Metodos");
         metodos.setSubMenu(m_metodos);
         graficador = new MenuItem("Graficador");
+        tabla_iter = new MenuItem("Tabla iteraciones");
 
         // Instanciamos los elemenos del submenu metodos
         metodos_PFijo = new MenuItem("Punto Fijo");
@@ -155,6 +159,7 @@ public class Pantalla implements Screen {
          // Agregamos los submenues al menu principal
         menu.addItem(metodos);
         menu.addItem(graficador);
+        menu.addItem(tabla_iter);
         // Agregamos los elementos de los submenues
         m_metodos.addItem(metodos_PFijo);
     }
@@ -170,8 +175,16 @@ public class Pantalla implements Screen {
         metodos_PFijo.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (window == null || !stage.getActors().contains(window, true))
+                if (window == null || !gui_stage.getActors().contains(window, true))
                     mpfijo_gui();
+            }
+        });
+        tabla_iter.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (tabla_res != null && !gui_stage.getActors().contains(tabla_res, true)){
+                    gui_stage.addActor(tabla_res);
+                }
             }
         });
     }
@@ -206,15 +219,15 @@ public class Pantalla implements Screen {
         window.closeOnEscape();
         window.addCloseButton();
         // Definimos su posicion
-        window.setPosition((stage.getWidth()-window.getWidth())/2f, (stage.getHeight()-window.getHeight())/2f);
+        window.setPosition((gui_stage.getWidth()-window.getWidth())/2f, (gui_stage.getHeight()-window.getHeight())/2f);
         // Ajustamos
         window.pack();
-        stage.addActor(window.fadeIn(0.3f));
+        gui_stage.addActor(window.fadeIn(0.3f));
     }
 
     @Override
     public void show() {
-        stage.setDebugAll(debugEnabled);
+        gui_stage.setDebugAll(debugEnabled);
         camera.position.set(0, 0, 0);
     }
 
@@ -234,8 +247,10 @@ public class Pantalla implements Screen {
     }
 
     public void renderTop(){
-        stage.act();
-        stage.draw();
+        camera_stage.act();
+        camera_stage.draw();
+        gui_stage.act();
+        gui_stage.draw();
     }
 
     @Override
@@ -260,9 +275,11 @@ public class Pantalla implements Screen {
 
     @Override
     public void dispose() {
-        stage.dispose();
+        gui_stage.dispose();
         visui.dispose();
     }
+
+
 
     private class Proceso extends ClickListener {
 
@@ -295,7 +312,9 @@ public class Pantalla implements Screen {
                     }
                     try {
                         game.setScreen(new RenderScreen(game, new PFijo(f1, f2, Double.parseDouble(vi), Double.parseDouble(ep) / 100)));
-                    } catch (Exception e){}
+                    } catch (Exception e){
+                        window.fadeOut();
+                    }
                     break;
                 case BISECCION:
                     break;

@@ -16,6 +16,8 @@ public class Metodo {
     public float inicio, fin, paso;
     public double[] raices;
 
+
+
     {
         // Inicializamos el ArrayList para guardar los valores de las iteraciones
         resultados = new ArrayList(0);
@@ -41,6 +43,50 @@ public class Metodo {
 
     public double[] getRaices(){
         return raices;
+    }
+
+    public String getTipo(){
+        switch (tipo){
+            case PUNTO_FIJO:
+                return "Punto Fijo";
+            case BISECCION:
+                return "Biseccion";
+        }
+        return "";
+    }
+
+    public String getFuncion() {
+        return funcion;
+    }
+
+    public String getFuncion2() {
+        return funcion2;
+    }
+
+    public int getCounter() {
+        return counter;
+    }
+
+    public float getInicio() {
+        return inicio;
+    }
+
+    public float getFin() {
+        return fin;
+    }
+
+    public float getPaso() {
+        return paso;
+    }
+
+    // Esto regresa en forma de tabla las iteraciones
+
+    /**
+     * Regresa los datos, en este caso, una tabla con los valores correspondientes (i, x, fx, fg, xi, etx...)
+     * @return
+     */
+    public ArrayList<double[]> getResultados(){
+        return resultados;
     }
 
 }

@@ -6,7 +6,7 @@ import org.nfunk.jep.JEP;
  *  Es una ecuacion en funcion de x por defecto.
  *  Se puede definir otra variable (para expresarse en terminos de otra, como en terminos de y o t)
  */
-public class FuncionX {
+public strictfp class FuncionX {
 
     private JEP parser;
     private String ecuacion, variable;

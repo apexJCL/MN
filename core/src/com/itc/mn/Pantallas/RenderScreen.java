@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.itc.mn.Cosas.FuncionX;
+import com.itc.mn.Cosas.TablaResultados;
 import com.itc.mn.Metodos.Metodo;
 import com.kotcrab.vis.ui.widget.*;
 
@@ -30,7 +31,7 @@ public class RenderScreen extends Pantalla {
     {
         scaleX = 10;
         scaleY = 10;
-        stage.setDebugAll(true);
+        gui_stage.setDebugAll(true);
     }
 
     /**
@@ -47,6 +48,7 @@ public class RenderScreen extends Pantalla {
         this.isInputVisible = isInputVisible;
         // Construimos nuestra GUI
         construyeGUI();
+        tabla_res = new TablaResultados(metodo);
     }
 
     public RenderScreen(Game game, float[][] valores, double[] raices){
@@ -67,6 +69,7 @@ public class RenderScreen extends Pantalla {
         System.out.println(raices[0]);
         // Construimos nuestra GUI
         construyeGUI();
+        tabla_res = new TablaResultados(metodo);
     }
 
     /**
@@ -219,9 +222,9 @@ public class RenderScreen extends Pantalla {
         });
         // Agregamos el boton
         table.add(restablece).right().expandY().bottom().pad(5f);
-        // Agregamos la tabla al stage
-        stage.addActor(table);
-        stage.setDebugAll(true);
+        // Agregamos la tabla al gui_stage
+        gui_stage.addActor(table);
+        gui_stage.setDebugAll(true);
     }
 
     @Override

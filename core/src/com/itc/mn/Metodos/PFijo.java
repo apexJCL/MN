@@ -10,6 +10,8 @@ public class PFijo extends Metodo{
     private FuncionX g;
     private double vInicial, ep;
 
+
+    // Siempre modifiquen el tipo de metodo que es, para los encabezados en tabla
     {
         tipo = Tipo.PUNTO_FIJO;
     }
