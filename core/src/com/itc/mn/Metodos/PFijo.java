@@ -9,8 +9,6 @@ import com.itc.mn.Cosas.FuncionX;
 public class PFijo extends Metodo{
 
     private FuncionX g;
-    private double vInicial, ep;
-
 
     // Siempre modifiquen el tipo de metodo que es, para los encabezados en tabla
     {
@@ -20,34 +18,35 @@ public class PFijo extends Metodo{
     public PFijo (String funOriginal, String funDespejada, double vInicial, double ep){
         funcion = funOriginal;
         funcion2 = funDespejada;
-        this.vInicial = vInicial;
+        this.inicio = (float) vInicial;
         this.ep = ep;
         ep_porcentual = (ep*100)+"%";
         g= new FuncionX(funcion2);
         g.valorVariable(vInicial);
+        // Creamos los encabezados
+        encabezados = new String[]{"Iteracion", "x", "g(x)", "ep%"};
     }
 
     @Override
-    public double[] getRaices() {
-        raices = obtenerRaiz();
-        return raices;
+    public double getRaiz() {
+        raiz = obtenerRaiz();
+        return raiz;
     }
 
-    public double[] obtenerRaiz(){
-        double[] raiz = new double[1];
+    public double obtenerRaiz(){
+        double raiz = 0;
         double error = 1;
         double gx = g.obtenerValor();
         double x = gx;
         resultados.add(new double[]{contador, x, gx, error*100});
         while(error > ep){
-            g.valorVariable(gx);
-            gx=g.obtenerValor();
+            gx=g.obtenerValor(gx);
             error= Math.abs(((gx-x)/gx));
-            x=gx;
+            x = gx;
             contador++;
             resultados.add(new double[]{contador, x, gx, error*100});
         }
-        raiz[0]=gx;
+        raiz=gx;
         return raiz;
     }
 }

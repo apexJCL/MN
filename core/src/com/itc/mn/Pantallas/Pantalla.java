@@ -313,12 +313,17 @@ public class Pantalla implements Screen {
                         }
                     }
                     try {
+                        System.out.println("Changing");
                         game.setScreen(new RenderScreen(game, new PFijo(f1, f2, Double.parseDouble(vi), Double.parseDouble(ep) / 100)));
                     } catch (Exception e){
+                        e.printStackTrace();
                         window.fadeOut();
                     }
                     break;
                 case BISECCION:
+                    break;
+                case NEWTON_RAPHSON:
+
                     break;
             }
         }

@@ -18,7 +18,7 @@ public class TablaResultados extends VisWindow {
     private VisScrollPane pane;
 
     public TablaResultados(Metodo metodo) {
-        super(metodo.getTipo() +" | f(x): "+ metodo.getFuncion() +" | ep: "+metodo.get_errorporcentual() + " | Raiz: "+metodo.getRaiz());
+        super(metodo.getTipo()+" | "+metodo.getRaiz());
         this.metodo = metodo;
         // Inicializamos la tabla interna para los valores
         innerTable = new VisTable();
@@ -39,10 +39,8 @@ public class TablaResultados extends VisWindow {
     private void buildTable(){
         switch (metodo.tipo){
             case PUNTO_FIJO:
-                innerTable.add("Iteracion").center().expandX().pad(5f);
-                innerTable.add("x").center().expandX().pad(5f);
-                innerTable.add("g(x)").center().expandX().pad(5f);
-                innerTable.add("ep").center().expandX().pad(5f);
+                for(String s: metodo.getEncabezados())
+                    innerTable.add(s).center().expandX().pad(5f);
                 break;
             case BISECCION:
                 break;

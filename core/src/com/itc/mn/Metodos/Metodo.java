@@ -9,13 +9,13 @@ import java.util.ArrayList;
  */
 public class Metodo {
 
-    protected String funcion, funcion2;
     public Tipo tipo;
     public ArrayList<double[]> resultados;
-    protected int contador;
     public float inicio, fin, paso;
-    public double[] raices;
-    private String ep;
+    public double raiz;
+    public double ep;
+    protected String funcion, funcion2;
+    protected int contador;
     protected String ep_porcentual;
     protected String[] encabezados;
 
@@ -31,22 +31,29 @@ public class Metodo {
     }
 
     public enum Tipo{
-        PUNTO_FIJO, BISECCION
+        PUNTO_FIJO, BISECCION, NEWTON_RAPHSON, REGLA_FALSA, SECANTE
     }
 
     public float[][] obtenerRango(float inicio, float fin, float paso){
         return new FuncionX(funcion).obtenerRango(inicio, fin, paso);
     }
 
+    public String getEncabezado(){
+        String tmp = "";
+        for(String s: encabezados)
+            tmp += s + " | ";
+        return tmp;
+    }
+
+    public String[] getEncabezados() { return encabezados; }
+
     public float[][] obtenerRango(){
         return new  FuncionX(funcion).obtenerRango(inicio, fin, paso);
     }
 
-    public double[] getRaices(){
-        return raices;
+    public double getRaiz(){
+        return raiz;
     }
-
-    public double getRaiz() { return raices[0]; }
 
     public String get_errorporcentual() {
         return ep_porcentual;

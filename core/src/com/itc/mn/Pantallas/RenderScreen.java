@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class RenderScreen extends Pantalla {
 
     private float[][] valores;
-    private double[] raices;
+    private double raiz = 0;
     private ArrayList<float[][]> funciones;
     private Color[] colores = {Color.BLUE, Color.GREEN, Color.CYAN, Color.YELLOW,  Color.FIREBRICK, Color.ROYAL, Color.RED, Color.SALMON, Color.MAGENTA, Color.LIME, Color.TAN, Color.TEAL, Color.VIOLET};
     private String funcion;
@@ -51,11 +51,11 @@ public class RenderScreen extends Pantalla {
         tabla_res = new TablaResultados(metodo);
     }
 
-    public RenderScreen(Game game, float[][] valores, double[] raices){
+    public RenderScreen(Game game, float[][] valores, double raiz){
         super();
         this.game = game;
         this.valores = valores;
-        this.raices = raices;
+        this.raiz = raiz;
         // Construimos nuestra GUI
         construyeGUI();
     }
@@ -65,8 +65,8 @@ public class RenderScreen extends Pantalla {
         this.metodo = metodo;
         this.game = game;
         this.valores = metodo.obtenerRango();
-        this.raices = metodo.getRaices();
-        System.out.println(raices[0]);
+        this.raiz = metodo.getRaiz();
+        System.out.println(raiz);
         // Construimos nuestra GUI
         construyeGUI();
         tabla_res = new TablaResultados(metodo);
@@ -135,16 +135,14 @@ public class RenderScreen extends Pantalla {
     }
 
     private void renderRaiz(){
-        if(raices != null) {
-            // Para que se renderize con la camara
-            shapeRenderer.setProjectionMatrix(camera.combined);
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            shapeRenderer.setColor(0, 255, 0, 0.7f);
-            for (double raiz : raices)
-                shapeRenderer.circle((float) raiz * scaleX, 0, 5 * camera.zoom, 50);
-            shapeRenderer.setColor(Color.CYAN);
-            shapeRenderer.end();
-        }
+        // Para que se renderize con la camara
+        shapeRenderer.setProjectionMatrix(camera.combined);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(0, 255, 0, 0.7f);
+        shapeRenderer.circle((float) raiz * scaleX, 0, 5 * camera.zoom, 50);
+        shapeRenderer.setColor(Color.CYAN);
+        shapeRenderer.end();
+
     }
 
     private void renderEjes(){
@@ -235,7 +233,7 @@ public class RenderScreen extends Pantalla {
         renderEjes();
         // Renderizamos con el shapeRenderer
         renderArreglo();
-        // Renderizamos las raices
+        // Renderizamos las raiz
         renderRaiz();
         // NECESARIO PARA QUE LA GUI ESTE SOBRE DE TODO
         renderTop();
