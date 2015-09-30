@@ -12,7 +12,7 @@ public class Metodo {
     protected String funcion, funcion2;
     public Tipo tipo;
     public ArrayList<double[]> resultados;
-    protected int counter;
+    protected int contador;
     public float inicio, fin, paso;
     public double[] raices;
     private String ep;
@@ -23,7 +23,7 @@ public class Metodo {
         // Inicializamos el ArrayList para guardar los valores de las iteraciones
         resultados = new ArrayList(0);
         // Contador para las iteraciones
-        counter = 1;
+        contador = 1;
         // Por defecto
         inicio = -10;
         fin = 10;
@@ -45,6 +45,8 @@ public class Metodo {
     public double[] getRaices(){
         return raices;
     }
+
+    public double getRaiz() { return raices[0]; }
 
     public String get_errorporcentual() {
         return ep_porcentual;
@@ -68,8 +70,8 @@ public class Metodo {
         return funcion2;
     }
 
-    public int getCounter() {
-        return counter;
+    public int getContador() {
+        return contador;
     }
 
     public float getInicio() {

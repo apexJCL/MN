@@ -128,8 +128,6 @@ public class Pantalla implements Screen {
                     camera.zoom += (camera.zoom > 0.02f) ? -0.015f : 0;
                 return super.scrolled(event, x, y, amount);
             }
-
-
         });
     }
 
@@ -186,9 +184,9 @@ public class Pantalla implements Screen {
         tabla_iter.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if(tabla_res!=null && !gui_stage.getActors().contains(tabla_res, true))
-                    gui_stage.addActor(tabla_res);
-                else tabla_res.setVisible(!tabla_res.isVisible());
+                if(!tabla_iter.isDisabled()) {
+                    tabla_res.show(gui_stage);
+                }
             }
         });
     }
