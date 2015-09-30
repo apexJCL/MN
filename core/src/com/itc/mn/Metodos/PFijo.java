@@ -2,6 +2,8 @@ package com.itc.mn.Metodos;
 
 import com.itc.mn.Cosas.FuncionX;
 
+import java.text.DecimalFormat;
+
 /**
  * Created by zero_ on 23/09/2015.
  */
@@ -21,6 +23,7 @@ public class PFijo extends Metodo{
         funcion2 = funDespejada;
         this.vInicial = vInicial;
         this.ep = ep;
+        ep_porcentual = ep+"%";
         g= new FuncionX(funcion2);
         g.valorVariable(vInicial);
     }

@@ -15,7 +15,8 @@ public class Metodo {
     protected int counter;
     public float inicio, fin, paso;
     public double[] raices;
-
+    private String ep;
+    protected String ep_porcentual;
 
 
     {
@@ -43,6 +44,10 @@ public class Metodo {
 
     public double[] getRaices(){
         return raices;
+    }
+
+    public String get_errorporcentual() {
+        return ep_porcentual;
     }
 
     public String getTipo(){

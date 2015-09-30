@@ -36,7 +36,10 @@ public class Pantalla implements Screen {
     protected double precision;
     protected TablaResultados tabla_res;
     private PopupMenu menu, m_metodos;
-    private MenuItem metodos, metodos_PFijo, graficador, tabla_iter;
+    private MenuItem metodos;
+    private MenuItem metodos_PFijo;
+    private MenuItem graficador;
+    protected volatile MenuItem tabla_iter;
     private VisWindow window;
     private InputMultiplexer multiplexer;
 
@@ -150,6 +153,7 @@ public class Pantalla implements Screen {
         metodos.setSubMenu(m_metodos);
         graficador = new MenuItem("Graficador");
         tabla_iter = new MenuItem("Tabla iteraciones");
+        tabla_iter.setDisabled(true);
 
         // Instanciamos los elemenos del submenu metodos
         metodos_PFijo = new MenuItem("Punto Fijo");
@@ -182,9 +186,9 @@ public class Pantalla implements Screen {
         tabla_iter.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (tabla_res != null && !gui_stage.getActors().contains(tabla_res, true)){
+                if(tabla_res!=null && !gui_stage.getActors().contains(tabla_res, true))
                     gui_stage.addActor(tabla_res);
-                }
+                else tabla_res.setVisible(!tabla_res.isVisible());
             }
         });
     }
@@ -215,7 +219,7 @@ public class Pantalla implements Screen {
         window.add(valor_inicial).expandX().center().pad(1f).row();
         window.add(ep).expandX().center().pad(1f).row();
         window.add(aceptar).expandX().center().pad(1f).row();
-        // Agregamos botón de cerrar y cerrar con Esc
+        // Agregamos boton de cerrar y cerrar con Esc
         window.closeOnEscape();
         window.addCloseButton();
         // Definimos su posicion

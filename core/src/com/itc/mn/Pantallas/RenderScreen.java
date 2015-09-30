@@ -70,6 +70,7 @@ public class RenderScreen extends Pantalla {
         // Construimos nuestra GUI
         construyeGUI();
         tabla_res = new TablaResultados(metodo);
+        tabla_iter.setDisabled(false);
     }
 
     /**
@@ -270,9 +271,6 @@ public class RenderScreen extends Pantalla {
                 ((VisTextField)actor).setText("");
                 if(Gdx.app.getType().equals(Application.ApplicationType.Android))
                     Gdx.input.getTextInput(new MyTextListener(actor), "Funcion", "", "f(x) = ");
-            }
-            else{
-
             }
             super.clicked(event, x, y);
         }
