@@ -17,7 +17,7 @@ public class Metodo {
     public double[] raices;
     private String ep;
     protected String ep_porcentual;
-
+    protected String[] encabezados;
 
     {
         // Inicializamos el ArrayList para guardar los valores de las iteraciones
