@@ -9,9 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.itc.mn.Metodos.Metodo;
-import com.itc.mn.Metodos.NewtonRaphson;
-import com.itc.mn.Metodos.PFijo;
+import com.itc.mn.Metodos.*;
 import com.itc.mn.Pantallas.RenderScreen;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
@@ -120,26 +118,22 @@ public class Ventana extends VisWindow {
             try {
                 if (Double.parseDouble(v.getVariable("ep")) > 0 && Double.parseDouble(v.getVariable("ep")) <= 100)
                     switch (tipo) {
-                        case PUNTO_FIJO:
-                            try {
-                                game.setScreen(new RenderScreen(game, new PFijo(v.getVariable("f1"), v.getVariable("f2"), Double.parseDouble(v.getVariable("vi")), Double.parseDouble(v.getVariable("ep")) / 100)));
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                v.fadeOut();
-                            }
-                            break;
                         case BISECCION:
+                            game.setScreen(new RenderScreen(game, new Biseccion(v.getVariable("f"), Float.parseFloat(v.getVariable("a")), Float.parseFloat(v.getVariable("b")), Float.parseFloat(v.getVariable("ep"))/100)));
                             break;
+                        case REGLA_FALSA:
+                            game.setScreen(new RenderScreen(game, new ReglaFalsa(v.getVariable("f"), Float.parseFloat(v.getVariable("a")), Float.parseFloat(v.getVariable("b")), Float.parseFloat(v.getVariable("ep"))/100)));
+                            break;
+                        case PUNTO_FIJO:
+                        game.setScreen(new RenderScreen(game, new PFijo(v.getVariable("f1"), v.getVariable("f2"), Double.parseDouble(v.getVariable("vi")), Double.parseDouble(v.getVariable("ep")) / 100)));
+                        break;
                         case NEWTON_RAPHSON:
-                            try {
-                                game.setScreen(new RenderScreen(game, new NewtonRaphson(v.getVariable("fx"), v.getVariable("f'x"), Float.parseFloat(v.getVariable("vi")), Double.parseDouble(v.getVariable("ep")) / 100)));
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
-                                v.fadeOut();
-                            }
+                            game.setScreen(new RenderScreen(game, new NewtonRaphson(v.getVariable("fx"), v.getVariable("f'x"), Float.parseFloat(v.getVariable("vi")), Double.parseDouble(v.getVariable("ep")) / 100)));
                             break;
                     }
             } catch (Exception ex) {
+                ex.printStackTrace();
+                v.fadeOut();
             }
         }
     }

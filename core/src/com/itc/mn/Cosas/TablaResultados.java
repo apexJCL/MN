@@ -2,6 +2,7 @@ package com.itc.mn.Cosas;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.itc.mn.Metodos.Metodo;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -37,13 +38,13 @@ public class TablaResultados extends VisWindow {
 
     private void buildTable(){
         for(String s: metodo.getEncabezados())
-            innerTable.add(s).center().expandX().pad(5f);
+            innerTable.add(s).left().expandX().pad(5f);
         innerTable.row();
         for (double[] valores : metodo.getResultados()) {
-            for (double valor : valores) innerTable.add(new DecimalFormat("#.########").format(valor)).center().expandX();
+            for (double valor : valores) innerTable.add(new DecimalFormat("#.########").format(valor)).left().expandX();
             innerTable.row();
         }
-        setSize(Gdx.graphics.getWidth()*0.7f, Gdx.graphics.getHeight()*0.5f);
+        setSize(Gdx.graphics.getWidth()*0.8f, Gdx.graphics.getHeight()*0.5f);
         setPosition((Gdx.graphics.getWidth() - getWidth()) / 2f, (Gdx.graphics.getHeight() - getHeight()) / 2f);
     }
 }

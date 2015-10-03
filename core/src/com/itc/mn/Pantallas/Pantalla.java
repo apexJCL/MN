@@ -38,7 +38,7 @@ public class Pantalla implements Screen {
     protected volatile MenuItem tabla_iter;
     private InputMultiplexer multiplexer;
     private PopupMenu menu, m_metodos;
-    private MenuItem metodos, graficador, metodos_PFijo, metodos_nrapson;
+    private MenuItem metodos, graficador, metodos_biseccion, metodos_reglafalsa, metodos_PFijo, metodos_nrapson;
     private Ventana ventana;
 
     {
@@ -152,6 +152,8 @@ public class Pantalla implements Screen {
         tabla_iter.setDisabled(true);
 
         // Instanciamos los elemenos del submenu metodos
+        metodos_biseccion = new MenuItem("Biseccion");
+        metodos_reglafalsa = new MenuItem("Regla Falsa");
         metodos_PFijo = new MenuItem("Punto Fijo");
         metodos_nrapson = new MenuItem("Newton-Raphson");
 
@@ -162,6 +164,8 @@ public class Pantalla implements Screen {
         menu.addItem(graficador);
         menu.addItem(tabla_iter);
         // Agregamos los elementos de los submenues
+        m_metodos.addItem(metodos_biseccion);
+        m_metodos.addItem(metodos_reglafalsa);
         m_metodos.addItem(metodos_PFijo);
         m_metodos.addItem(metodos_nrapson);
     }
@@ -172,6 +176,26 @@ public class Pantalla implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 RenderScreen s = new RenderScreen(game);
                 game.setScreen(s);
+            }
+        });
+        //Para biseccion
+        metodos_biseccion.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (ventana == null || !gui_stage.getActors().contains(ventana, true))
+                    mostrar_biseccion();
+                else
+                    ventana.parpadear();
+            }
+        });
+        // para regla falsa
+        metodos_reglafalsa.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (ventana == null || !gui_stage.getActors().contains(ventana, true))
+                    mostrar_rf();
+                else
+                    ventana.parpadear();
             }
         });
         // Para punto fijo
@@ -215,6 +239,20 @@ public class Pantalla implements Screen {
         String[][] campos = new String[][]{{"Funcion Original", "fx"},{"Primer Derivada", "f'x"}, {"Valor inicial", "vi"}, {"Error (0-100)", "ep"}};
         ventana = new Ventana("Newton-Raphson", campos, game);
         ventana.asignaEvento(Metodo.Tipo.NEWTON_RAPHSON);
+        gui_stage.addActor(ventana.fadeIn(0.3f));
+    }
+
+    private void mostrar_biseccion(){
+        String[][] campos = new String[][]{{"Funcion", "f"}, {"Valor a", "a"}, {"Valor b", "b"}, {"Error (0-100)", "ep"}};
+        ventana = new Ventana("Biseccion", campos, game);
+        ventana.asignaEvento(Metodo.Tipo.BISECCION);
+        gui_stage.addActor(ventana.fadeIn(0.3f));
+    }
+
+    private void mostrar_rf(){
+        String[][] campos = new String[][]{{"Funcion", "f"}, {"Valor a", "a"}, {"Valor b", "b"}, {"Error (0-100)", "ep"}};
+        ventana = new Ventana("Regla Falsa", campos, game);
+        ventana.asignaEvento(Metodo.Tipo.REGLA_FALSA);
         gui_stage.addActor(ventana.fadeIn(0.3f));
     }
 

@@ -5,6 +5,9 @@ import com.itc.mn.Metodos.NewtonRaphson;
 import com.itc.mn.Pantallas.RenderScreen;
 
 public class MainGame extends Game {
+	{
+		System.out.println("shite");
+	}
 	
 	@Override
 	public void create () {
