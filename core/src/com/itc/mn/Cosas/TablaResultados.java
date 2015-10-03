@@ -2,7 +2,6 @@ package com.itc.mn.Cosas;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.itc.mn.Metodos.Metodo;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -18,7 +17,7 @@ public class TablaResultados extends VisWindow {
     private VisScrollPane pane;
 
     public TablaResultados(Metodo metodo) {
-        super(metodo.getTipo()+" | "+metodo.getRaiz());
+        super(metodo.getTitulo());
         this.metodo = metodo;
         // Inicializamos la tabla interna para los valores
         innerTable = new VisTable();
@@ -37,17 +36,11 @@ public class TablaResultados extends VisWindow {
     }
 
     private void buildTable(){
-        switch (metodo.tipo){
-            case PUNTO_FIJO:
-                for(String s: metodo.getEncabezados())
-                    innerTable.add(s).center().expandX().pad(5f);
-                break;
-            case BISECCION:
-                break;
-        }
+        for(String s: metodo.getEncabezados())
+            innerTable.add(s).center().expandX().pad(5f);
         innerTable.row();
         for (double[] valores : metodo.getResultados()) {
-            for (double valor : valores) innerTable.add(new DecimalFormat("#.########").format(valor)).left().expandX();
+            for (double valor : valores) innerTable.add(new DecimalFormat("#.########").format(valor)).center().expandX();
             innerTable.row();
         }
         setSize(Gdx.graphics.getWidth()*0.7f, Gdx.graphics.getHeight()*0.5f);

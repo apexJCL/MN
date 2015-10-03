@@ -9,6 +9,7 @@ import com.itc.mn.Cosas.FuncionX;
 public class PFijo extends Metodo{
 
     private FuncionX g;
+    private double x, xi;
 
     // Siempre modifiquen el tipo de metodo que es, para los encabezados en tabla
     {
@@ -16,37 +17,36 @@ public class PFijo extends Metodo{
     }
 
     public PFijo (String funOriginal, String funDespejada, double vInicial, double ep){
+        // Almacenamos los valores de las funciones para futuras referencias
         funcion = funOriginal;
         funcion2 = funDespejada;
-        this.inicio = (float) vInicial;
+        // Es el valor inicial de la evaluacion, guardado para futuros usos
+        this.v_inicial = (float) vInicial;
+        // Valor del error porcentual, guardado para futuros usos
         this.ep = ep;
-        ep_porcentual = (ep*100)+"%";
-        g= new FuncionX(funcion2);
-        g.valorVariable(vInicial);
+        // Creamos la funcion g(x), que es la que se evaluara
+        g = new FuncionX(funcion2);
         // Creamos los encabezados
         encabezados = new String[]{"Iteracion", "x", "g(x)", "ep%"};
+        // Calculamos la raiz para que este lista
+        calculaRaiz();
+        // Definimos el titulo para la ventana
+        ep_porcentual = (ep*100)+"%";
+        titulo_ventana = "Punto Fijo | Funcion: "+funOriginal+"| Raiz: "+raiz+" | ep: "+ep_porcentual;
     }
 
-    @Override
-    public double getRaiz() {
-        raiz = obtenerRaiz();
-        return raiz;
-    }
-
-    public double obtenerRaiz(){
-        double raiz = 0;
-        double error = 1;
-        double gx = g.obtenerValor();
-        double x = gx;
-        resultados.add(new double[]{contador, x, gx, error*100});
+    public void calculaRaiz(){
+        raiz = 0;
+        x = v_inicial;
+        xi = g.obtenerValor(v_inicial);
+        resultados.add(new double[]{contador, x, xi, error*100});
         while(error > ep){
-            gx=g.obtenerValor(gx);
-            error= Math.abs(((gx-x)/gx));
-            x = gx;
+            x = xi;
+            xi = g.obtenerValor(x);
+            error= Math.abs(((xi-x)/xi));
             contador++;
-            resultados.add(new double[]{contador, x, gx, error*100});
+            resultados.add(new double[]{contador, x, xi, error*100});
         }
-        raiz=gx;
-        return raiz;
+        raiz = xi;
     }
 }

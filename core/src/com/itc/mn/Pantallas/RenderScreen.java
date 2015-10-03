@@ -2,6 +2,8 @@ package com.itc.mn.Pantallas;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -18,20 +20,20 @@ import java.util.ArrayList;
  */
 public class RenderScreen extends Pantalla {
 
+    private double raiz;
     private float[][] valores;
-    private double raiz = 0;
+    private float scaleX, scaleY;
+    private volatile boolean isInputVisible, isRootAvailable;
     private ArrayList<float[][]> funciones;
     private Color[] colores = {Color.BLUE, Color.GREEN, Color.CYAN, Color.YELLOW,  Color.FIREBRICK, Color.ROYAL, Color.RED, Color.SALMON, Color.MAGENTA, Color.LIME, Color.TAN, Color.TEAL, Color.VIOLET};
-    private String funcion;
-    private float scaleX, scaleY;
     private VisSlider ejeX, ejeY;
-    private volatile boolean isInputVisible;
     private Metodo metodo;
-    // Default, se ejecutara siempre, independientemente del constructor
+
     {
         scaleX = 10;
         scaleY = 10;
         gui_stage.setDebugAll(true);
+        isRootAvailable = false;
     }
 
     /**
@@ -56,6 +58,7 @@ public class RenderScreen extends Pantalla {
         this.game = game;
         this.valores = valores;
         this.raiz = raiz;
+        isRootAvailable = true;
         // Construimos nuestra GUI
         construyeGUI();
     }
@@ -66,7 +69,7 @@ public class RenderScreen extends Pantalla {
         this.game = game;
         this.valores = metodo.obtenerRango();
         this.raiz = metodo.getRaiz();
-        System.out.println(raiz);
+        isRootAvailable = true;
         // Construimos nuestra GUI
         construyeGUI();
         tabla_res = new TablaResultados(metodo);
@@ -136,12 +139,14 @@ public class RenderScreen extends Pantalla {
 
     private void renderRaiz(){
         // Para que se renderize con la camara
-        shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(0, 255, 0, 0.7f);
-        shapeRenderer.circle((float) raiz * scaleX, 0, 5 * camera.zoom, 50);
-        shapeRenderer.setColor(Color.CYAN);
-        shapeRenderer.end();
+        if(isRootAvailable) {
+            shapeRenderer.setProjectionMatrix(camera.combined);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(0, 255, 0, 0.7f);
+            shapeRenderer.circle((float) raiz * scaleX, 0, 5 * camera.zoom, 50);
+            shapeRenderer.setColor(Color.CYAN);
+            shapeRenderer.end();
+        }
 
     }
 

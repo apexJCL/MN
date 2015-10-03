@@ -77,11 +77,11 @@ public strictfp class FuncionX {
      * Evalua la funcion en un rango dado y devuelve los valores para graficar
      * @param inicio Inicio del rango
      * @param fin Fin del rango
-     * @param paso Medida del paso
+     * @param paso Medida del paso_r
      * @return double[][] valores
      */
     public float[][] obtenerRango(float inicio, float fin, float paso){
-        // Guardamos los valores de inicio o fin, para uso en otras funciones
+        // Guardamos los valores de inicio_r o fin_r, para uso en otras funciones
         this.inicio = inicio;
         this.fin = fin;
         int precision = (int)(Math.abs(fin - inicio) / paso);
@@ -97,7 +97,7 @@ public strictfp class FuncionX {
     }
 
     /**
-     * Devuelve el valor entre un rango dado, con un paso entre valores de 0.01
+     * Devuelve el valor entre un rango dado, con un paso_r entre valores de 0.01
      * @param inicio Inicio del rango
      * @param fin Fin del rango
      * @return Valores de la expresion evaluada en el rango dado

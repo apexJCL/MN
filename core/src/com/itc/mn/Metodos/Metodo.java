@@ -7,27 +7,28 @@ import java.util.ArrayList;
 /**
  * Created by zero_ on 25/09/2015.
  */
-public class Metodo {
+public strictfp class Metodo {
 
     public Tipo tipo;
     public ArrayList<double[]> resultados;
-    public float inicio, fin, paso;
-    public double raiz;
-    public double ep;
-    protected String funcion, funcion2;
+    public float inicio_r, fin_r, paso_r, v_inicial;
+    public double raiz, ep, error;
+    protected String funcion, funcion2, ep_porcentual;
     protected int contador;
-    protected String ep_porcentual;
     protected String[] encabezados;
+    protected String titulo_ventana;
 
     {
         // Inicializamos el ArrayList para guardar los valores de las iteraciones
         resultados = new ArrayList(0);
         // Contador para las iteraciones
         contador = 1;
-        // Por defecto
-        inicio = -10;
-        fin = 10;
-        paso = 0.001f;
+        // Por defecto, los que tengan _r son para graficar
+        inicio_r = -10f;
+        fin_r = 10f;
+        paso_r = 0.001f;
+        // Inicializamos el error
+        error = 1;
     }
 
     public enum Tipo{
@@ -38,25 +39,16 @@ public class Metodo {
         return new FuncionX(funcion).obtenerRango(inicio, fin, paso);
     }
 
-    public String getEncabezado(){
-        String tmp = "";
-        for(String s: encabezados)
-            tmp += s + " | ";
-        return tmp;
-    }
+    public String getTitulo(){ return titulo_ventana; }
 
     public String[] getEncabezados() { return encabezados; }
 
     public float[][] obtenerRango(){
-        return new  FuncionX(funcion).obtenerRango(inicio, fin, paso);
+        return new  FuncionX(funcion).obtenerRango(inicio_r, fin_r, paso_r);
     }
 
     public double getRaiz(){
         return raiz;
-    }
-
-    public String get_errorporcentual() {
-        return ep_porcentual;
     }
 
     public String getTipo(){
@@ -81,16 +73,16 @@ public class Metodo {
         return contador;
     }
 
-    public float getInicio() {
-        return inicio;
+    public float getInicio_r() {
+        return inicio_r;
     }
 
-    public float getFin() {
-        return fin;
+    public float getFin_r() {
+        return fin_r;
     }
 
-    public float getPaso() {
-        return paso;
+    public float getPaso_r() {
+        return paso_r;
     }
 
     // Esto regresa en forma de tabla las iteraciones

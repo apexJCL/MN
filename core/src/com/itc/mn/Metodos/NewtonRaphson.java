@@ -20,22 +20,27 @@ public class NewtonRaphson extends Metodo {
         this.funcion = funcion;
         this.funcion2 = derivada;
         this.ep = ep;
-        this.inicio = aprox;
+        this.v_inicial = aprox;
         calculaRaiz();
+        ep_porcentual = String.valueOf(ep*100)+"%";
         encabezados = new String[]{"Iteracion", "xi", "f(xi)", "f'(xi)", "xi+1", "ep"};
+        titulo_ventana = "Newton-Raphson | Funcion: "+funcion+"| Raiz: "+raiz+" | ep: "+ep_porcentual;
     }
 
     public void calculaRaiz(){
         f = new FuncionX(funcion);
         f1 = new FuncionX(funcion2);
-        double error = 1;
-        double xi = inicio;
-        double xi1 = xi - (f.obtenerValor(xi) / f1.obtenerValor(xi));
+        float error = 1;
+        float xi = v_inicial;
+        float xi1 = (float) (xi - (f.obtenerValor(xi) / f1.obtenerValor(xi)));
         error = Math.abs((xi1-xi)/xi1);
+        resultados.add(new double[]{contador, xi, f.obtenerValor(), f1.obtenerValor(), xi1, error});
         while(error > ep) {
             xi = xi1;
-            xi1 = xi - (f.obtenerValor(xi) / f1.obtenerValor(xi));
+            xi1 = (float) (xi - (f.obtenerValor(xi) / f1.obtenerValor(xi)));
             error = Math.abs((xi1-xi)/xi1);
+            resultados.add(new double[]{contador, xi, f.obtenerValor(), f1.obtenerValor(), xi1, error});
+            contador++;
         }
         raiz = xi1;
     }

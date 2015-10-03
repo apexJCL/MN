@@ -10,8 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.itc.mn.Cosas.Const;
 import com.itc.mn.Cosas.TablaResultados;
+import com.itc.mn.Cosas.Ventana;
 import com.itc.mn.Metodos.Metodo;
-import com.itc.mn.Metodos.PFijo;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.*;
 
@@ -28,20 +28,18 @@ public class Pantalla implements Screen {
     protected final OrthographicCamera camera;
     protected final Stage gui_stage, camera_stage;
     protected Game game;
-    protected FitViewport viewport;
+    protected final FitViewport viewport;
     protected VisUI visui;
-    protected ShapeRenderer shapeRenderer;
+    protected final ShapeRenderer shapeRenderer;
     protected boolean debugEnabled;
     protected VisTable table;
     protected double precision;
     protected TablaResultados tabla_res;
-    private PopupMenu menu, m_metodos;
-    private MenuItem metodos;
-    private MenuItem metodos_PFijo;
-    private MenuItem graficador;
     protected volatile MenuItem tabla_iter;
-    private VisWindow window;
     private InputMultiplexer multiplexer;
+    private PopupMenu menu, m_metodos;
+    private MenuItem metodos, graficador, metodos_PFijo, metodos_nrapson;
+    private Ventana ventana;
 
     {
         // Creamos el shaperenderer
@@ -155,6 +153,7 @@ public class Pantalla implements Screen {
 
         // Instanciamos los elemenos del submenu metodos
         metodos_PFijo = new MenuItem("Punto Fijo");
+        metodos_nrapson = new MenuItem("Newton-Raphson");
 
         // Asignamos eventos a cada item
         asignaEventos();
@@ -164,6 +163,7 @@ public class Pantalla implements Screen {
         menu.addItem(tabla_iter);
         // Agregamos los elementos de los submenues
         m_metodos.addItem(metodos_PFijo);
+        m_metodos.addItem(metodos_nrapson);
     }
 
     private void asignaEventos(){
@@ -174,11 +174,24 @@ public class Pantalla implements Screen {
                 game.setScreen(s);
             }
         });
+        // Para punto fijo
         metodos_PFijo.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (window == null || !gui_stage.getActors().contains(window, true))
-                    mpfijo_gui();
+                if (ventana == null || !gui_stage.getActors().contains(ventana, true))
+                    mostrar_pfijo();
+                else
+                    ventana.parpadear();
+            }
+        });
+        // Para Newton Raphson
+        metodos_nrapson.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (ventana == null || !gui_stage.getActors().contains(ventana, true))
+                    mostrar_nr();
+                else
+                    ventana.parpadear();
             }
         });
         tabla_iter.addListener(new ClickListener(){
@@ -191,40 +204,18 @@ public class Pantalla implements Screen {
         });
     }
 
-    private void mpfijo_gui(){
-        window = new VisWindow("Punto Fijo");
-        // Declaramos las cosas de entrada
-        VisTextField funcion1 = new VisTextArea();
-        VisTextField funcion2 = new VisTextArea();
-        VisTextField valor_inicial = new VisTextArea();
-        VisTextField ep = new VisTextArea();
-        VisTextButton aceptar = new VisTextButton("Aceptar");
-        // Agregamos el escuchador al boton
-        aceptar.addListener(new Proceso(window, Metodo.Tipo.PUNTO_FIJO));
-        // Definimos su hint
-        funcion1.setMessageText("Funcion original");
-        funcion2.setMessageText("Funcion despejada");
-        valor_inicial.setMessageText("Valor inicial");
-        ep.setMessageText("Error (0-100)");
-        // Identificadores para extraer datos
-        funcion1.setName("f1");
-        funcion2.setName("f2");
-        valor_inicial.setName("vi");
-        ep.setName("ep");
-        // Agregamos a la ventana
-        window.add(funcion1).expandX().center().pad(1f).row();
-        window.add(funcion2).expandX().center().pad(1f).row();
-        window.add(valor_inicial).expandX().center().pad(1f).row();
-        window.add(ep).expandX().center().pad(1f).row();
-        window.add(aceptar).expandX().center().pad(1f).row();
-        // Agregamos boton de cerrar y cerrar con Esc
-        window.closeOnEscape();
-        window.addCloseButton();
-        // Definimos su posicion
-        window.setPosition((gui_stage.getWidth()-window.getWidth())/2f, (gui_stage.getHeight()-window.getHeight())/2f);
-        // Ajustamos
-        window.pack();
-        gui_stage.addActor(window.fadeIn(0.3f));
+    private void mostrar_pfijo(){
+        String[][] campos = new String[][]{{"Funcion Original", "f1"},{"Funcion Despejada", "f2"}, {"Valor inicial", "vi"}, {"Error (0-100)", "ep"}};
+        ventana = new Ventana("Punto Fijo", campos, game);
+        ventana.asignaEvento(Metodo.Tipo.PUNTO_FIJO);
+        gui_stage.addActor(ventana.fadeIn(0.3f));
+    }
+
+    private void mostrar_nr(){
+        String[][] campos = new String[][]{{"Funcion Original", "fx"},{"Primer Derivada", "f'x"}, {"Valor inicial", "vi"}, {"Error (0-100)", "ep"}};
+        ventana = new Ventana("Newton-Raphson", campos, game);
+        ventana.asignaEvento(Metodo.Tipo.NEWTON_RAPHSON);
+        gui_stage.addActor(ventana.fadeIn(0.3f));
     }
 
     @Override
@@ -280,53 +271,4 @@ public class Pantalla implements Screen {
         gui_stage.dispose();
         visui.dispose();
     }
-
-
-
-    private class Proceso extends ClickListener {
-
-        private final Metodo.Tipo tipo;
-        private final VisWindow window;
-        private String f1, f2, vi, ep;
-
-        public Proceso(VisWindow window, Metodo.Tipo tipo){
-            this.window = window;
-            this.tipo = tipo;
-        }
-
-        @Override
-        public void clicked(InputEvent event, float x, float y) {
-            switch (tipo){
-                case PUNTO_FIJO:
-                    String name;
-                    for (Actor a : window.getChildren()) {
-                        name = a.getName();
-                        if(name != null){
-                            if (name.equals("f1"))
-                                f1 = ((VisTextField) a).getText();
-                            else if (name.equals("f2"))
-                                f2 = ((VisTextField) a).getText();
-                            else if (name.equals("vi"))
-                                vi = ((VisTextField) a).getText();
-                            else if (name.equals("ep"))
-                                ep = ((VisTextField) a).getText();
-                        }
-                    }
-                    try {
-                        System.out.println("Changing");
-                        game.setScreen(new RenderScreen(game, new PFijo(f1, f2, Double.parseDouble(vi), Double.parseDouble(ep) / 100)));
-                    } catch (Exception e){
-                        e.printStackTrace();
-                        window.fadeOut();
-                    }
-                    break;
-                case BISECCION:
-                    break;
-                case NEWTON_RAPHSON:
-
-                    break;
-            }
-        }
-    }
-
 }
