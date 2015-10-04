@@ -23,7 +23,7 @@ public class Biseccion extends Metodo {
         //Creamos los encabezados para la tabla de iteraciones
         encabezados = new String[]{"Iteracion", "a", "b", "f(a)", "f(b)", "xr", "f(xr)", "ep"};
         calculaRaiz();
-        ep_porcentual = String.valueOf(ep/100)+"%";
+        ep_porcentual = String.valueOf(ep*100)+"%";
         // Creamos el titulo para la ventana
         titulo_ventana = "Biseccion | Funcion: "+funcion+"| Raiz: "+raiz+" | ep: "+ep_porcentual;
     }
@@ -31,7 +31,7 @@ public class Biseccion extends Metodo {
     public void calculaRaiz(){
         xr = (v_inicial + v_final)/2;
         resultados.add(new double[]{contador, v_inicial, v_final, fa.obtenerValor(v_inicial), fb.obtenerValor(v_final), xr, fx.obtenerValor(xr), 1});
-        while (error > ep){
+        while (error > ep && (fa.obtenerValor()*fx.obtenerValor()) != 0){
             if((fx.obtenerValor()*fa.obtenerValor()) > 0)
                 v_inicial = xr;
             else if((fx.obtenerValor()*fa.obtenerValor()) < 0)

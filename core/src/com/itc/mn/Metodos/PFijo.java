@@ -16,7 +16,7 @@ public class PFijo extends Metodo{
         tipo = Tipo.PUNTO_FIJO;
     }
 
-    public PFijo (String funOriginal, String funDespejada, double vInicial, double ep){
+    public PFijo (String funOriginal, String funDespejada, double vInicial, float ep){
         // Almacenamos los valores de las funciones para futuras referencias
         funcion = funOriginal;
         funcion2 = funDespejada;
@@ -31,7 +31,7 @@ public class PFijo extends Metodo{
         // Calculamos la raiz para que este lista
         calculaRaiz();
         // Definimos el titulo para la ventana
-        ep_porcentual = (ep*100)+"%";
+        ep_porcentual = String.valueOf(ep*100)+"%";
         titulo_ventana = "Punto Fijo | Funcion: "+funOriginal+"| Raiz: "+raiz+" | ep: "+ep_porcentual;
     }
 

@@ -230,28 +230,28 @@ public class Pantalla implements Screen {
 
     private void mostrar_pfijo(){
         String[][] campos = new String[][]{{"Funcion Original", "f1"},{"Funcion Despejada", "f2"}, {"Valor inicial", "vi"}, {"Error (0-100)", "ep"}};
-        ventana = new Ventana("Punto Fijo", campos, game);
+        ventana = new Ventana("Punto Fijo", campos, game, Metodo.Tipo.PUNTO_FIJO);
         ventana.asignaEvento(Metodo.Tipo.PUNTO_FIJO);
         gui_stage.addActor(ventana.fadeIn(0.3f));
     }
 
     private void mostrar_nr(){
         String[][] campos = new String[][]{{"Funcion Original", "fx"},{"Primer Derivada", "f'x"}, {"Valor inicial", "vi"}, {"Error (0-100)", "ep"}};
-        ventana = new Ventana("Newton-Raphson", campos, game);
+        ventana = new Ventana("Newton-Raphson", campos, game, Metodo.Tipo.NEWTON_RAPHSON);
         ventana.asignaEvento(Metodo.Tipo.NEWTON_RAPHSON);
         gui_stage.addActor(ventana.fadeIn(0.3f));
     }
 
     private void mostrar_biseccion(){
         String[][] campos = new String[][]{{"Funcion", "f"}, {"Valor a", "a"}, {"Valor b", "b"}, {"Error (0-100)", "ep"}};
-        ventana = new Ventana("Biseccion", campos, game);
+        ventana = new Ventana("Biseccion", campos, game, Metodo.Tipo.BISECCION);
         ventana.asignaEvento(Metodo.Tipo.BISECCION);
         gui_stage.addActor(ventana.fadeIn(0.3f));
     }
 
     private void mostrar_rf(){
         String[][] campos = new String[][]{{"Funcion", "f"}, {"Valor a", "a"}, {"Valor b", "b"}, {"Error (0-100)", "ep"}};
-        ventana = new Ventana("Regla Falsa", campos, game);
+        ventana = new Ventana("Regla Falsa", campos, game, Metodo.Tipo.REGLA_FALSA);
         ventana.asignaEvento(Metodo.Tipo.REGLA_FALSA);
         gui_stage.addActor(ventana.fadeIn(0.3f));
     }

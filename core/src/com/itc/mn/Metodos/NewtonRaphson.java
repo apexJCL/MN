@@ -16,7 +16,7 @@ public class NewtonRaphson extends Metodo {
      * @param aprox Aproximacion inicial
      * @param ep error porcentual
      */
-    public NewtonRaphson(String funcion, String derivada, float aprox, double ep){
+    public NewtonRaphson(String funcion, String derivada, float aprox, float ep){
         this.funcion = funcion;
         this.funcion2 = derivada;
         this.ep = ep;
