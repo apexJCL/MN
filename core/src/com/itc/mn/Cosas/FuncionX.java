@@ -11,8 +11,7 @@ public strictfp class FuncionX {
     private JEP parser;
     private String ecuacion, variable;
     private double valorVariable;
-    private float inicio, fin;
-    private float[][] ultimoCalulado;
+    private double inicio, fin;
 
     {
         parser = new JEP();
@@ -49,6 +48,7 @@ public strictfp class FuncionX {
         parser.addVariable(variable, valorVariable);
     }
 
+
     public void reemplazaVariable(String variable, double valor){
         parser.removeVariable(this.variable);
         this.variable = variable;
@@ -80,18 +80,18 @@ public strictfp class FuncionX {
      * @param paso Medida del paso_r
      * @return double[][] valores
      */
-    public float[][] obtenerRango(float inicio, float fin, float paso){
+    public double[][] obtenerRango(double inicio, double fin, double paso){
         // Guardamos los valores de inicio_r o fin_r, para uso en otras funciones
         this.inicio = inicio;
         this.fin = fin;
         int precision = (int)(Math.abs(fin - inicio) / paso);
-        float[][] tmp = new float[precision + 1][2];
+        double[][] tmp = new double[precision + 1][2];
         // Lo usamos para evaluar del menor al mayor
-        float menor = menor(inicio, fin);
+        double menor = menor(inicio, fin);
         for (int i = 0; i <= precision; i++) {
-            float valor_x = menor + (paso*i);
+            double valor_x = menor + (paso*i);
             tmp[i][0] = valor_x;
-            tmp[i][1] = (float)obtenerValor(valor_x);
+            tmp[i][1] = obtenerValor(valor_x);
         }
         return tmp;
     }
@@ -102,12 +102,11 @@ public strictfp class FuncionX {
      * @param fin Fin del rango
      * @return Valores de la expresion evaluada en el rango dado
      */
-    public float[][] obtenerRango(float inicio, float fin){
+    public double[][] obtenerRango(float inicio, float fin){
         return obtenerRango(inicio, fin, 0.001f);
     }
 
-    private float menor(float a, float b){
+    private double menor(double a, double b){
         return (a < b) ? a: b;
     }
-
 }

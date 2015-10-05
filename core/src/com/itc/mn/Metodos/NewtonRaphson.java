@@ -16,7 +16,7 @@ public class NewtonRaphson extends Metodo {
      * @param aprox Aproximacion inicial
      * @param ep error porcentual
      */
-    public NewtonRaphson(String funcion, String derivada, float aprox, float ep){
+    public NewtonRaphson(String funcion, String derivada, double aprox, double ep){
         this.funcion = funcion;
         this.funcion2 = derivada;
         this.ep = ep;
@@ -30,14 +30,14 @@ public class NewtonRaphson extends Metodo {
     public void calculaRaiz(){
         f = new FuncionX(funcion);
         f1 = new FuncionX(funcion2);
-        float error = 1;
-        float xi = v_inicial;
-        float xi1 = (float) (xi - (f.obtenerValor(xi) / f1.obtenerValor(xi)));
+        error = 1;
+        double xi = v_inicial;
+        double xi1 = xi - (f.obtenerValor(xi) / f1.obtenerValor(xi));
         error = Math.abs((xi1-xi)/xi1);
         resultados.add(new double[]{contador, xi, f.obtenerValor(), f1.obtenerValor(), xi1, error});
         while(error > ep) {
             xi = xi1;
-            xi1 = (float) (xi - (f.obtenerValor(xi) / f1.obtenerValor(xi)));
+            xi1 = xi - (f.obtenerValor(xi) / f1.obtenerValor(xi));
             error = Math.abs((xi1-xi)/xi1);
             resultados.add(new double[]{contador, xi, f.obtenerValor(), f1.obtenerValor(), xi1, error});
             contador++;

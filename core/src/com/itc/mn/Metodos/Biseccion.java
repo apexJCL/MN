@@ -8,11 +8,11 @@ import com.itc.mn.Cosas.FuncionX;
 public class Biseccion extends Metodo {
 
     private FuncionX fa, fb, fx;
-    private float xr, xranterior;
+    private double xr, xranterior;
 
-    public Biseccion(String funcion, float a, float b, float ep){
+    public Biseccion(String funcion, double a, double b, double ep){
         this.funcion = funcion;
-        // Aquí v_inicial y v_final fungen como a y b
+        // Aqui v_inicial y v_final fungen como a y b
         this.v_inicial = a;
         this.v_final = b;
         this.ep = ep;
@@ -40,7 +40,7 @@ public class Biseccion extends Metodo {
             xr = (v_inicial + v_final)/2;
             error = Math.abs((xr-xranterior)/xr);
             contador++;
-            resultados.add(new double[]{contador, v_inicial, v_final, fa.obtenerValor(v_inicial), fb.obtenerValor(v_final), xr, fx.obtenerValor(xr),error*100});
+            resultados.add(new double[]{contador, v_inicial, v_final, fa.obtenerValor(v_inicial), fb.obtenerValor(v_final), xr, fx.obtenerValor(xr),error*100d});
         }
         raiz = xr;
     }

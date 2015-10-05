@@ -27,18 +27,18 @@ public class Pantalla implements Screen {
 
     protected final OrthographicCamera camera;
     protected final Stage gui_stage, camera_stage;
-    protected Game game;
     protected final FitViewport viewport;
-    protected VisUI visui;
     protected final ShapeRenderer shapeRenderer;
     protected boolean debugEnabled;
-    protected VisTable table;
-    protected double precision;
-    protected TablaResultados tabla_res;
+    protected double precision, scaleX, scaleY;
     protected volatile MenuItem tabla_iter;
+    protected Game game;
+    protected VisUI visui;
+    protected VisTable table;
+    protected TablaResultados tabla_res;
     private InputMultiplexer multiplexer;
     private PopupMenu menu, m_metodos;
-    private MenuItem metodos, graficador, metodos_biseccion, metodos_reglafalsa, metodos_PFijo, metodos_nrapson;
+    private MenuItem metodos, configuracion, graficador, metodos_biseccion, metodos_reglafalsa, metodos_PFijo, metodos_nrapson;
     private Ventana ventana;
 
     {
@@ -150,6 +150,7 @@ public class Pantalla implements Screen {
         graficador = new MenuItem("Graficador");
         tabla_iter = new MenuItem("Tabla iteraciones");
         tabla_iter.setDisabled(true);
+        configuracion = new MenuItem("Configuracion");
 
         // Instanciamos los elemenos del submenu metodos
         metodos_biseccion = new MenuItem("Biseccion");
@@ -163,6 +164,8 @@ public class Pantalla implements Screen {
         menu.addItem(metodos);
         menu.addItem(graficador);
         menu.addItem(tabla_iter);
+        menu.addSeparator();
+        menu.addItem(configuracion);
         // Agregamos los elementos de los submenues
         m_metodos.addItem(metodos_biseccion);
         m_metodos.addItem(metodos_reglafalsa);

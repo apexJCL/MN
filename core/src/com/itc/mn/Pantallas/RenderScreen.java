@@ -2,8 +2,6 @@ package com.itc.mn.Pantallas;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -21,7 +19,7 @@ import java.util.ArrayList;
 public class RenderScreen extends Pantalla {
 
     private double raiz;
-    private float[][] valores;
+    private double[][] valores;
     private float scaleX, scaleY;
     private volatile boolean isInputVisible, isRootAvailable;
     private ArrayList<float[][]> funciones;
@@ -30,6 +28,7 @@ public class RenderScreen extends Pantalla {
     private Metodo metodo;
 
     {
+        // Definimos la escala defecto de los ejes
         scaleX = 10;
         scaleY = 10;
         gui_stage.setDebugAll(true);
@@ -41,7 +40,7 @@ public class RenderScreen extends Pantalla {
      * @param game Referencia a Game para manejo de pantallas
      * @param valores Valores de la funcion
      */
-    public RenderScreen(Game game, float[][] valores, boolean isInputVisible){
+    public RenderScreen(Game game, double[][] valores, boolean isInputVisible){
         super();
         // Solo para tener una referencia al manejador de pantallas
         this.game = game;
@@ -53,7 +52,7 @@ public class RenderScreen extends Pantalla {
         tabla_res = new TablaResultados(metodo);
     }
 
-    public RenderScreen(Game game, float[][] valores, double raiz){
+    public RenderScreen(Game game, double[][] valores, double raiz){
         super();
         this.game = game;
         this.valores = valores;
@@ -63,6 +62,12 @@ public class RenderScreen extends Pantalla {
         construyeGUI();
     }
 
+    /**
+     * Crea una instancia de RenderScreen con el metodo asignado, usandolo para obtener la funcion y graficar
+     * respectivamente
+     * @param game Instancia Game para cambiar pantallas
+     * @param metodo Objeto metodo
+     */
     public RenderScreen(Game game, Metodo metodo){
         super();
         this.metodo = metodo;
@@ -119,7 +124,7 @@ public class RenderScreen extends Pantalla {
             shapeRenderer.setColor(Color.CYAN);
             // Procesando arreglo
             for (int i = 0; i < valores.length; i++)
-                shapeRenderer.point((valores[i][0] * scaleX), (valores[i][1] * scaleY), 0);
+                shapeRenderer.point((float)(valores[i][0] * scaleX), (float)(valores[i][1] * scaleY), 0);
         }
         else{
             int counter = 0;
@@ -130,7 +135,7 @@ public class RenderScreen extends Pantalla {
                     counter = 0;
                 shapeRenderer.setColor(colores[counter]);
                 for (int i = 0; i < funcion.length - 1; i++)
-                    shapeRenderer.point(funcion[i][0]*scaleX, funcion[i][1]*scaleY, 0);
+                    shapeRenderer.point((float)(funcion[i][0]*scaleX), (float)(funcion[i][1]*scaleY), 0);
             }
         }
         // Para finalizar el renderizado
@@ -143,7 +148,7 @@ public class RenderScreen extends Pantalla {
             shapeRenderer.setProjectionMatrix(camera.combined);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(0, 255, 0, 0.7f);
-            shapeRenderer.circle((float) raiz * scaleX, 0, 5 * camera.zoom, 50);
+            shapeRenderer.circle((float) (raiz * scaleX), 0, 5 * camera.zoom, 50);
             shapeRenderer.setColor(Color.CYAN);
             shapeRenderer.end();
         }
@@ -158,13 +163,13 @@ public class RenderScreen extends Pantalla {
         shapeRenderer.line(0, -camera.viewportHeight + camera.position.y , 0, camera.viewportHeight + camera.position.y);
         shapeRenderer.line(-camera.viewportWidth + camera.position.x, 0, camera.viewportWidth + camera.position.x, 0);
         // Renderiza la graduacion de los ejejejes
-        for (float i = 0; i < camera.viewportWidth + Math.abs(camera.position.x); i+=scaleX){
-            shapeRenderer.line(i, -1, i, 1);
-            shapeRenderer.line(-i, -1, -i, 1);
+        for (double i = 0; i < camera.viewportWidth + Math.abs(camera.position.x); i+=scaleX){
+            shapeRenderer.line((float)i, -1, (float)i, 1);
+            shapeRenderer.line((float)-i, -1, (float)-i, 1);
         }
-        for (float i = 0; i < camera.viewportHeight + Math.abs(camera.position.y); i+=scaleY){
-            shapeRenderer.line(-1, i, 1, i);
-            shapeRenderer.line(-1, -i, 1, -i);
+        for (double i = 0; i < camera.viewportHeight + Math.abs(camera.position.y); i+=scaleY){
+            shapeRenderer.line(-1, (float)i, 1, (float)i);
+            shapeRenderer.line(-1, (float)-i, 1, (float)-i);
         }
         shapeRenderer.end();
     }

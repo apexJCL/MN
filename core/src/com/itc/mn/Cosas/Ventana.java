@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -26,7 +25,7 @@ public class Ventana extends VisWindow {
 
     /**
      * Crea una v con los campos mandados.
-     * Cada parte del arreglo tendrá que ser de 2, el primero para el hint de la caja, el 2do para el nombre
+     * Cada parte del arreglo tendra que ser de 2, el primero para el hint de la caja, el 2do para el nombre
      * a usar al momento de recuperar valores
      * @param title Titulo de la v
      * @param campos String[] de 2, [0] = hint, [1] = nombre variable

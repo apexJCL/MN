@@ -7,12 +7,13 @@ import com.itc.mn.Cosas.FuncionX;
  */
 public class ReglaFalsa extends Metodo{
 
-    private float xr, xranterior;
+    private double xr;
+    private double xranterior;
     private FuncionX fa, fb, fx;
 
     public ReglaFalsa(String funcion, float a, float b, float ep) {
         this.funcion = funcion;
-        // Aquí v_inicial y v_final fungen como a y b
+        // Aqui v_inicial y v_final fungen como a y b
         this.v_inicial = a;
         this.v_final = b;
         this.ep = ep;
@@ -29,19 +30,23 @@ public class ReglaFalsa extends Metodo{
     }
 
     public void calculaRaiz() {
-        xr = (float) (v_final - ((fb.obtenerValor(v_final)*(v_inicial-v_final))/(fa.obtenerValor(v_inicial))-fb.obtenerValor(v_final)));
+        xr = v_final - ((fb.obtenerValor(v_final)*(v_inicial-v_final))/(fa.obtenerValor(v_inicial))-fb.obtenerValor(v_final));
         resultados.add(new double[]{contador, v_inicial, v_final, fa.obtenerValor(v_inicial), fb.obtenerValor(v_final), xr, fx.obtenerValor(xr), 1});
-        while (error > ep && (fa.obtenerValor()*fx.obtenerValor())!=0){
+        while (error > ep){
             if((fx.obtenerValor()*fa.obtenerValor()) > 0)
                 v_inicial = xr;
             else if((fx.obtenerValor()*fa.obtenerValor()) < 0)
                 v_final = xr;
+            else if ((fa.obtenerValor()*fx.obtenerValor()) == 0)
+                break;
             xranterior = xr;
-            xr = (float) (v_final - ((fb.obtenerValor(v_final)*(v_inicial-v_final))/(fa.obtenerValor(v_inicial))-fb.obtenerValor(v_final)));
+            xr = v_final - ((fb.obtenerValor(v_final)*(v_inicial-v_final))/(fa.obtenerValor(v_inicial))-fb.obtenerValor(v_final));
             error = Math.abs((xr-xranterior)/xr);
             contador++;
             resultados.add(new double[]{contador, v_inicial, v_final, fa.obtenerValor(v_inicial), fb.obtenerValor(v_final), xr, fx.obtenerValor(xr),error*100});
+            System.out.println(error+" "+ep+" "+(error > ep));
         }
+        System.out.println(contador);
         raiz = xr;
     }
 }

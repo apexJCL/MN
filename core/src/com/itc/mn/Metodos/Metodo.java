@@ -11,7 +11,7 @@ public strictfp class Metodo {
 
     public Tipo tipo;
     public ArrayList<double[]> resultados;
-    public float inicio_r, fin_r, paso_r, v_inicial, v_final;
+    public double inicio_r, fin_r, paso_r, v_inicial, v_final;
     public double raiz, ep, error;
     protected String funcion, funcion2, ep_porcentual;
     protected int contador;
@@ -24,18 +24,18 @@ public strictfp class Metodo {
         // Contador para las iteraciones
         contador = 1;
         // Por defecto, los que tengan _r son para graficar
-        inicio_r = -10f;
-        fin_r = 10f;
-        paso_r = 0.001f;
+        inicio_r = -10d;
+        fin_r = 10d;
+        paso_r = 0.001d;
         // Inicializamos el error
-        error = 1;
+        error = 1d;
     }
 
     public enum Tipo{
         PUNTO_FIJO, BISECCION, NEWTON_RAPHSON, REGLA_FALSA, SECANTE
     }
 
-    public float[][] obtenerRango(float inicio, float fin, float paso){
+    public double[][] obtenerRango(float inicio, float fin, float paso){
         return new FuncionX(funcion).obtenerRango(inicio, fin, paso);
     }
 
@@ -43,7 +43,7 @@ public strictfp class Metodo {
 
     public String[] getEncabezados() { return encabezados; }
 
-    public float[][] obtenerRango(){
+    public double[][] obtenerRango(){
         return new  FuncionX(funcion).obtenerRango(inicio_r, fin_r, paso_r);
     }
 
@@ -73,15 +73,15 @@ public strictfp class Metodo {
         return contador;
     }
 
-    public float getInicio_r() {
+    public double getInicio_r() {
         return inicio_r;
     }
 
-    public float getFin_r() {
+    public double getFin_r() {
         return fin_r;
     }
 
-    public float getPaso_r() {
+    public double getPaso_r() {
         return paso_r;
     }
 

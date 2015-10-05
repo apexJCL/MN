@@ -16,12 +16,12 @@ public class PFijo extends Metodo{
         tipo = Tipo.PUNTO_FIJO;
     }
 
-    public PFijo (String funOriginal, String funDespejada, double vInicial, float ep){
+    public PFijo (String funOriginal, String funDespejada, double vInicial, double ep){
         // Almacenamos los valores de las funciones para futuras referencias
         funcion = funOriginal;
         funcion2 = funDespejada;
         // Es el valor inicial de la evaluacion, guardado para futuros usos
-        this.v_inicial = (float) vInicial;
+        this.v_inicial = vInicial;
         // Valor del error porcentual, guardado para futuros usos
         this.ep = ep;
         // Creamos la funcion g(x), que es la que se evaluara
