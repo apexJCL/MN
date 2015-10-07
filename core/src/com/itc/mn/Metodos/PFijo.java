@@ -11,6 +11,10 @@ public class PFijo extends Metodo{
     private FuncionX g;
     private double x, xi;
 
+    {
+        this.tipo = Tipo.PUNTO_FIJO;
+    }
+
     // Siempre modifiquen el tipo de metodo que es, para los encabezados en tabla
     {
         tipo = Tipo.PUNTO_FIJO;
@@ -32,7 +36,8 @@ public class PFijo extends Metodo{
         calculaRaiz();
         // Definimos el titulo para la ventana
         ep_porcentual = String.valueOf(ep*100)+"%";
-        titulo_ventana = "Punto Fijo | Funcion: "+funOriginal+"| Raiz: "+raiz+" | ep: "+ep_porcentual;
+        // Creamos encabezado
+        creaTitulo();
     }
 
     public void calculaRaiz(){

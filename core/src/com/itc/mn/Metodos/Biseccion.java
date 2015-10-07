@@ -10,6 +10,10 @@ public class Biseccion extends Metodo {
     private FuncionX fa, fb, fx;
     private double xr, xranterior;
 
+    {
+        this.tipo = Tipo.BISECCION;
+    }
+
     public Biseccion(String funcion, double a, double b, double ep){
         this.funcion = funcion;
         // Aqui v_inicial y v_final fungen como a y b
@@ -23,9 +27,9 @@ public class Biseccion extends Metodo {
         //Creamos los encabezados para la tabla de iteraciones
         encabezados = new String[]{"Iteracion", "a", "b", "f(a)", "f(b)", "xr", "f(xr)", "ep"};
         calculaRaiz();
-        ep_porcentual = String.valueOf(ep*100)+"%";
+        ep_porcentual = String.valueOf(ep*100d)+"%";
         // Creamos el titulo para la ventana
-        titulo_ventana = "Biseccion | Funcion: "+funcion+"| Raiz: "+raiz+" | ep: "+ep_porcentual;
+        creaTitulo();
     }
 
     public void calculaRaiz(){

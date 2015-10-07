@@ -9,6 +9,10 @@ public class NewtonRaphson extends Metodo {
 
     private FuncionX f, f1;
 
+    {
+        this.tipo = Tipo.NEWTON_RAPHSON;
+    }
+
     /**
      * Metodo Newton-Raphson
      * @param funcion Funcion original
@@ -24,7 +28,7 @@ public class NewtonRaphson extends Metodo {
         calculaRaiz();
         ep_porcentual = String.valueOf(ep*100)+"%";
         encabezados = new String[]{"Iteracion", "xi", "f(xi)", "f'(xi)", "xi+1", "ep"};
-        titulo_ventana = "Newton-Raphson | Funcion: "+funcion+"| Raiz: "+raiz+" | ep: "+ep_porcentual;
+        creaTitulo();
     }
 
     public void calculaRaiz(){

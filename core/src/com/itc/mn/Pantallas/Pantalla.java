@@ -10,14 +10,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.itc.mn.Cosas.Const;
 import com.itc.mn.Cosas.TablaResultados;
-import com.itc.mn.Cosas.Ventana;
+import com.itc.mn.Cosas.VentanaValores;
 import com.itc.mn.Metodos.Metodo;
 import com.kotcrab.vis.ui.VisUI;
-import com.kotcrab.vis.ui.widget.*;
+import com.kotcrab.vis.ui.widget.MenuItem;
+import com.kotcrab.vis.ui.widget.PopupMenu;
+import com.kotcrab.vis.ui.widget.VisTable;
 
 /**
  * Esta es la clase principal para manejar las ventanas en la aplicacion.
- * Cualquier otra ventana a desplegar debera extender de esta misma para
+ * Cualquier otra ventanaValores a desplegar debera extender de esta misma para
  * ahorrar recursos, manejo de camaras especificas entre otras cosas.
  *
  * Procura redimensionar los elementos en el metodo resize
@@ -36,10 +38,14 @@ public class Pantalla implements Screen {
     protected VisUI visui;
     protected VisTable table;
     protected TablaResultados tabla_res;
-    private InputMultiplexer multiplexer;
     private PopupMenu menu, m_metodos;
-    private MenuItem metodos, configuracion, graficador, metodos_biseccion, metodos_reglafalsa, metodos_PFijo, metodos_nrapson;
-    private Ventana ventana;
+    private MenuItem configuracion;
+    private MenuItem graficador;
+    private MenuItem metodos_biseccion;
+    private MenuItem metodos_reglafalsa;
+    private MenuItem metodos_PFijo;
+    private MenuItem metodos_nrapson;
+    private VentanaValores ventanaValores;
 
     {
         // Creamos el shaperenderer
@@ -58,14 +64,14 @@ public class Pantalla implements Screen {
         // Inicializamos el camera_Stage que contendra los elementos de la gui
         camera_stage = new Stage(viewport);
         // Creamos el multiplexer para la captura de eventos
-        multiplexer = new InputMultiplexer(gui_stage, camera_stage);
+        InputMultiplexer multiplexer = new InputMultiplexer(gui_stage, camera_stage);
         // Definimos como procesador el multiplexer
         Gdx.input.setInputProcessor(multiplexer);
         // Importamos el VisUI
-        visui.load();
-
+        VisUI.load();
         // Agregamos los escuchadores del gui_stage
         camera_stage.addListener(new ActorGestureListener() {
+
             @Override
             public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
                 super.pan(event, x, y, deltaX, deltaY);
@@ -81,7 +87,6 @@ public class Pantalla implements Screen {
                     camera.zoom += (camera.zoom < 1) ? camera.zoom * 0.01f : 0;
                 else
                     camera.zoom -= (camera.zoom > 0.02f) ? camera.zoom * 0.01f : 0;
-
             }
 
             @Override
@@ -145,7 +150,7 @@ public class Pantalla implements Screen {
 
     private void creaItems(){
         // Creamos los elementos del menu
-        metodos = new MenuItem("Metodos");
+        MenuItem metodos = new MenuItem("Metodos");
         metodos.setSubMenu(m_metodos);
         graficador = new MenuItem("Graficador");
         tabla_iter = new MenuItem("Tabla iteraciones");
@@ -181,44 +186,74 @@ public class Pantalla implements Screen {
                 game.setScreen(s);
             }
         });
+        configuracion.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+            }
+        });
         //Para biseccion
         metodos_biseccion.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (ventana == null || !gui_stage.getActors().contains(ventana, true))
+                if (ventanaValores == null || !gui_stage.getActors().contains(ventanaValores, true))
                     mostrar_biseccion();
-                else
-                    ventana.parpadear();
+                else {
+                    if (ventanaValores.getTipo() != Metodo.Tipo.BISECCION) {
+                        ventanaValores.fadeOut();
+                        mostrar_biseccion();
+                    }
+                    else
+                        ventanaValores.parpadear();
+                }
             }
         });
         // para regla falsa
         metodos_reglafalsa.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (ventana == null || !gui_stage.getActors().contains(ventana, true))
+                if (ventanaValores == null || !gui_stage.getActors().contains(ventanaValores, true))
                     mostrar_rf();
-                else
-                    ventana.parpadear();
+                else {
+                    if (ventanaValores.getTipo() != Metodo.Tipo.REGLA_FALSA) {
+                        ventanaValores.fadeOut();
+                        mostrar_rf();
+                    }
+                    else
+                        ventanaValores.parpadear();
+                }
             }
         });
         // Para punto fijo
         metodos_PFijo.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (ventana == null || !gui_stage.getActors().contains(ventana, true))
+                if (ventanaValores == null || !gui_stage.getActors().contains(ventanaValores, true))
                     mostrar_pfijo();
-                else
-                    ventana.parpadear();
+                else {
+                    if (ventanaValores.getTipo() != Metodo.Tipo.PUNTO_FIJO) {
+                        ventanaValores.fadeOut();
+                        mostrar_pfijo();
+                    }
+                    else
+                        ventanaValores.parpadear();
+                }
             }
         });
         // Para Newton Raphson
         metodos_nrapson.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (ventana == null || !gui_stage.getActors().contains(ventana, true))
+                if (ventanaValores == null || !gui_stage.getActors().contains(ventanaValores, true))
                     mostrar_nr();
-                else
-                    ventana.parpadear();
+                else {
+                    if (ventanaValores.getTipo() != Metodo.Tipo.NEWTON_RAPHSON) {
+                        ventanaValores.fadeOut();
+                        mostrar_nr();
+                    }
+                    else
+                        ventanaValores.parpadear();
+                }
             }
         });
         tabla_iter.addListener(new ClickListener(){
@@ -233,30 +268,30 @@ public class Pantalla implements Screen {
 
     private void mostrar_pfijo(){
         String[][] campos = new String[][]{{"Funcion Original", "f1"},{"Funcion Despejada", "f2"}, {"Valor inicial", "vi"}, {"Error (0-100)", "ep"}};
-        ventana = new Ventana("Punto Fijo", campos, game, Metodo.Tipo.PUNTO_FIJO);
-        ventana.asignaEvento(Metodo.Tipo.PUNTO_FIJO);
-        gui_stage.addActor(ventana.fadeIn(0.3f));
+        ventanaValores = new VentanaValores("Punto Fijo", campos, game, Metodo.Tipo.PUNTO_FIJO);
+        ventanaValores.asignaEvento(Metodo.Tipo.PUNTO_FIJO);
+        gui_stage.addActor(ventanaValores.fadeIn(0.3f));
     }
 
     private void mostrar_nr(){
         String[][] campos = new String[][]{{"Funcion Original", "fx"},{"Primer Derivada", "f'x"}, {"Valor inicial", "vi"}, {"Error (0-100)", "ep"}};
-        ventana = new Ventana("Newton-Raphson", campos, game, Metodo.Tipo.NEWTON_RAPHSON);
-        ventana.asignaEvento(Metodo.Tipo.NEWTON_RAPHSON);
-        gui_stage.addActor(ventana.fadeIn(0.3f));
+        ventanaValores = new VentanaValores("Newton-Raphson", campos, game, Metodo.Tipo.NEWTON_RAPHSON);
+        ventanaValores.asignaEvento(Metodo.Tipo.NEWTON_RAPHSON);
+        gui_stage.addActor(ventanaValores.fadeIn(0.3f));
     }
 
     private void mostrar_biseccion(){
         String[][] campos = new String[][]{{"Funcion", "f"}, {"Valor a", "a"}, {"Valor b", "b"}, {"Error (0-100)", "ep"}};
-        ventana = new Ventana("Biseccion", campos, game, Metodo.Tipo.BISECCION);
-        ventana.asignaEvento(Metodo.Tipo.BISECCION);
-        gui_stage.addActor(ventana.fadeIn(0.3f));
+        ventanaValores = new VentanaValores("Biseccion", campos, game, Metodo.Tipo.BISECCION);
+        ventanaValores.asignaEvento(Metodo.Tipo.BISECCION);
+        gui_stage.addActor(ventanaValores.fadeIn(0.3f));
     }
 
     private void mostrar_rf(){
         String[][] campos = new String[][]{{"Funcion", "f"}, {"Valor a", "a"}, {"Valor b", "b"}, {"Error (0-100)", "ep"}};
-        ventana = new Ventana("Regla Falsa", campos, game, Metodo.Tipo.REGLA_FALSA);
-        ventana.asignaEvento(Metodo.Tipo.REGLA_FALSA);
-        gui_stage.addActor(ventana.fadeIn(0.3f));
+        ventanaValores = new VentanaValores("Regla Falsa", campos, game, Metodo.Tipo.REGLA_FALSA);
+        ventanaValores.asignaEvento(Metodo.Tipo.REGLA_FALSA);
+        gui_stage.addActor(ventanaValores.fadeIn(0.3f));
     }
 
     @Override
@@ -266,8 +301,8 @@ public class Pantalla implements Screen {
     }
 
     /**
-     * Renderiza por defecto, SIEMPRE MANDE LLAMAR renderTop al ultimo, es necesario para que la GUI este encima de todo
-     * @param delta
+     * Renderiza por defecto, SIEMPRE MANDE LLAMAR renderTop al ultimo, es necesario para que la GUI este encima de todos
+     * @param delta tiempo de renderizado por defecto
      */
     @Override
     public void render(float delta) {
@@ -310,6 +345,8 @@ public class Pantalla implements Screen {
     @Override
     public void dispose() {
         gui_stage.dispose();
-        visui.dispose();
+        camera_stage.dispose();
+        shapeRenderer.dispose();
+        VisUI.dispose();
     }
 }

@@ -11,8 +11,8 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		new LwjglApplication(new MainGame(), config);
-		config.width = Const.WIDTH;
-		config.height = Const.HEIGHT;
+		config.width = 1024;
+		config.height = 600;
 		config.resizable = false;
 		config.backgroundFPS = -1;
 		config.addIcon("icon.png", Files.FileType.Internal);

@@ -1,6 +1,6 @@
 package com.itc.mn.Cosas;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.Gdx;
 import com.kotcrab.vis.ui.widget.VisWindow;
 
 /**
@@ -8,12 +8,13 @@ import com.kotcrab.vis.ui.widget.VisWindow;
  */
 public class VentanaCarga extends VisWindow {
 
-    public VentanaCarga(String title) {
-        super(title);
-    }
+    private static loadingIcon li = new loadingIcon();
 
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        super.draw(batch, parentAlpha);
+    public VentanaCarga() {
+        super("");
+        add(li).expand().pad(10f);
+        setSize(li.getWidth()*1.2f, li.getHeight()*0.5f);
+        setPosition((Gdx.graphics.getWidth()-getWidth())/2f, (Gdx.graphics.getHeight()-getHeight())/2f);
+        pack();
     }
 }

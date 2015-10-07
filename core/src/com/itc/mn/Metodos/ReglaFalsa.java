@@ -11,7 +11,11 @@ public class ReglaFalsa extends Metodo{
     private double xranterior;
     private FuncionX fa, fb, fx;
 
-    public ReglaFalsa(String funcion, float a, float b, float ep) {
+    {
+        this.tipo = Tipo.REGLA_FALSA;
+    }
+
+    public ReglaFalsa(String funcion, double a, double b, double ep) {
         this.funcion = funcion;
         // Aqui v_inicial y v_final fungen como a y b
         this.v_inicial = a;
@@ -26,11 +30,11 @@ public class ReglaFalsa extends Metodo{
         calculaRaiz();
         ep_porcentual = String.valueOf(ep*100)+"%";
         // Creamos el titulo para la ventana
-        titulo_ventana = "Regla Falsa | Funcion: "+funcion+"| Raiz: "+raiz+" | ep: "+ep_porcentual;
+        creaTitulo();
     }
 
     public void calculaRaiz() {
-        xr = v_final - ((fb.obtenerValor(v_final)*(v_inicial-v_final))/(fa.obtenerValor(v_inicial))-fb.obtenerValor(v_final));
+        xr = v_final - ((fb.obtenerValor(v_final)*(v_inicial-v_final))/(fa.obtenerValor(v_inicial)-fb.obtenerValor(v_final)));
         resultados.add(new double[]{contador, v_inicial, v_final, fa.obtenerValor(v_inicial), fb.obtenerValor(v_final), xr, fx.obtenerValor(xr), 1});
         while (error > ep){
             if((fx.obtenerValor()*fa.obtenerValor()) > 0)
@@ -40,7 +44,7 @@ public class ReglaFalsa extends Metodo{
             else if ((fa.obtenerValor()*fx.obtenerValor()) == 0)
                 break;
             xranterior = xr;
-            xr = v_final - ((fb.obtenerValor(v_final)*(v_inicial-v_final))/(fa.obtenerValor(v_inicial))-fb.obtenerValor(v_final));
+            xr = v_final - ((fb.obtenerValor(v_final)*(v_inicial-v_final))/(fa.obtenerValor(v_inicial)-fb.obtenerValor(v_final)));
             error = Math.abs((xr-xranterior)/xr);
             contador++;
             resultados.add(new double[]{contador, v_inicial, v_final, fa.obtenerValor(v_inicial), fb.obtenerValor(v_final), xr, fx.obtenerValor(xr),error*100});

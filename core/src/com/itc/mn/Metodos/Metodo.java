@@ -11,7 +11,7 @@ public strictfp class Metodo {
 
     public Tipo tipo;
     public ArrayList<double[]> resultados;
-    public double inicio_r, fin_r, paso_r, v_inicial, v_final;
+    public double inicio_r, fin_r, paso_r, v_inicial, v_final, x_i, xi;
     public double raiz, ep, error;
     protected String funcion, funcion2, ep_porcentual;
     protected int contador;
@@ -31,11 +31,32 @@ public strictfp class Metodo {
         error = 1d;
     }
 
+    public void creaTitulo(){
+        switch (tipo){
+            case PUNTO_FIJO:
+                titulo_ventana = "Punto Fijo | ";
+                break;
+            case BISECCION:
+                titulo_ventana = "Biseccion | ";
+                break;
+            case NEWTON_RAPHSON:
+                titulo_ventana = "Newton-Raphson | ";
+                break;
+            case REGLA_FALSA:
+                titulo_ventana = "Regla Falsa | ";
+                break;
+            case SECANTE:
+                titulo_ventana = "Secante | ";
+                break;
+        }
+        titulo_ventana += "Funcion: "+funcion+"| Raiz: "+raiz+" | ep: "+ep_porcentual;
+    }
+
     public enum Tipo{
         PUNTO_FIJO, BISECCION, NEWTON_RAPHSON, REGLA_FALSA, SECANTE
     }
 
-    public double[][] obtenerRango(float inicio, float fin, float paso){
+    public double[][] obtenerRango(double inicio, double fin, double paso){
         return new FuncionX(funcion).obtenerRango(inicio, fin, paso);
     }
 

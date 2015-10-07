@@ -1,7 +1,9 @@
 package com.itc.mn.Cosas;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -17,11 +19,13 @@ import com.kotcrab.vis.ui.widget.VisWindow;
 /**
  * Created by zero_ on 02/10/2015.
  */
-public class Ventana extends VisWindow {
+public class VentanaValores extends VisWindow {
 
     private final Game game;
     private VisTextButton aceptar, cancelar;
     private FuncionX fx;
+    private VentanaCarga vc = new VentanaCarga();
+    private Metodo.Tipo tipo;
 
     /**
      * Crea una v con los campos mandados.
@@ -30,17 +34,20 @@ public class Ventana extends VisWindow {
      * @param title Titulo de la v
      * @param campos String[] de 2, [0] = hint, [1] = nombre variable
      */
-    public Ventana(String title, String[][] campos, Game game, Metodo.Tipo tipo) {
+    public VentanaValores(String title, String[][] campos, Game game, Metodo.Tipo tipo) {
         super(title);
         // La v se llamara igual que el titulo que reciba
         setName(title);
         // Una referencia a Game para poder intercambiar la pantalla
         this.game = game;
+        // Guardamos referencia al tip
+        this.tipo = tipo;
         for(String[] campo: campos){
             VisTextField tmp = new VisTextField();
             tmp.setMessageText(campo[0]);
             tmp.setName(campo[1]);
             add(tmp).expandX().center().pad(1f).colspan(2).row();
+            tmp.addListener(new AndroidInput(tmp));
         }
         // Creamos los botones
         aceptar = new VisTextButton("Aceptar");
@@ -107,7 +114,7 @@ public class Ventana extends VisWindow {
                         if (!((VisTextField) actor).getText().equals("")) {
                             try{
                                 double value = Double.parseDouble(((VisTextField) actor).getText());
-                                actor.setColor((value < 0 || value > 100) ? Color.RED: Color.GREEN);
+                                actor.setColor((value > 0 && value < 100) ? Color.GREEN: Color.RED);
                             }
                             catch (Exception ex){
                                 actor.setColor(Color.RED);
@@ -160,13 +167,17 @@ public class Ventana extends VisWindow {
         aceptar.addListener(new Proceso(this, tipo));
     }
 
+    public Metodo.Tipo getTipo() {
+        return tipo;
+    }
+
     private class Proceso extends ClickListener {
 
         private final Metodo.Tipo tipo;
-        private final Ventana v;
+        private final VentanaValores v;
         private double a, b;
 
-        public Proceso(Ventana v, Metodo.Tipo tipo){
+        public Proceso(VentanaValores v, Metodo.Tipo tipo){
             this.v = v;
             this.tipo = tipo;
         }
@@ -181,8 +192,10 @@ public class Ventana extends VisWindow {
                             fx = new FuncionX(v.getVariable("f"));
                             a = fx.obtenerValor(Double.parseDouble(v.getVariable("a")));
                             b = fx.obtenerValor(Double.parseDouble(v.getVariable("b")));
-                            if((a*b) < 0)
-                                game.setScreen(new RenderScreen(game, new Biseccion(v.getVariable("f"), Float.parseFloat(v.getVariable("a")), Float.parseFloat(v.getVariable("b")), Float.parseFloat(v.getVariable("ep"))/100f)));
+                            if((a*b) < 0) {
+                                game.getScreen().dispose();
+                                game.setScreen(new RenderScreen(game, new Biseccion(v.getVariable("f"), Double.parseDouble(v.getVariable("a")), Double.parseDouble(v.getVariable("b")), Double.parseDouble(v.getVariable("ep")+"d") / 100d)));
+                            }
                             else{
                                 getActor("a").setColor(1, 0, 0, 1);
                                 getActor("b").setColor(1, 0, 0, 1);
@@ -192,24 +205,52 @@ public class Ventana extends VisWindow {
                             fx = new FuncionX(v.getVariable("f"));
                             a = fx.obtenerValor(Double.parseDouble(v.getVariable("a")));
                             b = fx.obtenerValor(Double.parseDouble(v.getVariable("b")));
-                            if((a*b) < 0)
-                                game.setScreen(new RenderScreen(game, new ReglaFalsa(v.getVariable("f"), Float.parseFloat(v.getVariable("a")), Float.parseFloat(v.getVariable("b")), Float.parseFloat(v.getVariable("ep"))/100f)));
-                            else{
+                            if((a*b) < 0) {
+                                game.getScreen().dispose();
+                                game.setScreen(new RenderScreen(game, new ReglaFalsa(v.getVariable("f"), Double.parseDouble(v.getVariable("a")), Double.parseDouble(v.getVariable("b")), Double.parseDouble(v.getVariable("ep")+"d") / 100d)));
+                            }else{
                                 getActor("a").setColor(1, 0, 0, 1);
                                 getActor("b").setColor(1, 0, 0, 1);
                             }
                             break;
                         case PUNTO_FIJO:
-                        game.setScreen(new RenderScreen(game, new PFijo(v.getVariable("f1"), v.getVariable("f2"), Double.parseDouble(v.getVariable("vi")), Float.parseFloat(v.getVariable("ep")) / 100f)));
+                            game.getScreen().dispose();
+                            game.setScreen(new RenderScreen(game, new PFijo(v.getVariable("f1"), v.getVariable("f2"), Double.parseDouble(v.getVariable("vi")), Double.parseDouble(v.getVariable("ep")+"d") / 100d)));
                         break;
                         case NEWTON_RAPHSON:
-                            game.setScreen(new RenderScreen(game, new NewtonRaphson(v.getVariable("fx"), v.getVariable("f'x"), Float.parseFloat(v.getVariable("vi")), Float.parseFloat(v.getVariable("ep")) / 100f)));
+                            game.getScreen().dispose();
+                            game.setScreen(new RenderScreen(game, new NewtonRaphson(v.getVariable("fx"), v.getVariable("f'x"), Double.parseDouble(v.getVariable("vi")), Double.parseDouble(v.getVariable("ep")+"d") / 100d)));
                             break;
                     }
             } catch (Exception ex) {
                 ex.printStackTrace();
                 v.fadeOut();
             }
+        }
+    }
+
+    private class AndroidInput extends ClickListener implements Input.TextInputListener{
+
+        private VisTextField field;
+
+        public AndroidInput(VisTextField field){
+            this.field = field;
+        }
+
+        @Override
+        public void clicked(InputEvent event, float x, float y) {
+            if(Gdx.app.getType().equals(Application.ApplicationType.Android))
+                Gdx.input.getTextInput(new AndroidInput(field), field.getName(), "", field.getMessageText());
+        }
+
+        @Override
+        public void input(String text) {
+            field.setText(text);
+        }
+
+        @Override
+        public void canceled() {
+
         }
     }
 }
