@@ -13,6 +13,7 @@ public class GraphingCamera extends Stage {
 
     public GraphingCamera(Viewport viewport, final OrthographicCamera camera, final FrontEnd gui_stage) {
         super(viewport);
+
         addListener(new ActorGestureListener() {
 
             @Override
