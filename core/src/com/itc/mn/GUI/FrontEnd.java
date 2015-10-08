@@ -27,7 +27,7 @@ public class FrontEnd extends Stage {
     protected TablaResultados tabla_res;
 
     public FrontEnd(Viewport viewport, Game game) {
-        this.setViewport(viewport);
+        super(viewport);
         this.game = game;
         VisUI.load();
         // We begin with the GUI creation
@@ -54,6 +54,11 @@ public class FrontEnd extends Stage {
 
     public TablaResultados getTablaRes() {
         return tabla_res;
+    }
+
+    public boolean enableIterTable(boolean flag) {
+        tabla_iter.setDisabled(!flag);
+        return true;
     }
 
     public VisTable getTable() {

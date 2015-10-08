@@ -47,9 +47,8 @@ public class RenderScreen extends Pantalla {
      * @param valores Valores de la funcion
      */
     public RenderScreen(Game game, double[][] valores, boolean isInputVisible){
-        super();
+        super(game);
         // Solo para tener una referencia al manejador de pantallas
-        this.game = game;
         this.valores = valores;
         // Este valor es por si se desea mostrar para "graficar" al vuelo o solo se quieren ver resultados
         this.isInputVisible = isInputVisible;
@@ -59,8 +58,7 @@ public class RenderScreen extends Pantalla {
     }
 
     public RenderScreen(Game game, double[][] valores, double raiz){
-        super();
-        this.game = game;
+        super(game);
         this.valores = valores;
         this.raiz = raiz;
         isRootAvailable = true;
@@ -75,16 +73,15 @@ public class RenderScreen extends Pantalla {
      * @param metodo Objeto metodo
      */
     public RenderScreen(Game game, Metodo metodo){
-        super();
+        super(game);
         this.metodo = metodo;
-        this.game = game;
         this.valores = metodo.obtenerRango();
         this.raiz = metodo.getRaiz();
         isRootAvailable = true;
         // Construimos nuestra GUI
         construyeGUI();
         gui_stage.createTablaRes(metodo);
-        tabla_iter.setDisabled(false);
+        gui_stage.enableIterTable(true);
     }
 
     /**
@@ -93,8 +90,7 @@ public class RenderScreen extends Pantalla {
      * @param funciones ArrayList con arreglos de valores para cada funcion
      */
     public RenderScreen(Game game, ArrayList<float[][]> funciones, boolean isInputVisible){
-        // Solo para tener una referencia al manejador de pantallas
-        this.game = game;
+        super(game);
         this.funciones = funciones;
         // Este valor es por si se desea mostrar para "graficar" al vuelo o solo se quieren ver resultados
         this.isInputVisible = isInputVisible;
@@ -107,7 +103,7 @@ public class RenderScreen extends Pantalla {
      * @param game Instancia de Game que controla las pantallas
      */
     public RenderScreen(Game game){
-        this.game = game;
+        super(game);
         valores = new FuncionX("sin(x*cos((pi^x)*tan(e^pi*x)))").obtenerRango(-10, 10, 0.001f);
         isInputVisible = true;
         // Construimos nuestra GUI
@@ -141,7 +137,7 @@ public class RenderScreen extends Pantalla {
                     counter = 0;
                 shapeRenderer.setColor(colores[counter]);
                 for (int i = 0; i < funcion.length - 1; i++)
-                    shapeRenderer.point((float)(funcion[i][0]*scaleX), (float)(funcion[i][1]*scaleY), 0);
+                    shapeRenderer.point(funcion[i][0] * scaleX, funcion[i][1] * scaleY, 0);
             }
         }
         // Para finalizar el renderizado

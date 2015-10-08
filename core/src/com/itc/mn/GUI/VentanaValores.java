@@ -194,7 +194,6 @@ public class VentanaValores extends VisWindow {
                             a = fx.obtenerValor(Double.parseDouble(v.getVariable("a")));
                             b = fx.obtenerValor(Double.parseDouble(v.getVariable("b")));
                             if((a*b) < 0) {
-                                game.getScreen().dispose();
                                 game.setScreen(new RenderScreen(game, new Biseccion(v.getVariable("f"), Double.parseDouble(v.getVariable("a")), Double.parseDouble(v.getVariable("b")), Double.parseDouble(v.getVariable("ep")+"d") / 100d)));
                             }
                             else{
