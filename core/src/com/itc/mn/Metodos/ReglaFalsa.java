@@ -2,9 +2,6 @@ package com.itc.mn.Metodos;
 
 import com.itc.mn.Cosas.FuncionX;
 
-/**
- * Created by zero_ on 03/10/2015.
- */
 public class ReglaFalsa extends Metodo{
 
     private double xr;
@@ -28,7 +25,7 @@ public class ReglaFalsa extends Metodo{
         //Creamos los encabezados para la tabla de iteraciones
         encabezados = new String[]{"Iteracion", "a", "b", "f(a)", "f(b)", "xr", "f(xr)", "ep"};
         calculaRaiz();
-        ep_porcentual = String.valueOf(ep*100)+"%";
+        ep_porcentual = String.valueOf(ep * 100d) + "%";
         // Creamos el titulo para la ventana
         creaTitulo();
     }

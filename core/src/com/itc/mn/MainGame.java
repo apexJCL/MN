@@ -11,7 +11,7 @@ public class MainGame extends Game {
 	public void create () {
 		rs = new RenderScreen(this);
 		this.setScreen(rs);
-	}
+    }
 
 	@Override
 	public void render () {
