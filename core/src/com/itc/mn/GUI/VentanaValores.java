@@ -1,4 +1,4 @@
-package com.itc.mn.Cosas;
+package com.itc.mn.GUI;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.itc.mn.Cosas.FuncionX;
 import com.itc.mn.Metodos.*;
 import com.itc.mn.Pantallas.RenderScreen;
 import com.kotcrab.vis.ui.widget.VisTextButton;

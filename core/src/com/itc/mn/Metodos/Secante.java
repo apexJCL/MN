@@ -5,7 +5,7 @@ import com.itc.mn.Cosas.FuncionX;
 public class Secante extends Metodo {
 
     private FuncionX fx_1, fx, fx1;
-    private Double xi1;
+    private Double xi1, xi1ant;
 
     public Secante(String funcion, double x_i, double xi, double ep){
         this.funcion = funcion;
@@ -27,7 +27,13 @@ public class Secante extends Metodo {
     }
 
     public void calculaRaiz(){
-        xi1 = xi - ((fx.obtenerValor(xi) * (x_i - xi)) / (fx_1.obtenerValor(x_i) - fx.obtenerValor(xi)));
-
+        do {
+            xi1 = xi - ((fx.obtenerValor(xi) * (x_i - xi)) / (fx_1.obtenerValor(x_i) - fx.obtenerValor(xi)));
+            if (xi1ant != null)
+                error = Math.abs((xi1 - xi1ant) / xi1);
+            resultados.add(new double[]{contador, x_i, xi, fx_1.obtenerValor(), fx.obtenerValor(), xi1, fx1.obtenerValor(), ep * 100d});
+            xi1ant = xi1;
+        }
+        while (error > ep);
     }
 }

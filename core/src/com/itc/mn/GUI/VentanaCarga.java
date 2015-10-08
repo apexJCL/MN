@@ -1,6 +1,7 @@
-package com.itc.mn.Cosas;
+package com.itc.mn.GUI;
 
 import com.badlogic.gdx.Gdx;
+import com.itc.mn.Cosas.loadingIcon;
 import com.kotcrab.vis.ui.widget.VisWindow;
 
 /**

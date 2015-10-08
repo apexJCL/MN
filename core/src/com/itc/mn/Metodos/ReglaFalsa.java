@@ -44,10 +44,8 @@ public class ReglaFalsa extends Metodo{
             xr = v_final - ((fb.obtenerValor(v_final)*(v_inicial-v_final))/(fa.obtenerValor(v_inicial)-fb.obtenerValor(v_final)));
             error = Math.abs((xr-xranterior)/xr);
             contador++;
-            resultados.add(new double[]{contador, v_inicial, v_final, fa.obtenerValor(v_inicial), fb.obtenerValor(v_final), xr, fx.obtenerValor(xr),error*100});
-            System.out.println(error+" "+ep+" "+(error > ep));
+            resultados.add(new double[]{contador, v_inicial, v_final, fa.obtenerValor(v_inicial), fb.obtenerValor(v_final), xr, fx.obtenerValor(xr), error * 100d});
         }
-        System.out.println(contador);
         raiz = xr;
     }
 }

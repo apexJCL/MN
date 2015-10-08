@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.itc.mn.Cosas.FuncionX;
-import com.itc.mn.Cosas.TablaResultados;
 import com.itc.mn.Metodos.Metodo;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSlider;
@@ -56,7 +55,7 @@ public class RenderScreen extends Pantalla {
         this.isInputVisible = isInputVisible;
         // Construimos nuestra GUI
         construyeGUI();
-        tabla_res = new TablaResultados(metodo);
+        gui_stage.createTablaRes(metodo);
     }
 
     public RenderScreen(Game game, double[][] valores, double raiz){
@@ -84,7 +83,7 @@ public class RenderScreen extends Pantalla {
         isRootAvailable = true;
         // Construimos nuestra GUI
         construyeGUI();
-        tabla_res = new TablaResultados(metodo);
+        gui_stage.createTablaRes(metodo);
         tabla_iter.setDisabled(false);
     }
 
@@ -181,10 +180,7 @@ public class RenderScreen extends Pantalla {
         shapeRenderer.end();
     }
 
-    @Override
     public void construyeGUI(){
-        super.construyeGUI();
-        System.out.println(isInputVisible);
         if(isInputVisible) {
             // Un panel de entrada para re-evaluar
             VisLabel funcion = new VisLabel("Funcion: ");
@@ -194,8 +190,8 @@ public class RenderScreen extends Pantalla {
             entrada.setName("entrada");
             entrada.addListener(new UIListener(entrada));
             // Los agregamos a la tabla
-            table.add(funcion).bottom().left().pad(4);
-            table.add(entrada).expand().bottom().left().pad(4);
+            gui_stage.getTable().add(funcion).bottom().left().pad(4);
+            gui_stage.getTable().add(entrada).expand().bottom().left().pad(4);
         }
         // Para ajustar la grafica
         ejeX = new VisSlider(0.1f, 50, 0.001f, false);
@@ -218,9 +214,9 @@ public class RenderScreen extends Pantalla {
         });
         // Los agregamos a la tabla
         VisLabel ajuste = new VisLabel("Ajuste ejes");
-        table.add(ajuste).bottom().right().pad(4f);
-        table.add(ejeX).expandY().bottom().left().pad(5f);
-        table.add(ejeY).expandY().bottom().left().pad(5f);
+        gui_stage.getTable().add(ajuste).bottom().right().pad(4f);
+        gui_stage.getTable().add(ejeX).expandY().bottom().left().pad(5f);
+        gui_stage.getTable().add(ejeY).expandY().bottom().left().pad(5f);
         // Para reestablecer escala
         VisTextButton restablece = new VisTextButton("Reinicia ejes");
         restablece.addListener(new ClickListener() {
@@ -237,10 +233,7 @@ public class RenderScreen extends Pantalla {
             }
         });
         // Agregamos el boton
-        table.add(restablece).right().expandY().bottom().pad(5f);
-        // Agregamos la tabla al gui_stage
-        gui_stage.addActor(table);
-        gui_stage.setDebugAll(true);
+        gui_stage.getTable().add(restablece).right().expandY().bottom().pad(5f);
     }
 
     @Override
