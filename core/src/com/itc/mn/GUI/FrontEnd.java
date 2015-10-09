@@ -2,6 +2,7 @@ package com.itc.mn.GUI;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -22,9 +23,10 @@ public class FrontEnd extends Stage {
     private final PopupMenu m_metodos;
     private final PopupMenu menu;
     private final Game game;
-    private MenuItem graficador, tabla_iter, configuracion, metodos_biseccion, metodos_reglafalsa, metodos_nrapson, metodos_PFijo;
+    private MenuItem banner, graficador, tabla_iter, configuracion, metodos_biseccion, metodos_reglafalsa, metodos_nrapson, metodos_PFijo, metodos_secante;
     private VentanaValores ventanaValores;
     protected TablaResultados tabla_res;
+    private MenuItem metodos, matrices;
 
     public FrontEnd(Viewport viewport, Game game) {
         super(viewport);
@@ -66,8 +68,14 @@ public class FrontEnd extends Stage {
     }
 
     private void createItems() {
+        // We create a banner
+        banner = new MenuItem("Graph v0.1a");
+        banner.setDisabled(true);
+        banner.setColor(Color.CYAN);
         // Create each menu element
-        MenuItem metodos = new MenuItem("Metodos");
+        metodos = new MenuItem("Metodo");
+        // We create the other element
+        matrices = new MenuItem("Matrices");
         metodos.setSubMenu(m_metodos);
         graficador = new MenuItem("Graficador");
         tabla_iter = new MenuItem("Tabla iteraciones");
@@ -79,11 +87,14 @@ public class FrontEnd extends Stage {
         metodos_reglafalsa = new MenuItem("Regla Falsa");
         metodos_PFijo = new MenuItem("Punto Fijo");
         metodos_nrapson = new MenuItem("Newton-Raphson");
+        metodos_secante = new MenuItem("Secante");
 
         // Assign events to each element
         asignaEventos();
         // Add the elements to the submenu
+        menu.addItem(banner);
         menu.addItem(metodos);
+        menu.addItem(matrices);
         menu.addItem(graficador);
         menu.addItem(tabla_iter);
         menu.addSeparator();
@@ -93,6 +104,7 @@ public class FrontEnd extends Stage {
         m_metodos.addItem(metodos_reglafalsa);
         m_metodos.addItem(metodos_PFijo);
         m_metodos.addItem(metodos_nrapson);
+        m_metodos.addItem(metodos_secante);
     }
 
     private void asignaEventos() {
@@ -101,6 +113,12 @@ public class FrontEnd extends Stage {
             public void clicked(InputEvent event, float x, float y) {
                 RenderScreen s = new RenderScreen(game);
                 game.setScreen(s);
+            }
+        });
+        matrices.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                addActor(new Matrix().fadeIn());
             }
         });
         configuracion.addListener(new ClickListener() {
@@ -169,6 +187,21 @@ public class FrontEnd extends Stage {
                 }
             }
         });
+        // Para secante
+        metodos_secante.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (ventanaValores == null || !getActors().contains(ventanaValores, true))
+                    mostrar_secante();
+                else {
+                    if (ventanaValores.getTipo() != Metodo.Tipo.PUNTO_FIJO) {
+                        ventanaValores.fadeOut();
+                        mostrar_secante();
+                    } else
+                        ventanaValores.parpadear();
+                }
+            }
+        });
         tabla_iter.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -179,6 +212,12 @@ public class FrontEnd extends Stage {
         });
     }
 
+    private void mostrar_secante() {
+        String[][] campos = new String[][]{{"Funcion Original", "fx"}, {"xi-1", "xi_1"}, {"xi", "xi"}, {"Error (0-100)", "ep"}};
+        ventanaValores = new VentanaValores("Secante", campos, game, Metodo.Tipo.NEWTON_RAPHSON);
+        ventanaValores.asignaEvento(Metodo.Tipo.SECANTE);
+        addActor(ventanaValores.fadeIn(0.3f));
+    }
 
     private void mostrar_pfijo() {
         String[][] campos = new String[][]{{"Funcion Original", "f1"}, {"Funcion Despejada", "f2"}, {"Valor inicial", "vi"}, {"Error (0-100)", "ep"}};

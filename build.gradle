@@ -6,6 +6,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.2.3'
+        apply plugin: 'idea'
     }
 }
 
@@ -17,7 +18,7 @@ allprojects {
     ext {
         appName = "MN"
         gdxVersion = '1.6.5'
-        visuiVersion = '0.9.0-SNAPSHOT'
+        visuiVersion = '0.9.1'
     }
 
     repositories {
@@ -45,7 +46,7 @@ project(":core") {
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "jep:jep:2.24"
-        compile 'com.kotcrab.vis:vis-ui:0.8.2'
+        compile "com.kotcrab.vis:vis-ui:$visuiVersion"
     }
 }
 

@@ -221,6 +221,10 @@ public class VentanaValores extends VisWindow {
                             game.getScreen().dispose();
                             game.setScreen(new RenderScreen(game, new NewtonRaphson(v.getVariable("fx"), v.getVariable("f'x"), Double.parseDouble(v.getVariable("vi")), Double.parseDouble(v.getVariable("ep")+"d") / 100d)));
                             break;
+                        case SECANTE:
+                            game.getScreen().dispose();
+                            game.setScreen(new RenderScreen(game, new Secante(v.getVariable("fx"), Double.parseDouble(v.getVariable("xi_1") + "d"), Double.parseDouble(v.getVariable("xi") + "d"), Double.parseDouble(v.getVariable("ep") + "d") / 100d)));
+                            break;
                     }
             } catch (Exception ex) {
                 ex.printStackTrace();

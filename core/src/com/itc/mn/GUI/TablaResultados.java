@@ -9,7 +9,6 @@ import com.kotcrab.vis.ui.widget.VisWindow;
 
 import java.text.DecimalFormat;
 
-
 public class TablaResultados extends VisWindow {
 
     private Metodo metodo;
@@ -26,6 +25,8 @@ public class TablaResultados extends VisWindow {
         buildTable();
         pane = new VisScrollPane(innerTable);
         add(pane).expand().fill();
+        setResizable(true);
+        setResizeBorder(10);
     }
 
     public void show(Stage stage){
@@ -43,7 +44,7 @@ public class TablaResultados extends VisWindow {
             for (double valor : valores) innerTable.add(new DecimalFormat("#.########").format(valor)).left().expandX();
             innerTable.row();
         }
-        setSize(Gdx.graphics.getWidth()*0.8f, Gdx.graphics.getHeight()*0.5f);
+        setSize(Gdx.graphics.getWidth() * 0.6f, Gdx.graphics.getHeight() * 0.4f);
         setPosition((Gdx.graphics.getWidth() - getWidth()) / 2f, (Gdx.graphics.getHeight() - getHeight()) / 2f);
     }
 }

@@ -104,7 +104,7 @@ public class RenderScreen extends Pantalla {
      */
     public RenderScreen(Game game){
         super(game);
-        valores = new FuncionX("sin(x*cos((pi^x)*tan(e^pi*x)))").obtenerRango(-10, 10, 0.001f);
+        valores = new FuncionX("e^x").obtenerRango(-10, 10, 0.001f);
         isInputVisible = true;
         // Construimos nuestra GUI
         construyeGUI();
