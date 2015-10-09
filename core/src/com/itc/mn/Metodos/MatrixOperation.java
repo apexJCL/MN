@@ -27,13 +27,11 @@ public class MatrixOperation {
     public double[][] multiplyMatrix() throws Exception {
         if (multipliedMatrix == null || matrixChanged) {
             if (areMatrixMultiplicable()) {
-                multipliedMatrix = new double[matrix_a[0].length][matrix_b.length];
+                multipliedMatrix = new double[matrix_a.length][matrix_b[0].length];
                 for (int i = 0; i < matrix_a.length; i++) {
-                    double tmp = 0;
-                    for (int j = 0; j < matrix_b.length; j++) {
+                    for (int j = 0; j < matrix_b[0].length; j++) {
                         for (int k = 0; k < matrix_a[0].length; k++)
-                            tmp += matrix_a[j][k] * matrix_b[k][j];
-                        multipliedMatrix[i][j] = tmp;
+                            multipliedMatrix[i][j] += matrix_a[i][k] * matrix_b[k][j];
                     }
                 }
                 return multipliedMatrix;

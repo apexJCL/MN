@@ -2,8 +2,10 @@ package com.itc.mn.GUI;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -27,6 +29,7 @@ public class FrontEnd extends Stage {
     private VentanaValores ventanaValores;
     protected TablaResultados tabla_res;
     private MenuItem metodos, matrices;
+    private int lastKey;
 
     public FrontEnd(Viewport viewport, Game game) {
         super(viewport);
@@ -44,6 +47,32 @@ public class FrontEnd extends Stage {
         createItems();
         // FInally, we add the table to the stage, so everything falls in place
         addActor(table);
+        // A keyboard manager
+        addListener(new InputListener() {
+
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (lastKey == Input.Keys.CONTROL_LEFT)
+                    switch (keycode) {
+                        case Input.Keys.M:
+                            menu.showMenu(getStage(), menu.getWidth() / 2f, getHeight());
+                            break;
+                    }
+                return super.keyDown(event, keycode);
+            }
+
+            @Override
+            public boolean keyTyped(InputEvent event, char character) {
+                lastKey = event.getKeyCode();
+                return super.keyTyped(event, character);
+            }
+
+            @Override
+            public boolean keyUp(InputEvent event, int keycode) {
+                return super.keyUp(event, keycode);
+            }
+        });
+        Gdx.input.setCatchMenuKey(true);
     }
 
     public Stage getStage() {
@@ -81,14 +110,12 @@ public class FrontEnd extends Stage {
         tabla_iter = new MenuItem("Tabla iteraciones");
         tabla_iter.setDisabled(true);
         configuracion = new MenuItem("Configuracion");
-
         // Instantiate the elements of submenu methods
         metodos_biseccion = new MenuItem("Biseccion");
         metodos_reglafalsa = new MenuItem("Regla Falsa");
         metodos_PFijo = new MenuItem("Punto Fijo");
         metodos_nrapson = new MenuItem("Newton-Raphson");
         metodos_secante = new MenuItem("Secante");
-
         // Assign events to each element
         asignaEventos();
         // Add the elements to the submenu
@@ -115,6 +142,12 @@ public class FrontEnd extends Stage {
                 game.setScreen(s);
             }
         });
+        banner.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                addActor(new VentanaMensajes("Acerca de", "Creado por Jose Carlos Lopez\nGithub: nchuck\nRepo: MN\n2015\nPowered by JEP 2.24GPL").fadeIn());
+            }
+        });
         matrices.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -124,7 +157,7 @@ public class FrontEnd extends Stage {
         configuracion.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
+                addActor(new VentanaConfig().fadeIn());
             }
         });
         //Para biseccion
