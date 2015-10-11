@@ -44,7 +44,8 @@ public class TablaResultados extends VisWindow {
             for (double valor : valores) innerTable.add(new DecimalFormat("#.########").format(valor)).left().expandX();
             innerTable.row();
         }
-        setSize(Gdx.graphics.getWidth() * 0.6f, Gdx.graphics.getHeight() * 0.4f);
+        pack();
+        setSize(getWidth(), getHeight() * 4f);
         setPosition((Gdx.graphics.getWidth() - getWidth()) / 2f, (Gdx.graphics.getHeight() - getHeight()) / 2f);
     }
 }

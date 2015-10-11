@@ -8,7 +8,7 @@ import com.itc.mn.Cosas.FuncionX;
 public class Biseccion extends Metodo {
 
     private FuncionX fa, fb, fx;
-    private double xr, xranterior;
+    private Double xr, xranterior;
 
     {
         this.tipo = Tipo.BISECCION;
@@ -33,19 +33,35 @@ public class Biseccion extends Metodo {
     }
 
     public void calculaRaiz(){
-        xr = (v_inicial + v_final)/2;
-        resultados.add(new double[]{contador, v_inicial, v_final, fa.obtenerValor(v_inicial), fb.obtenerValor(v_final), xr, fx.obtenerValor(xr), 1});
-        while (error > ep && (fa.obtenerValor()*fx.obtenerValor()) != 0){
+        do {
+            if (xranterior != null)
+                error = Math.abs((xr - xranterior) / xr);
+            xr = (v_inicial + v_final) / 2d;
+            System.out.println(fx.obtenerValor() * fa.obtenerValor());
             if((fx.obtenerValor()*fa.obtenerValor()) > 0)
                 v_inicial = xr;
             else if((fx.obtenerValor()*fa.obtenerValor()) < 0)
                 v_final = xr;
             xranterior = xr;
-            xr = (v_inicial + v_final)/2;
-            error = Math.abs((xr-xranterior)/xr);
+            resultados.add(new double[]{contador, v_inicial, v_final, fa.obtenerValor(v_inicial), fb.obtenerValor(v_final), xr, fx.obtenerValor(xr), error * 100d});
             contador++;
-            resultados.add(new double[]{contador, v_inicial, v_final, fa.obtenerValor(v_inicial), fb.obtenerValor(v_final), xr, fx.obtenerValor(xr),error*100d});
         }
+        while (error > ep && (fa.obtenerValor()) * fx.obtenerValor() != 0);
         raiz = xr;
+//        xr = (v_inicial + v_final)/2d;
+//        resultados.add(new double[]{contador, v_inicial, v_final, fa.obtenerValor(v_inicial), fb.obtenerValor(v_final), xr, fx.obtenerValor(xr), 1});
+//        while (error > ep && (fa.obtenerValor()*fx.obtenerValor()) != 0){
+//            if((fx.obtenerValor()*fa.obtenerValor()) > 0)
+//                v_inicial = xr;
+//            else if((fx.obtenerValor()*fa.obtenerValor()) < 0)
+//                v_final = xr;
+//            xranterior = xr;
+//            xr = (v_inicial + v_final)/2d;
+//            error = Math.abs((xr-xranterior)/xr);
+//            contador++;
+//            resultados.add(new double[]{contador, v_inicial, v_final, fa.obtenerValor(v_inicial), fb.obtenerValor(v_final), xr, fx.obtenerValor(xr),error*100d});
+//            System.out.println(error);
+//        }
+//        raiz = xr;
     }
 }

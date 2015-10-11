@@ -4,47 +4,54 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.itc.mn.Metodos.Metodo;
+import com.itc.mn.Pantallas.Pantalla;
 import com.itc.mn.Pantallas.RenderScreen;
 import com.kotcrab.vis.ui.VisUI;
-import com.kotcrab.vis.ui.widget.MenuItem;
-import com.kotcrab.vis.ui.widget.PopupMenu;
-import com.kotcrab.vis.ui.widget.VisTable;
+import com.kotcrab.vis.ui.widget.*;
 
 /**
  * This is the class that will hold all the GUI elements, creation and stuff
  */
 public class FrontEnd extends Stage {
 
+    protected TablaResultados tabla_res;
+    protected boolean isInputVisible = true;
+    private final Pantalla pantalla;
     private final VisTable table;
     private final PopupMenu m_metodos;
     private final PopupMenu menu;
     private final Game game;
     private MenuItem banner, graficador, tabla_iter, configuracion, metodos_biseccion, metodos_reglafalsa, metodos_nrapson, metodos_PFijo, metodos_secante;
     private VentanaValores ventanaValores;
-    protected TablaResultados tabla_res;
     private MenuItem metodos, matrices;
     private int lastKey;
+    private VisSlider ejeX, ejeY;
+    private VisTextField entrada;
+    private VisLabel funcion;
 
-    public FrontEnd(Viewport viewport, Game game) {
+    public FrontEnd(Viewport viewport, Game game, Pantalla pantalla) {
         super(viewport);
         this.game = game;
+        this.pantalla = pantalla;
         VisUI.load();
         // We begin with the GUI creation
         table = new VisTable(); // A general table that will hold all our components
         table.setSize(Gdx.graphics.getWidth() * 0.95f, Gdx.graphics.getHeight());
         table.setPosition((Gdx.graphics.getWidth() - table.getWidth()) / 2f, (Gdx.graphics.getHeight() - table.getHeight()) / 2f);
-        addActor(table);
+        createGeneralGUI();
         // We add a common menu between all
         menu = new PopupMenu();
         // Instantiate the submenu
         m_metodos = new PopupMenu();
-        createItems();
+        createMenu();
         // FInally, we add the table to the stage, so everything falls in place
         addActor(table);
         // A keyboard manager
@@ -75,6 +82,127 @@ public class FrontEnd extends Stage {
         Gdx.input.setCatchMenuKey(true);
     }
 
+    public FrontEnd(Viewport viewport, Game game, Pantalla pantalla, boolean isInputVisible) {
+        super(viewport);
+        this.game = game;
+        this.pantalla = pantalla;
+        this.isInputVisible = isInputVisible;
+        VisUI.load();
+        // We begin with the GUI creation
+        table = new VisTable(); // A general table that will hold all our components
+        table.setSize(Gdx.graphics.getWidth() * 0.95f, Gdx.graphics.getHeight());
+        table.setPosition((Gdx.graphics.getWidth() - table.getWidth()) / 2f, (Gdx.graphics.getHeight() - table.getHeight()) / 2f);
+        createGeneralGUI();
+        // We add a common menu between all
+        menu = new PopupMenu();
+        // Instantiate the submenu
+        m_metodos = new PopupMenu();
+        createMenu();
+        // FInally, we add the table to the stage, so everything falls in place
+        addActor(table);
+        // A keyboard manager
+        addListener(new InputListener() {
+
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (lastKey == Input.Keys.CONTROL_LEFT)
+                    switch (keycode) {
+                        case Input.Keys.M:
+                            menu.showMenu(getStage(), menu.getWidth() / 2f, getHeight());
+                            break;
+                    }
+                return super.keyDown(event, keycode);
+            }
+
+            @Override
+            public boolean keyTyped(InputEvent event, char character) {
+                lastKey = event.getKeyCode();
+                return super.keyTyped(event, character);
+            }
+
+            @Override
+            public boolean keyUp(InputEvent event, int keycode) {
+                return super.keyUp(event, keycode);
+            }
+        });
+        Gdx.input.setCatchMenuKey(true);
+    }
+
+    public boolean setInputVisible(boolean inputVisible) {
+        funcion.setVisible(inputVisible);
+        entrada.setVisible(inputVisible);
+        return inputVisible;
+    }
+
+    private void createGeneralGUI() {
+        // Un panel de entrada para re-evaluar
+        funcion = new VisLabel("Funcion: ");
+        entrada = new VisTextField("f(x) = ");
+        entrada.pack();
+        // Le agregamos un nombre para que pueda ser identificado
+        entrada.setName("entrada");
+        // Los agregamos a la tabla
+        table.add(funcion).bottom().left().pad(4);
+        table.add(entrada).expand().bottom().left().pad(4);
+        // Para ajustar la grafica
+        ejeX = new VisSlider(0.1f, 50, 0.001f, false);
+        ejeX.setValue(pantalla.scaleX);
+        // Agregamos un escuchador de eventos
+        ejeX.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                pantalla.scaleX = ((VisSlider) actor).getValue();
+            }
+        });
+        ejeY = new VisSlider(0.1f, 50, 0.001f, false);
+        ejeY.setValue(pantalla.scaleY);
+        // Agregamos un escuchador de eventos
+        ejeY.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                pantalla.scaleY = ((VisSlider) actor).getValue();
+            }
+        });
+        // Los agregamos a la tabla
+        VisLabel ajuste = new VisLabel("Ajuste ejes");
+        table.add(ajuste).bottom().right().pad(4f);
+        table.add(ejeX).expandY().bottom().left().pad(5f);
+        table.add(ejeY).expandY().bottom().left().pad(5f);
+        // Para reestablecer escala
+        VisTextButton restablece = new VisTextButton("Reinicia ejes");
+        restablece.addListener(new ClickListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        ejeX.setValue(10);
+                        ejeY.setValue(10);
+                    }
+                });
+                return true;
+            }
+        });
+        // Agregamos el boton
+        table.add(restablece).right().expandY().bottom().pad(5f);
+    }
+
+    public void setinputtVisible(boolean inputVisible) {
+        this.isInputVisible = inputVisible;
+    }
+
+    public VisTextField getInputField() {
+        return entrada;
+    }
+
+    public VisSlider getEjeX() {
+        return ejeX;
+    }
+
+    public VisSlider getEjeY() {
+        return ejeY;
+    }
+
     public Stage getStage() {
         return this;
     }
@@ -82,21 +210,12 @@ public class FrontEnd extends Stage {
     public PopupMenu getMenu() {
         return menu;
     }
-
-    public TablaResultados getTablaRes() {
-        return tabla_res;
-    }
-
     public boolean enableIterTable(boolean flag) {
         tabla_iter.setDisabled(!flag);
         return true;
     }
 
-    public VisTable getTable() {
-        return table;
-    }
-
-    private void createItems() {
+    private void createMenu() {
         // We create a banner
         banner = new MenuItem("Graph v0.1a");
         banner.setDisabled(true);

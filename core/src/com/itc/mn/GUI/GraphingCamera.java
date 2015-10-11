@@ -1,5 +1,7 @@
 package com.itc.mn.GUI;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.*;
@@ -35,8 +37,16 @@ public class GraphingCamera extends Stage {
 
             @Override
             public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                System.out.println("Button: " + button);
+                System.out.println("Pointer: " + pointer);
                 // Para eventos tactiles de android, usamos puntero, para PC usamos button
                 if (button == 1)
+                    gui_stage.getMenu().showMenu(gui_stage, x, y);
+            }
+
+            @Override
+            public void tap(InputEvent event, float x, float y, int count, int button) {
+                if (count == 2 && Gdx.app.getType().equals(Application.ApplicationType.Android))
                     gui_stage.getMenu().showMenu(gui_stage, x, y);
             }
 

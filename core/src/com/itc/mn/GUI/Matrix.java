@@ -132,6 +132,7 @@ public class Matrix extends VisWindow {
                         break;
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 mensaje.setText(e.getMessage());
             }
         }
@@ -182,6 +183,5 @@ public class Matrix extends VisWindow {
             }
             return matrix;
         }
-
     }
 }

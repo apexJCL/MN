@@ -8,13 +8,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.itc.mn.Cosas.FuncionX;
 import com.itc.mn.Metodos.Metodo;
-import com.kotcrab.vis.ui.widget.VisLabel;
-import com.kotcrab.vis.ui.widget.VisSlider;
-import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
 
 import java.util.ArrayList;
@@ -26,19 +22,15 @@ public class RenderScreen extends Pantalla {
 
     private double raiz;
     private double[][] valores;
-    private float scaleX, scaleY;
-    private volatile boolean isInputVisible, isRootAvailable;
+    private volatile boolean isRootAvailable;
     private ArrayList<float[][]> funciones;
     private Color[] colores = {Color.BLUE, Color.GREEN, Color.CYAN, Color.YELLOW,  Color.FIREBRICK, Color.ROYAL, Color.RED, Color.SALMON, Color.MAGENTA, Color.LIME, Color.TAN, Color.TEAL, Color.VIOLET};
-    private VisSlider ejeX, ejeY;
     private Metodo metodo;
 
     {
-        // Definimos la escala defecto de los ejes
-        scaleX = 10;
-        scaleY = 10;
         gui_stage.setDebugAll(true);
         isRootAvailable = false;
+        gui_stage.getInputField().addListener(new UIListener(gui_stage.getInputField()));
     }
 
     /**
@@ -50,10 +42,6 @@ public class RenderScreen extends Pantalla {
         super(game);
         // Solo para tener una referencia al manejador de pantallas
         this.valores = valores;
-        // Este valor es por si se desea mostrar para "graficar" al vuelo o solo se quieren ver resultados
-        this.isInputVisible = isInputVisible;
-        // Construimos nuestra GUI
-        construyeGUI();
         gui_stage.createTablaRes(metodo);
     }
 
@@ -62,8 +50,6 @@ public class RenderScreen extends Pantalla {
         this.valores = valores;
         this.raiz = raiz;
         isRootAvailable = true;
-        // Construimos nuestra GUI
-        construyeGUI();
     }
 
     /**
@@ -72,16 +58,15 @@ public class RenderScreen extends Pantalla {
      * @param game Instancia Game para cambiar pantallas
      * @param metodo Objeto metodo
      */
-    public RenderScreen(Game game, Metodo metodo){
+    public RenderScreen(Game game, Metodo metodo, boolean inputEnabled) {
         super(game);
         this.metodo = metodo;
         this.valores = metodo.obtenerRango();
         this.raiz = metodo.getRaiz();
         isRootAvailable = true;
-        // Construimos nuestra GUI
-        construyeGUI();
         gui_stage.createTablaRes(metodo);
         gui_stage.enableIterTable(true);
+        gui_stage.setInputVisible(inputEnabled);
     }
 
     /**
@@ -93,9 +78,6 @@ public class RenderScreen extends Pantalla {
         super(game);
         this.funciones = funciones;
         // Este valor es por si se desea mostrar para "graficar" al vuelo o solo se quieren ver resultados
-        this.isInputVisible = isInputVisible;
-        // Construimos nuestra GUI
-        construyeGUI();
     }
 
     /**
@@ -104,15 +86,8 @@ public class RenderScreen extends Pantalla {
      */
     public RenderScreen(Game game){
         super(game);
-        valores = new FuncionX("e^x").obtenerRango(-10, 10, 0.001f);
-        isInputVisible = true;
-        // Construimos nuestra GUI
-        construyeGUI();
+        valores = new FuncionX("x").obtenerRango(-10, 10, 0.001f);
         camera.zoom = 0.5f;
-    }
-
-    public void setInputVisible(boolean flag){
-        isInputVisible = flag;
     }
 
     private void renderArreglo(){
@@ -176,60 +151,8 @@ public class RenderScreen extends Pantalla {
         shapeRenderer.end();
     }
 
-    public void construyeGUI(){
-        if(isInputVisible) {
-            // Un panel de entrada para re-evaluar
-            VisLabel funcion = new VisLabel("Funcion: ");
-            VisTextField entrada = new VisTextField("f(x) = ");
-            entrada.pack();
-            // Le agregamos un nombre para que pueda ser identificado
-            entrada.setName("entrada");
-            entrada.addListener(new UIListener(entrada));
-            // Los agregamos a la tabla
-            gui_stage.getTable().add(funcion).bottom().left().pad(4);
-            gui_stage.getTable().add(entrada).expand().bottom().left().pad(4);
-        }
-        // Para ajustar la grafica
-        ejeX = new VisSlider(0.1f, 50, 0.001f, false);
-        ejeX.setValue(scaleX);
-        // Agregamos un escuchador de eventos
-        ejeX.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                scaleX = ((VisSlider) actor).getValue();
-            }
-        });
-        ejeY = new VisSlider(0.1f, 50, 0.001f, false);
-        ejeY.setValue(scaleY);
-        // Agregamos un escuchador de eventos
-        ejeY.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                scaleY = ((VisSlider) actor).getValue();
-            }
-        });
-        // Los agregamos a la tabla
-        VisLabel ajuste = new VisLabel("Ajuste ejes");
-        gui_stage.getTable().add(ajuste).bottom().right().pad(4f);
-        gui_stage.getTable().add(ejeX).expandY().bottom().left().pad(5f);
-        gui_stage.getTable().add(ejeY).expandY().bottom().left().pad(5f);
-        // Para reestablecer escala
-        VisTextButton restablece = new VisTextButton("Reinicia ejes");
-        restablece.addListener(new ClickListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                Gdx.app.postRunnable(new Runnable() {
-                    @Override
-                    public void run() {
-                        ejeX.setValue(10);
-                        ejeY.setValue(10);
-                    }
-                });
-                return true;
-            }
-        });
-        // Agregamos el boton
-        gui_stage.getTable().add(restablece).right().expandY().bottom().pad(5f);
+    public void setInputEnabled(boolean inputEnabled) {
+        gui_stage.setInputVisible(inputEnabled);
     }
 
     @Override
@@ -247,17 +170,14 @@ public class RenderScreen extends Pantalla {
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
-
     }
 
     @Override
     public void hide() {
-
     }
 
     private class UIListener extends ClickListener {
@@ -290,8 +210,8 @@ public class RenderScreen extends Pantalla {
                             valores = fx.obtenerRango(-10, 10, 0.001f);
                         }
                     });
-                    ejeX.setValue(10);
-                    ejeY.setValue(10);
+                    gui_stage.getEjeX().setValue(10);
+                    gui_stage.getEjeX().setValue(10);
                 }
             return super.keyTyped(event, character);
         }
@@ -300,7 +220,6 @@ public class RenderScreen extends Pantalla {
         public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
             super.touchUp(event, x, y, pointer, button);
         }
-
     }
 
     private class MyTextListener implements Input.TextInputListener{
@@ -321,8 +240,8 @@ public class RenderScreen extends Pantalla {
                     valores = fx.obtenerRango(-10, 10, 0.001f);
                 }
             });
-            ejeX.setValue(10);
-            ejeY.setValue(10);
+            gui_stage.getEjeX().setValue(10);
+            gui_stage.getEjeX().setValue(10);
         }
 
         @Override
@@ -330,5 +249,4 @@ public class RenderScreen extends Pantalla {
 
         }
     }
-
 }

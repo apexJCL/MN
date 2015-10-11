@@ -194,7 +194,7 @@ public class VentanaValores extends VisWindow {
                             a = fx.obtenerValor(Double.parseDouble(v.getVariable("a")));
                             b = fx.obtenerValor(Double.parseDouble(v.getVariable("b")));
                             if((a*b) < 0) {
-                                game.setScreen(new RenderScreen(game, new Biseccion(v.getVariable("f"), Double.parseDouble(v.getVariable("a")), Double.parseDouble(v.getVariable("b")), Double.parseDouble(v.getVariable("ep")+"d") / 100d)));
+                                game.setScreen(new RenderScreen(game, new Biseccion(v.getVariable("f"), Double.parseDouble(v.getVariable("a")), Double.parseDouble(v.getVariable("b")), Double.parseDouble(v.getVariable("ep") + "d") / 100d), false));
                             }
                             else{
                                 getActor("a").setColor(1, 0, 0, 1);
@@ -207,7 +207,7 @@ public class VentanaValores extends VisWindow {
                             b = fx.obtenerValor(Double.parseDouble(v.getVariable("b")));
                             if((a*b) < 0) {
                                 game.getScreen().dispose();
-                                game.setScreen(new RenderScreen(game, new ReglaFalsa(v.getVariable("f"), Double.parseDouble(v.getVariable("a")), Double.parseDouble(v.getVariable("b")), Double.parseDouble(v.getVariable("ep")+"d") / 100d)));
+                                game.setScreen(new RenderScreen(game, new ReglaFalsa(v.getVariable("f"), Double.parseDouble(v.getVariable("a")), Double.parseDouble(v.getVariable("b")), Double.parseDouble(v.getVariable("ep") + "d") / 100d), false));
                             }else{
                                 getActor("a").setColor(1, 0, 0, 1);
                                 getActor("b").setColor(1, 0, 0, 1);
@@ -215,15 +215,15 @@ public class VentanaValores extends VisWindow {
                             break;
                         case PUNTO_FIJO:
                             game.getScreen().dispose();
-                            game.setScreen(new RenderScreen(game, new PFijo(v.getVariable("f1"), v.getVariable("f2"), Double.parseDouble(v.getVariable("vi")), Double.parseDouble(v.getVariable("ep")+"d") / 100d)));
-                        break;
+                            game.setScreen(new RenderScreen(game, new PFijo(v.getVariable("f1"), v.getVariable("f2"), Double.parseDouble(v.getVariable("vi")), Double.parseDouble(v.getVariable("ep") + "d") / 100d), false));
+                            break;
                         case NEWTON_RAPHSON:
                             game.getScreen().dispose();
-                            game.setScreen(new RenderScreen(game, new NewtonRaphson(v.getVariable("fx"), v.getVariable("f'x"), Double.parseDouble(v.getVariable("vi")), Double.parseDouble(v.getVariable("ep")+"d") / 100d)));
+                            game.setScreen(new RenderScreen(game, new NewtonRaphson(v.getVariable("fx"), v.getVariable("f'x"), Double.parseDouble(v.getVariable("vi")), Double.parseDouble(v.getVariable("ep") + "d") / 100d), false));
                             break;
                         case SECANTE:
                             game.getScreen().dispose();
-                            game.setScreen(new RenderScreen(game, new Secante(v.getVariable("fx"), Double.parseDouble(v.getVariable("xi_1") + "d"), Double.parseDouble(v.getVariable("xi") + "d"), Double.parseDouble(v.getVariable("ep") + "d") / 100d)));
+                            game.setScreen(new RenderScreen(game, new Secante(v.getVariable("fx"), Double.parseDouble(v.getVariable("xi_1") + "d"), Double.parseDouble(v.getVariable("xi") + "d"), Double.parseDouble(v.getVariable("ep") + "d") / 100d), false));
                             break;
                     }
             } catch (Exception ex) {
