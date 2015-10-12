@@ -38,7 +38,7 @@ public class TablaResultados extends VisWindow {
         if(!stage.getActors().contains(this, true)) {
             stage.addActor(this);
             fadeIn();
-            setSize(pane.getWidth() * 1.2f, Gdx.graphics.getHeight() * 0.20f);
+            setSize(pane.getWidth() * 1.2f, Gdx.graphics.getHeight() * 0.2f);
             setPosition((Gdx.graphics.getWidth() - getWidth()) / 2f, (Gdx.graphics.getHeight() - getHeight()) / 2f);
         } else {
             addAction(Actions.sequence(Actions.color(new Color(0, 0.819f, 1, 1), 0.2f), Actions.color(Color.WHITE, 0.2f)));
