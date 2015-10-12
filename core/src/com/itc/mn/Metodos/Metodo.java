@@ -1,11 +1,12 @@
 package com.itc.mn.Metodos;
 
 import com.itc.mn.Cosas.FuncionX;
+import com.itc.mn.Cosas.Results;
 
 import java.util.ArrayList;
 
 /**
- * Created by zero_ on 25/09/2015.
+ * Default base-class for Methods
  */
 public strictfp class Metodo {
 
@@ -29,6 +30,18 @@ public strictfp class Metodo {
         paso_r = 0.001d;
         // Inicializamos el error
         error = 1d;
+    }
+
+    public Metodo() {
+    }
+
+    public Metodo(Results result) {
+        this.tipo = result.getTipo();
+        this.raiz = result.getRaiz();
+        this.funcion = result.getFuncion();
+        this.encabezados = result.getEncabezados();
+        this.titulo_ventana = result.getTitulo();
+        this.resultados = result.getResultados();
     }
 
     public void creaTitulo(){
@@ -114,7 +127,7 @@ public strictfp class Metodo {
 
     /**
      * Regresa los datos, en este caso, una tabla con los valores correspondientes (i, x, fx, fg, xi, etx...)
-     * @return
+     * @return Results arrray
      */
     public ArrayList<double[]> getResultados(){
         return resultados;

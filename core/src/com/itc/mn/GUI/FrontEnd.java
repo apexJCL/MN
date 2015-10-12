@@ -1,8 +1,10 @@
 package com.itc.mn.GUI;
 
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -19,6 +21,9 @@ import com.itc.mn.Pantallas.RenderScreen;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.*;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
+import com.kotcrab.vis.ui.widget.file.FileChooserAdapter;
+
+import java.io.File;
 
 /**
  * This is the class that will hold all the GUI elements, creation and stuff
@@ -40,13 +45,16 @@ public class FrontEnd extends Stage {
     private VisTextField entrada;
     private VisLabel funcion;
     private FileChooser fileChooser;
-    private Json json;
+    private Json json = new Json();
+    private String fileToSave;
+
 
     public FrontEnd(Viewport viewport, Game game, Pantalla pantalla) {
         super(viewport);
         this.game = game;
         this.pantalla = pantalla;
         VisUI.load();
+        loadFileChooser();
         // We begin with the GUI creation
         table = new VisTable(); // A general table that will hold all our components
         table.setSize(Gdx.graphics.getWidth() * 0.95f, Gdx.graphics.getHeight());
@@ -93,6 +101,7 @@ public class FrontEnd extends Stage {
         this.pantalla = pantalla;
         this.isInputVisible = isInputVisible;
         VisUI.load();
+        loadFileChooser();
         // We begin with the GUI creation
         table = new VisTable(); // A general table that will hold all our components
         table.setSize(Gdx.graphics.getWidth() * 0.95f, Gdx.graphics.getHeight());
@@ -132,6 +141,36 @@ public class FrontEnd extends Stage {
             }
         });
         Gdx.input.setCatchMenuKey(true);
+    }
+
+    public void loadFileChooser() {
+        fileChooser = new FileChooser(FileChooser.Mode.OPEN); // By default in Open mode
+        fileChooser.setSelectionMode(FileChooser.SelectionMode.FILES); // We only want to load files
+        fileChooser.setMultiSelectionEnabled(false); // We disable multiselection
+        fileChooser.setFileFilter(new FileChooser.DefaultFileFilter(fileChooser) {
+            @Override
+            public boolean accept(File f) {
+                return f.getName().matches("(.*\\.mn*)");
+            }
+        });
+        fileChooser.setListener(new FileChooserAdapter() {
+            @Override
+            public void selected(FileHandle file) {
+                System.out.println(fileChooser.getMode());
+                if (fileChooser.getMode().equals(FileChooser.Mode.SAVE)) {
+                    if (file.name().matches("(.*\\.mn*)")) {
+                        file.writeString(fileToSave, false);
+                    } else {
+                        file.writeString(fileToSave, false);
+                        FileHandle newFile = Gdx.files.getFileHandle(file.path(), Files.FileType.Absolute);
+                        newFile.moveTo(Gdx.files.getFileHandle(file.path() + ".mn", Files.FileType.Absolute));
+                    }
+                } else if (fileChooser.getMode().equals(FileChooser.Mode.OPEN)) {
+                    Object results = json.fromJson(Results.class, file);
+                    game.setScreen(new RenderScreen(game, (Results) results));
+                }
+            }
+        });
     }
 
     public boolean setInputVisible(boolean inputVisible) {
@@ -425,6 +464,10 @@ public class FrontEnd extends Stage {
         tabla_res = new TablaResultados(metodo);
     }
 
+    public void createTableRes(Results res) {
+        tabla_res = new TablaResultados(res);
+    }
+
     public enum Accion {
         ABRIR, GUARDAR, CERRAR
     }
@@ -435,32 +478,36 @@ public class FrontEnd extends Stage {
 
         public FileAction(Accion accion) {
             this.accion = accion;
+        }
+
+        private FileChooser.Mode setMode() {
             switch (accion) {
                 case ABRIR:
-                    fileChooser = new FileChooser(FileChooser.Mode.OPEN);
-                    break;
+                    return FileChooser.Mode.OPEN;
                 case GUARDAR:
-                    fileChooser = new FileChooser(FileChooser.Mode.SAVE);
-                    //fileChooser.addListener(new FileChooserAdapter());
-                    break;
-                case CERRAR:
-                    break;
+                    return FileChooser.Mode.SAVE;
             }
+            return null;
         }
 
         @Override
         public void clicked(InputEvent event, float x, float y) {
+            fileChooser.setMode(setMode());
             switch (accion) {
                 case ABRIR:
+                    addActor(fileChooser.fadeIn());
                     break;
                 case GUARDAR:
                     RenderScreen actual = (RenderScreen) game.getScreen();
                     if (actual.getMetodo() == null)
                         addActor(new VentanaMensajes("Lo sentimos.", "No hay algo que guardar.").fadeIn());
                     else {
-                        String file = buildJson(actual.getMetodo());
-                        addActor(fileChooser);
+                        fileToSave = buildJson(actual.getMetodo());
+                        addActor(fileChooser.fadeIn());
                     }
+                    break;
+                case CERRAR:
+                    Gdx.app.exit();
                     break;
             }
         }
@@ -473,7 +520,7 @@ public class FrontEnd extends Stage {
             results.setRaiz(metodo.raiz);
             results.setResultados(metodo.getResultados());
             results.setTitulo(metodo.getTitulo());
-            return json.toJson(results);
+            return json.prettyPrint(results);
         }
     }
 }

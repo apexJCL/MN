@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.itc.mn.Cosas.Const;
+import com.itc.mn.Cosas.Results;
 import com.itc.mn.Metodos.Metodo;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
@@ -23,6 +24,20 @@ public class TablaResultados extends VisWindow {
         super(metodo.getTitulo());
         this.metodo = metodo;
         // Inicializamos la tabla interna para los valores
+        innerTable = new VisTable();
+        closeOnEscape();
+        addCloseButton();
+        buildTable();
+        pane = new VisScrollPane(innerTable);
+        add(pane).expand().fill();
+        setResizable(true);
+        setResizeBorder(10);
+        pane.pack();
+    }
+
+    public TablaResultados(Results res) {
+        super(res.getTitulo());
+        this.metodo = new Metodo(res);
         innerTable = new VisTable();
         closeOnEscape();
         addCloseButton();

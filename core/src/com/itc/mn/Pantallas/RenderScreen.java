@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.itc.mn.Cosas.FuncionX;
+import com.itc.mn.Cosas.Results;
 import com.itc.mn.Metodos.Metodo;
 import com.kotcrab.vis.ui.widget.VisTextField;
 
@@ -69,6 +70,16 @@ public class RenderScreen extends Pantalla {
         gui_stage.createTablaRes(metodo);
         gui_stage.enableIterTable(true);
         gui_stage.setInputVisible(inputEnabled);
+    }
+
+    public RenderScreen(Game game, Results results) {
+        super(game);
+        this.valores = new FuncionX(results.getFuncion()).obtenerRango(-10, 10);
+        this.raiz = results.getRaiz();
+        isRootAvailable = true;
+        gui_stage.createTableRes(results);
+        gui_stage.enableIterTable(true);
+        gui_stage.setInputVisible(false);
     }
 
     /**
