@@ -18,7 +18,7 @@ import com.kotcrab.vis.ui.widget.VisTextField;
 import com.kotcrab.vis.ui.widget.VisWindow;
 
 /**
- * Created by zero_ on 02/10/2015.
+ * This class generates the windows for the input
  */
 public class VentanaValores extends VisWindow {
 
@@ -37,12 +37,9 @@ public class VentanaValores extends VisWindow {
      */
     public VentanaValores(String title, String[][] campos, Game game, Metodo.Tipo tipo) {
         super(title);
-        // La v se llamara igual que el titulo que reciba
-        setName(title);
-        // Una referencia a Game para poder intercambiar la pantalla
-        this.game = game;
-        // Guardamos referencia al tip
-        this.tipo = tipo;
+        setName(title); // La ventana se llamara igual que el titulo que reciba
+        this.game = game; // Una referencia a Game para poder intercambiar la pantalla
+        this.tipo = tipo; // Guardamos referencia al tipo
         for(String[] campo: campos){
             VisTextField tmp = new VisTextField();
             tmp.setMessageText(campo[0]);
@@ -71,12 +68,6 @@ public class VentanaValores extends VisWindow {
         pack();
         setPosition((Gdx.graphics.getWidth()-getWidth())/2f, (Gdx.graphics.getHeight()-getHeight())/2f);
     }
-
-    /**
-     * Devuelve la referencia al actor boton Aceptar
-     * @return
-     */
-    public VisTextButton getAceptar(){ return aceptar; }
 
     /**
      * Asigna una cadena vacia a los nombres de los actores para evitar checar si es nulo o no
@@ -130,7 +121,7 @@ public class VentanaValores extends VisWindow {
     /**
      * Regresa el valor contenido en alguno de los campos/variables declaradas, por defecto TextArea
      * @param variable Nombre de la variable asignado en su creacion
-     * @return
+     * @return the current variable in use
      * @throws Exception No se encuentra la variable solicitada
      */
     public String getVariable(String variable) throws Exception{
@@ -143,8 +134,8 @@ public class VentanaValores extends VisWindow {
 
     /**
      * Regresa un actor con un nombre determinado
-     * @param nombre
-     * @return
+     * @param nombre Nombre del actor a recuperar
+     * @return Actor
      */
     public Actor getActor(String nombre){
         for(Actor actor: getChildren())
@@ -157,12 +148,12 @@ public class VentanaValores extends VisWindow {
      * Parpadea la ventana, para llamar la atencion
      */
     public void parpadear(){
-        addAction(Actions.sequence(Actions.alpha(0.5f, 0.03f), Actions.alpha(1, 0.03f), Actions.alpha(0.5f, 0.03f), Actions.alpha(1, 0.03f)));
+        addAction(Actions.sequence(Actions.alpha(0.5f, 0.05f), Actions.alpha(1, 0.05f), Actions.alpha(0.5f, 0.05f), Actions.alpha(1, 0.05f)));
     }
 
     /**
      * Asigna un evento personalizado dependiendo del tipo de metodo a ejecutar
-     * @param tipo
+     * @param tipo Tipo de Metodo
      */
     public void asignaEvento(Metodo.Tipo tipo){
         aceptar.addListener(new Proceso(this, tipo));
@@ -233,6 +224,9 @@ public class VentanaValores extends VisWindow {
         }
     }
 
+    /**
+     * This class handles the native android dialog input to avoid VisUI input lag on Android
+     */
     private class AndroidInput extends ClickListener implements Input.TextInputListener{
 
         private VisTextField field;

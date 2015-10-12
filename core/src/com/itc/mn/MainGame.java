@@ -8,7 +8,7 @@ public class MainGame extends Game {
 	@Override
 	public void create () {
 		this.setScreen(new RenderScreen(this));
-	}
+    }
 
 	@Override
 	public void render () {
