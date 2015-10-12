@@ -3,7 +3,7 @@ package com.itc.mn.Metodos;
 import com.itc.mn.Cosas.FuncionX;
 
 /**
- * Created by zero_ on 11/09/2015.
+ * Bisection Method
  */
 public class Biseccion extends Metodo {
 
@@ -34,34 +34,18 @@ public class Biseccion extends Metodo {
 
     public void calculaRaiz(){
         do {
+            xr = (v_inicial + v_final) / 2d;
+            resultados.add(new double[]{contador, v_inicial, v_final, fa.obtenerValor(v_inicial), fb.obtenerValor(v_final), xr, fx.obtenerValor(xr), error * 100d});
             if (xranterior != null)
                 error = Math.abs((xr - xranterior) / xr);
-            xr = (v_inicial + v_final) / 2d;
-            System.out.println(fx.obtenerValor() * fa.obtenerValor());
-            if((fx.obtenerValor()*fa.obtenerValor()) > 0)
-                v_inicial = xr;
-            else if((fx.obtenerValor()*fa.obtenerValor()) < 0)
+            if (fa.obtenerValor() * fx.obtenerValor() < 0)
                 v_final = xr;
+            else if (fa.obtenerValor() * fx.obtenerValor() > 0)
+                v_inicial = xr;
             xranterior = xr;
-            resultados.add(new double[]{contador, v_inicial, v_final, fa.obtenerValor(v_inicial), fb.obtenerValor(v_final), xr, fx.obtenerValor(xr), error * 100d});
             contador++;
         }
-        while (error > ep && (fa.obtenerValor()) * fx.obtenerValor() != 0);
+        while (error > ep && Math.abs(fa.obtenerValor() * fx.obtenerValor()) != 0d);
         raiz = xr;
-//        xr = (v_inicial + v_final)/2d;
-//        resultados.add(new double[]{contador, v_inicial, v_final, fa.obtenerValor(v_inicial), fb.obtenerValor(v_final), xr, fx.obtenerValor(xr), 1});
-//        while (error > ep && (fa.obtenerValor()*fx.obtenerValor()) != 0){
-//            if((fx.obtenerValor()*fa.obtenerValor()) > 0)
-//                v_inicial = xr;
-//            else if((fx.obtenerValor()*fa.obtenerValor()) < 0)
-//                v_final = xr;
-//            xranterior = xr;
-//            xr = (v_inicial + v_final)/2d;
-//            error = Math.abs((xr-xranterior)/xr);
-//            contador++;
-//            resultados.add(new double[]{contador, v_inicial, v_final, fa.obtenerValor(v_inicial), fb.obtenerValor(v_final), xr, fx.obtenerValor(xr),error*100d});
-//            System.out.println(error);
-//        }
-//        raiz = xr;
     }
 }
