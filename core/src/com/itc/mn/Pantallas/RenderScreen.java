@@ -151,6 +151,10 @@ public class RenderScreen extends Pantalla {
         shapeRenderer.end();
     }
 
+    public Metodo getMetodo() {
+        return metodo;
+    }
+
     @Override
     public void render(float delta) {
         super.render(delta);

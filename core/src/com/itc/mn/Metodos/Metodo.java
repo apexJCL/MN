@@ -72,6 +72,10 @@ public strictfp class Metodo {
         return raiz;
     }
 
+    public Tipo _getTipo() {
+        return tipo;
+    }
+
     public String getTipo(){
         switch (tipo){
             case PUNTO_FIJO:

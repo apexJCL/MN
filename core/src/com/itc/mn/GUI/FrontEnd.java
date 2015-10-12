@@ -10,12 +10,15 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.itc.mn.Cosas.Results;
 import com.itc.mn.Metodos.Metodo;
 import com.itc.mn.Pantallas.Pantalla;
 import com.itc.mn.Pantallas.RenderScreen;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.*;
+import com.kotcrab.vis.ui.widget.file.FileChooser;
 
 /**
  * This is the class that will hold all the GUI elements, creation and stuff
@@ -26,16 +29,18 @@ public class FrontEnd extends Stage {
     protected boolean isInputVisible = true;
     private final Pantalla pantalla;
     private final VisTable table;
-    private final PopupMenu m_metodos;
     private final PopupMenu menu;
     private final Game game;
-    private MenuItem banner, graficador, tabla_iter, configuracion, metodos_biseccion, metodos_reglafalsa, metodos_nrapson, metodos_PFijo, metodos_secante;
+    private PopupMenu m_metodos, m_archivo;
+    private MenuItem banner, archivo, a_abrir, a_guardar, a_salir, graficador, tabla_iter, configuracion, metodos_biseccion, metodos_reglafalsa, metodos_nrapson, metodos_PFijo, metodos_secante;
     private VentanaValores ventanaValores;
     private MenuItem metodos, matrices;
     private int lastKey;
     private VisSlider ejeX, ejeY;
     private VisTextField entrada;
     private VisLabel funcion;
+    private FileChooser fileChooser;
+    private Json json;
 
     public FrontEnd(Viewport viewport, Game game, Pantalla pantalla) {
         super(viewport);
@@ -97,6 +102,7 @@ public class FrontEnd extends Stage {
         menu = new PopupMenu();
         // Instantiate the submenu
         m_metodos = new PopupMenu();
+        m_archivo = new PopupMenu();
         createMenu();
         // FInally, we add the table to the stage, so everything falls in place
         addActor(table);
@@ -222,14 +228,23 @@ public class FrontEnd extends Stage {
         banner.setColor(Color.CYAN);
         // Create each menu element
         metodos = new MenuItem("Metodo");
+        archivo = new MenuItem("Archivo");
+        // We define the submenues
+        metodos.setSubMenu(m_metodos);
+        archivo.setSubMenu(m_archivo);
         // We create the other element
         matrices = new MenuItem("Matrices");
-        metodos.setSubMenu(m_metodos);
         graficador = new MenuItem("Graficador");
         tabla_iter = new MenuItem("Tabla iteraciones");
         tabla_iter.setDisabled(true);
         configuracion = new MenuItem("Configuracion");
         // Instantiate the elements of submenu methods
+        a_abrir = new MenuItem("Abrir");
+        a_abrir.setShortcut("Ctrl+O");
+        a_guardar = new MenuItem("Guardar");
+        a_guardar.setShortcut("Ctrl+S");
+        a_salir = new MenuItem("Salir");
+        a_salir.setShortcut("Ctrl+E");
         metodos_biseccion = new MenuItem("Biseccion");
         metodos_reglafalsa = new MenuItem("Regla Falsa");
         metodos_PFijo = new MenuItem("Punto Fijo");
@@ -239,6 +254,7 @@ public class FrontEnd extends Stage {
         asignaEventos();
         // Add the elements to the submenu
         menu.addItem(banner);
+        menu.addItem(archivo);
         menu.addItem(metodos);
         menu.addItem(matrices);
         menu.addItem(graficador);
@@ -246,6 +262,9 @@ public class FrontEnd extends Stage {
         menu.addSeparator();
         menu.addItem(configuracion);
         // Add the elements to the submenu
+        m_archivo.addItem(a_abrir);
+        m_archivo.addItem(a_guardar);
+        m_archivo.addItem(a_salir);
         m_metodos.addItem(metodos_biseccion);
         m_metodos.addItem(metodos_reglafalsa);
         m_metodos.addItem(metodos_PFijo);
@@ -254,6 +273,9 @@ public class FrontEnd extends Stage {
     }
 
     private void asignaEventos() {
+        a_abrir.addListener(new FileAction(Accion.ABRIR));
+        a_guardar.addListener(new FileAction(Accion.GUARDAR));
+        a_salir.addListener(new FileAction(Accion.CERRAR));
         graficador.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -401,5 +423,57 @@ public class FrontEnd extends Stage {
 
     public void createTablaRes(Metodo metodo) {
         tabla_res = new TablaResultados(metodo);
+    }
+
+    public enum Accion {
+        ABRIR, GUARDAR, CERRAR
+    }
+
+    private class FileAction extends ClickListener {
+
+        private Accion accion;
+
+        public FileAction(Accion accion) {
+            this.accion = accion;
+            switch (accion) {
+                case ABRIR:
+                    fileChooser = new FileChooser(FileChooser.Mode.OPEN);
+                    break;
+                case GUARDAR:
+                    fileChooser = new FileChooser(FileChooser.Mode.SAVE);
+                    //fileChooser.addListener(new FileChooserAdapter());
+                    break;
+                case CERRAR:
+                    break;
+            }
+        }
+
+        @Override
+        public void clicked(InputEvent event, float x, float y) {
+            switch (accion) {
+                case ABRIR:
+                    break;
+                case GUARDAR:
+                    RenderScreen actual = (RenderScreen) game.getScreen();
+                    if (actual.getMetodo() == null)
+                        addActor(new VentanaMensajes("Lo sentimos.", "No hay algo que guardar.").fadeIn());
+                    else {
+                        String file = buildJson(actual.getMetodo());
+                        addActor(fileChooser);
+                    }
+                    break;
+            }
+        }
+
+        private String buildJson(Metodo metodo) {
+            Results results = new Results();
+            results.setTipo(metodo._getTipo());
+            results.setEncabezados(metodo.getEncabezados());
+            results.setFuncion(metodo.getFuncion());
+            results.setRaiz(metodo.raiz);
+            results.setResultados(metodo.getResultados());
+            results.setTitulo(metodo.getTitulo());
+            return json.toJson(results);
+        }
     }
 }
