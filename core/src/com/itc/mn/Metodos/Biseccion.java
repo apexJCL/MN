@@ -47,5 +47,6 @@ public class Biseccion extends Metodo {
         }
         while (error > ep && Math.abs(fa.obtenerValor() * fx.obtenerValor()) != 0d);
         raiz = xr;
+        resultados.add(new double[]{contador, v_inicial, v_final, fa.obtenerValor(v_inicial), fb.obtenerValor(v_final), xr, fx.obtenerValor(xr), error * 100d});
     }
 }
