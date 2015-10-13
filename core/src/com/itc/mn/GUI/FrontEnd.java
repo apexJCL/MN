@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.itc.mn.Cosas.Const;
 import com.itc.mn.Cosas.Results;
 import com.itc.mn.Metodos.Metodo;
 import com.itc.mn.Pantallas.Pantalla;
@@ -47,14 +48,16 @@ public class FrontEnd extends Stage {
     private FileChooser fileChooser;
     private Json json = new Json();
     private String fileToSave;
-
+    private VentanaConfig v_config;
+    private Const config = new Const();
 
     public FrontEnd(Viewport viewport, Game game, Pantalla pantalla) {
         super(viewport);
         this.game = game;
         this.pantalla = pantalla;
         VisUI.load();
-        loadFileChooser();
+        loadFileChooser(); // Setup the FileChooser
+        v_config = new VentanaConfig(this); // Instantiate the configuration Window
         // We begin with the GUI creation
         table = new VisTable(); // A general table that will hold all our components
         table.setSize(Gdx.graphics.getWidth() * 0.95f, Gdx.graphics.getHeight());
@@ -101,7 +104,8 @@ public class FrontEnd extends Stage {
         this.pantalla = pantalla;
         this.isInputVisible = isInputVisible;
         VisUI.load();
-        loadFileChooser();
+        loadFileChooser(); // Instantiate file chooser
+        v_config = new VentanaConfig(this); // Instantiate the configuration Window
         // We begin with the GUI creation
         table = new VisTable(); // A general table that will hold all our components
         table.setSize(Gdx.graphics.getWidth() * 0.95f, Gdx.graphics.getHeight());
@@ -143,14 +147,17 @@ public class FrontEnd extends Stage {
         Gdx.input.setCatchMenuKey(true);
     }
 
-    public void loadFileChooser() {
-        fileChooser = new FileChooser(FileChooser.Mode.OPEN); // By default in Open mode
-        fileChooser.setSelectionMode(FileChooser.SelectionMode.FILES); // We only want to load files
+    /**
+     * This method instantiates and defines our Desktop FileChooser
+     */
+    private void loadFileChooser() {
+        fileChooser = new FileChooser(new FileHandle(Gdx.files.getExternalStoragePath()), FileChooser.Mode.OPEN); // By default in Open mode
+        fileChooser.setDirectory(Gdx.files.getExternalStoragePath());
         fileChooser.setMultiSelectionEnabled(false); // We disable multiselection
         fileChooser.setFileFilter(new FileChooser.DefaultFileFilter(fileChooser) {
             @Override
             public boolean accept(File f) {
-                return f.getName().matches("(.*\\.mn*)");
+                return f.getName().matches("(.*\\.mn*)") || f.isDirectory();
             }
         });
         fileChooser.setListener(new FileChooserAdapter() {
@@ -232,10 +239,6 @@ public class FrontEnd extends Stage {
         table.add(restablece).right().expandY().bottom().pad(5f);
     }
 
-    public void setinputtVisible(boolean inputVisible) {
-        this.isInputVisible = inputVisible;
-    }
-
     public VisTextField getInputField() {
         return entrada;
     }
@@ -243,6 +246,9 @@ public class FrontEnd extends Stage {
     public VisSlider getEjeX() {
         return ejeX;
     }
+
+    public Const getConfig() { return config; }
+    public void setConfig(Const config){ this.config = config; }
 
     public VisSlider getEjeY() {
         return ejeY;
@@ -276,7 +282,7 @@ public class FrontEnd extends Stage {
         graficador = new MenuItem("Graficador");
         tabla_iter = new MenuItem("Tabla iteraciones");
         tabla_iter.setDisabled(true);
-        configuracion = new MenuItem("Configuracion");
+        configuracion = new MenuItem("Ajustes");
         // Instantiate the elements of submenu methods
         a_abrir = new MenuItem("Abrir");
         a_abrir.setShortcut("Ctrl+O");
@@ -337,7 +343,7 @@ public class FrontEnd extends Stage {
         configuracion.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                addActor(new VentanaConfig().fadeIn());
+                addActor(v_config.fadeIn());
             }
         });
         //Para biseccion
@@ -461,7 +467,7 @@ public class FrontEnd extends Stage {
     }
 
     public void createTablaRes(Metodo metodo) {
-        tabla_res = new TablaResultados(metodo);
+        tabla_res = new TablaResultados(metodo, config);
     }
 
     public void createTableRes(Results res) {
@@ -493,6 +499,7 @@ public class FrontEnd extends Stage {
         @Override
         public void clicked(InputEvent event, float x, float y) {
             fileChooser.setMode(setMode());
+            fileChooser.setSize(Gdx.graphics.getWidth()*0.4f, Gdx.graphics.getHeight()*0.6f);
             switch (accion) {
                 case ABRIR:
                     addActor(fileChooser.fadeIn());

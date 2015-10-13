@@ -19,10 +19,12 @@ public class TablaResultados extends VisWindow {
     private VisTable innerTable;
     private VisScrollPane pane;
     private Const constants = new Const();
+    private Const conf;
 
-    public TablaResultados(Metodo metodo) {
+    public TablaResultados(Metodo metodo, Const conf) {
         super(metodo.getTitulo());
         this.metodo = metodo;
+        this.conf = conf;
         // Inicializamos la tabla interna para los valores
         innerTable = new VisTable();
         closeOnEscape();
@@ -66,7 +68,7 @@ public class TablaResultados extends VisWindow {
         innerTable.row();
         for (double[] valores : metodo.getResultados()) {
             for (double valor : valores)
-                innerTable.add(new DecimalFormat(constants.getFormat()).format(valor)).left().expandX();
+                innerTable.add(new DecimalFormat(conf.getFormat()).format(valor)).left().expandX();
             innerTable.row();
         }
     }
