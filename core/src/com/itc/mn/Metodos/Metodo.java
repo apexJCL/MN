@@ -17,7 +17,7 @@ public strictfp class Metodo {
 
     public Tipo tipo;
     public ArrayList<double[]> resultados;
-    public double inicio_r, fin_r, paso_r, v_inicial, v_final, x_i, xi;
+    public Double inicio_r, fin_r, paso_r, v_inicial, v_final, x_i, xi;
     public double raiz, ep, error;
     protected String funcion, funcion2, ep_porcentual;
     protected int contador;

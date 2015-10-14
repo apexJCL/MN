@@ -51,7 +51,7 @@ public class FrontEnd extends Stage {
 
     public FrontEnd(Viewport viewport, Game game, Pantalla pantalla) {
         super(viewport);
-        buildConfig();
+        config = json.fromJson(Const.class, Gdx.app.getPreferences(Const.pref_name).getString(Const.id));
         this.game = game;
         this.pantalla = pantalla;
         VisUI.load();
@@ -99,7 +99,7 @@ public class FrontEnd extends Stage {
 
     public FrontEnd(Viewport viewport, Game game, Pantalla pantalla, boolean isInputVisible) {
         super(viewport);
-        buildConfig();
+        config = json.fromJson(Const.class, Gdx.app.getPreferences(Const.pref_name).getString(Const.id));
         this.game = game;
         this.pantalla = pantalla;
         this.isInputVisible = isInputVisible;
@@ -145,18 +145,6 @@ public class FrontEnd extends Stage {
             }
         });
         Gdx.input.setCatchMenuKey(true);
-    }
-
-    private void buildConfig(){
-        String generalPreferences = preferences.getString(Const.id);
-        if(generalPreferences.length() <= 1) {
-            Const tmp = new Const();
-            preferences.putString(Const.id, json.prettyPrint(tmp));
-            config = tmp;
-            preferences.flush();
-        }
-        else
-            config = json.fromJson(Const.class, generalPreferences);
     }
 
     public Const getConfig(){
@@ -496,6 +484,8 @@ public class FrontEnd extends Stage {
     public void createTableRes(Results res) {
         tabla_res = new TablaResultados(res, this);
     }
+
+    public void showTablaIter(){ tabla_res.show(getStage());}
 
     public enum Accion {
         ABRIR, GUARDAR, CERRAR

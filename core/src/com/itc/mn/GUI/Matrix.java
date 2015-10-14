@@ -140,7 +140,6 @@ public class Matrix extends VisWindow {
         private String fixString(String matrix) {
             return matrix.replace(" ", "");
         }
-
         private double[][] generateMatrix(String input) throws Exception {
             ArrayList<String> rowHolder = new ArrayList(0);
             ArrayList<String> numbers = new ArrayList(0);

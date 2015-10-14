@@ -74,6 +74,7 @@ public class RenderScreen extends Pantalla {
         gui_stage.createTablaRes(metodo);
         gui_stage.enableIterTable(true);
         gui_stage.setInputVisible(inputEnabled);
+        gui_stage.showTablaIter();
     }
 
     public RenderScreen(Game game, Results results) {
@@ -84,6 +85,7 @@ public class RenderScreen extends Pantalla {
         gui_stage.createTableRes(results);
         gui_stage.enableIterTable(true);
         gui_stage.setInputVisible(false);
+        gui_stage.showTablaIter();
     }
 
     /**

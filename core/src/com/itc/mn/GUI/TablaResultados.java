@@ -46,13 +46,17 @@ public class TablaResultados extends VisWindow {
         setResizable(true);
         setResizeBorder(10);
         pane.pack();
+        pane.setScrollbarsOnTop(false);
     }
 
     public void show(Stage stage){
         if(!stage.getActors().contains(this, true)) {
             stage.addActor(this);
             fadeIn();
-            setSize(pane.getWidth() * 1.2f, Gdx.graphics.getHeight() * 0.2f);
+            if(pane.getWidth() < Gdx.graphics.getWidth())
+                setSize(pane.getWidth() * 1.2f, Gdx.graphics.getHeight() * 0.2f);
+            else
+                setSize(pane.getWidth() * 0.8f, Gdx.graphics.getHeight() * 0.2f);
             setPosition((Gdx.graphics.getWidth() - getWidth()) / 2f, (Gdx.graphics.getHeight() - getHeight()) / 2f);
         } else {
             addAction(Actions.sequence(Actions.color(new Color(0, 0.819f, 1, 1), 0.2f), Actions.color(Color.WHITE, 0.2f)));
@@ -65,7 +69,7 @@ public class TablaResultados extends VisWindow {
         innerTable.row();
         for (double[] valores : metodo.getResultados()) {
             for (double valor : valores)
-                innerTable.add(new DecimalFormat(format).format(valor)).left().expandX();
+                innerTable.add(new DecimalFormat(format).format(valor)).left().padRight(5f).expandX();
             innerTable.row();
         }
     }

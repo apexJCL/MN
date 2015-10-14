@@ -35,10 +35,13 @@ public class Secante extends Metodo {
             xi1 = xi - ((fx.obtenerValor(xi) * (x_i - xi)) / (fx_1.obtenerValor(x_i) - fx.obtenerValor(xi)));
             if (xi1ant != null) {
                 error = Math.abs((xi1 - xi1ant) / xi1);
-                resultados.add(new double[]{contador, x_i, xi, fx_1.obtenerValor(), fx.obtenerValor(), xi1, fx1.obtenerValor(), error * 100d});
+                resultados.add(new double[]{contador, x_i, xi, fx_1.obtenerValor(), fx.obtenerValor(), xi1, fx1.obtenerValor(xi1), error * 100d});
             } else
                 resultados.add(new double[]{contador, x_i, xi, fx_1.obtenerValor(), fx.obtenerValor(), xi1, fx1.obtenerValor(), 100d});
             xi1ant = xi1;
+            x_i = xi;
+            xi = xi1;
+            contador++;
         }
         while (error > ep);
         raiz = xi1;
