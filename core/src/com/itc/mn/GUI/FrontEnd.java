@@ -1,9 +1,6 @@
 package com.itc.mn.GUI;
 
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -49,15 +46,17 @@ public class FrontEnd extends Stage {
     private Json json = new Json();
     private String fileToSave;
     private VentanaConfig v_config;
-    private Const config = new Const();
+    public Const config;
+    private Preferences preferences = Gdx.app.getPreferences(Const.pref_name);
 
     public FrontEnd(Viewport viewport, Game game, Pantalla pantalla) {
         super(viewport);
+        buildConfig();
         this.game = game;
         this.pantalla = pantalla;
         VisUI.load();
         loadFileChooser(); // Setup the FileChooser
-        v_config = new VentanaConfig(this); // Instantiate the configuration Window
+        v_config = new VentanaConfig(); // Instantiate the preferences Window
         // We begin with the GUI creation
         table = new VisTable(); // A general table that will hold all our components
         table.setSize(Gdx.graphics.getWidth() * 0.95f, Gdx.graphics.getHeight());
@@ -100,12 +99,13 @@ public class FrontEnd extends Stage {
 
     public FrontEnd(Viewport viewport, Game game, Pantalla pantalla, boolean isInputVisible) {
         super(viewport);
+        buildConfig();
         this.game = game;
         this.pantalla = pantalla;
         this.isInputVisible = isInputVisible;
         VisUI.load();
         loadFileChooser(); // Instantiate file chooser
-        v_config = new VentanaConfig(this); // Instantiate the configuration Window
+        v_config = new VentanaConfig(); // Instantiate the preferences Window
         // We begin with the GUI creation
         table = new VisTable(); // A general table that will hold all our components
         table.setSize(Gdx.graphics.getWidth() * 0.95f, Gdx.graphics.getHeight());
@@ -145,6 +145,23 @@ public class FrontEnd extends Stage {
             }
         });
         Gdx.input.setCatchMenuKey(true);
+    }
+
+    private void buildConfig(){
+        String generalPreferences = preferences.getString(Const.id);
+        if(generalPreferences.length() <= 1) {
+            Const tmp = new Const();
+            preferences.putString(Const.id, json.prettyPrint(tmp));
+            config = tmp;
+            preferences.flush();
+        }
+        else
+            config = json.fromJson(Const.class, generalPreferences);
+    }
+
+    public Const getConfig(){
+        Const tmp = json.fromJson(Const.class, preferences.getString(Const.id));
+        return tmp;
     }
 
     /**
@@ -247,7 +264,6 @@ public class FrontEnd extends Stage {
         return ejeX;
     }
 
-    public Const getConfig() { return config; }
     public void setConfig(Const config){ this.config = config; }
 
     public VisSlider getEjeY() {
@@ -261,6 +277,7 @@ public class FrontEnd extends Stage {
     public PopupMenu getMenu() {
         return menu;
     }
+
     public boolean enableIterTable(boolean flag) {
         tabla_iter.setDisabled(!flag);
         return true;
@@ -467,11 +484,11 @@ public class FrontEnd extends Stage {
     }
 
     public void createTablaRes(Metodo metodo) {
-        tabla_res = new TablaResultados(metodo, config);
+        tabla_res = new TablaResultados(metodo, this);
     }
 
     public void createTableRes(Results res) {
-        tabla_res = new TablaResultados(res);
+        tabla_res = new TablaResultados(res, this);
     }
 
     public enum Accion {

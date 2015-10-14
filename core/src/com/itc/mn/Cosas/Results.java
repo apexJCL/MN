@@ -15,8 +15,7 @@ public class Results {
     private Double raiz;
     private String funcion, titulo;
 
-    public Results() {
-    }
+    public Results() { }
 
     public void setEncabezados(String[] encabezados) {
         this.encabezados = encabezados;
@@ -54,9 +53,7 @@ public class Results {
         return resultados;
     }
 
-    public String getTitulo() {
-        return titulo;
-    }
+    public String getTitulo() { return titulo; }
 
     public Double getRaiz() {
         return raiz;

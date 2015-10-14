@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.itc.mn.Cosas.Const;
 import com.itc.mn.Cosas.Results;
 import com.itc.mn.Metodos.Metodo;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
@@ -18,18 +17,16 @@ public class TablaResultados extends VisWindow {
     private Metodo metodo;
     private VisTable innerTable;
     private VisScrollPane pane;
-    private Const constants = new Const();
-    private Const conf;
 
-    public TablaResultados(Metodo metodo, Const conf) {
+
+    public TablaResultados(Metodo metodo, FrontEnd gui) {
         super(metodo.getTitulo());
         this.metodo = metodo;
-        this.conf = conf;
         // Inicializamos la tabla interna para los valores
         innerTable = new VisTable();
         closeOnEscape();
         addCloseButton();
-        buildTable();
+        buildTable(gui.getConfig().getFormat());
         pane = new VisScrollPane(innerTable);
         add(pane).expand().fill();
         setResizable(true);
@@ -37,13 +34,13 @@ public class TablaResultados extends VisWindow {
         pane.pack();
     }
 
-    public TablaResultados(Results res) {
+    public TablaResultados(Results res, FrontEnd gui) {
         super(res.getTitulo());
         this.metodo = new Metodo(res);
         innerTable = new VisTable();
         closeOnEscape();
         addCloseButton();
-        buildTable();
+        buildTable(gui.getConfig().getFormat());
         pane = new VisScrollPane(innerTable);
         add(pane).expand().fill();
         setResizable(true);
@@ -62,13 +59,13 @@ public class TablaResultados extends VisWindow {
         }
     }
 
-    private void buildTable(){
+    private void buildTable(String format){
         for(String s: metodo.getEncabezados())
             innerTable.add(s).left().expandX().pad(5f);
         innerTable.row();
         for (double[] valores : metodo.getResultados()) {
             for (double valor : valores)
-                innerTable.add(new DecimalFormat(conf.getFormat()).format(valor)).left().expandX();
+                innerTable.add(new DecimalFormat(format).format(valor)).left().expandX();
             innerTable.row();
         }
     }

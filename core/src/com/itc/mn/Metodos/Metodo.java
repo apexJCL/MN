@@ -1,8 +1,13 @@
 package com.itc.mn.Metodos;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.utils.Json;
+import com.itc.mn.Cosas.Const;
 import com.itc.mn.Cosas.FuncionX;
 import com.itc.mn.Cosas.Results;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
@@ -18,6 +23,8 @@ public strictfp class Metodo {
     protected int contador;
     protected String[] encabezados;
     protected String titulo_ventana;
+    private Json json = new Json();
+    private Preferences prefs = Gdx.app.getPreferences(Const.pref_name);
 
     {
         // Inicializamos el ArrayList para guardar los valores de las iteraciones
@@ -45,6 +52,8 @@ public strictfp class Metodo {
     }
 
     public void creaTitulo(){
+        // We get the format to show the root on the window
+        Const tmp = json.fromJson(Const.class, prefs.getString(Const.id));
         switch (tipo){
             case PUNTO_FIJO:
                 titulo_ventana = "Punto Fijo | ";
@@ -62,7 +71,7 @@ public strictfp class Metodo {
                 titulo_ventana = "Secante | ";
                 break;
         }
-        titulo_ventana += "Funcion: "+funcion+"| Raiz: "+raiz+" | ep: "+ep_porcentual;
+        titulo_ventana += "Funcion: "+funcion+"| Raiz: "+new DecimalFormat(tmp.getFormat()).format(raiz)+" | ep: "+ep_porcentual;
     }
 
     public enum Tipo{
