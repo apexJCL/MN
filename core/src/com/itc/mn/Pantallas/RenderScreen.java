@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Json;
+import com.itc.mn.Cosas.Const;
 import com.itc.mn.Cosas.FuncionX;
 import com.itc.mn.Cosas.Results;
 import com.itc.mn.Metodos.Metodo;
@@ -27,6 +29,8 @@ public class RenderScreen extends Pantalla {
     private ArrayList<float[][]> funciones;
     private Color[] colores = {Color.BLUE, Color.GREEN, Color.CYAN, Color.YELLOW, Color.FIREBRICK, Color.ROYAL, Color.RED, Color.SALMON, Color.MAGENTA, Color.LIME, Color.TAN, Color.TEAL, Color.VIOLET};
     private Metodo metodo;
+    private Json json = new Json();
+    private Const config = json.fromJson(Const.class, Gdx.app.getPreferences(Const.pref_name).getString(Const.id));
 
     {
         gui_stage.setDebugAll(true);
@@ -105,7 +109,7 @@ public class RenderScreen extends Pantalla {
         camera.zoom = 0.5f;
     }
 
-    private void renderArreglo() {
+    private void renderArray() {
         // Para que se renderize con la camara
         shapeRenderer.setProjectionMatrix(camera.combined);
         // Para comenzar el renderizado
@@ -113,7 +117,7 @@ public class RenderScreen extends Pantalla {
         // Para renderizar solo cuando tenemos el arreglo sencillo de valores
         if (valores != null) {
             // Obviamente define el color
-            shapeRenderer.setColor(Color.CYAN);
+            shapeRenderer.setColor(config.singleGraphic);
             // Procesando arreglo
             for (double[] valore : valores)
                 shapeRenderer.point((float) (valore[0] * scaleX), (float) (valore[1] * scaleY), 0);
@@ -132,21 +136,21 @@ public class RenderScreen extends Pantalla {
         shapeRenderer.end(); // Para finalizar el renderizado
     }
 
-    private void renderRaiz() {
+    private void renderRoot() {
         if (isRootAvailable) { // Para que se renderize con la camara
             shapeRenderer.setProjectionMatrix(camera.combined);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            shapeRenderer.setColor(0, 255, 0, 0.7f);
+            shapeRenderer.setColor(config.rootColor);
             shapeRenderer.circle((float) (raiz * scaleX), 0, 5 * camera.zoom, 50);
             shapeRenderer.setColor(Color.CYAN);
             shapeRenderer.end();
         }
     }
 
-    private void renderEjes() {
+    private void renderAxis() {
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(1, 1, 1, 1);
+        shapeRenderer.setColor(config.axisColor);
         // Renderizan X e Y
         shapeRenderer.line(0, -camera.viewportHeight + camera.position.y, 0, camera.viewportHeight + camera.position.y);
         shapeRenderer.line(-camera.viewportWidth + camera.position.x, 0, camera.viewportWidth + camera.position.x, 0);
@@ -166,17 +170,23 @@ public class RenderScreen extends Pantalla {
         return metodo;
     }
 
+    public void reloadConfig(){
+        super.reloadConfig();
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                config = json.fromJson(Const.class, Gdx.app.getPreferences(Const.pref_name).getString(Const.id));
+            }
+        });
+    }
+
     @Override
     public void render(float delta) {
         super.render(delta);
-        // Renderizamos los ejes X e Y
-        renderEjes();
-        // Renderizamos con el shapeRenderer
-        renderArreglo();
-        // Renderizamos las raiz
-        renderRaiz();
-        // NECESARIO PARA QUE LA GUI ESTE SOBRE DE TODO
-        renderTop();
+        renderAxis(); // Render the main x and y axis
+        renderArray(); // Render the array with the graphics value
+        renderRoot(); // Render the root (if any)
+        renderGUI(); // This renders the GUI above everything
     }
 
     @Override
@@ -203,7 +213,7 @@ public class RenderScreen extends Pantalla {
         public void clicked(InputEvent event, float x, float y) {
             // Android es Java 6, asi que no hay switch de Strings :(
             if (actor.getName().equals("entrada")) { // Aqui borramos el texto por defecto del campo
-                ((VisTextField) actor).setText("");
+                ((VisTextField) actor).setText(((VisTextField) actor).getText());
                 if (Gdx.app.getType().equals(Application.ApplicationType.Android))
                     Gdx.input.getTextInput(new MyTextListener(actor), "Funcion", "", "f(x) = ");
             }

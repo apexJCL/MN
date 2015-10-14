@@ -56,7 +56,7 @@ public class FrontEnd extends Stage {
         this.pantalla = pantalla;
         VisUI.load();
         loadFileChooser(); // Setup the FileChooser
-        v_config = new VentanaConfig(); // Instantiate the preferences Window
+        v_config = new VentanaConfig(this); // Instantiate the preferences Window
         // We begin with the GUI creation
         table = new VisTable(); // A general table that will hold all our components
         table.setSize(Gdx.graphics.getWidth() * 0.95f, Gdx.graphics.getHeight());
@@ -105,7 +105,7 @@ public class FrontEnd extends Stage {
         this.isInputVisible = isInputVisible;
         VisUI.load();
         loadFileChooser(); // Instantiate file chooser
-        v_config = new VentanaConfig(); // Instantiate the preferences Window
+        v_config = new VentanaConfig(this); // Instantiate the preferences Window
         // We begin with the GUI creation
         table = new VisTable(); // A general table that will hold all our components
         table.setSize(Gdx.graphics.getWidth() * 0.95f, Gdx.graphics.getHeight());
@@ -164,6 +164,11 @@ public class FrontEnd extends Stage {
         return tmp;
     }
 
+    public void reloadConfig(){
+        config = json.fromJson(Const.class, Gdx.app.getPreferences(Const.pref_name).getString(Const.id));
+        ((RenderScreen)game.getScreen()).reloadConfig();
+    }
+
     /**
      * This method instantiates and defines our Desktop FileChooser
      */
@@ -206,7 +211,8 @@ public class FrontEnd extends Stage {
     private void createGeneralGUI() {
         // Un panel de entrada para re-evaluar
         funcion = new VisLabel("Funcion: ");
-        entrada = new VisTextField("f(x) = ");
+        entrada = new VisTextField();
+        entrada.setMessageText("f(x) = ");
         entrada.pack();
         // Le agregamos un nombre para que pueda ser identificado
         entrada.setName("entrada");

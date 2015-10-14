@@ -7,6 +7,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.itc.mn.Cosas.Const;
 import com.itc.mn.GUI.FrontEnd;
@@ -14,7 +15,7 @@ import com.itc.mn.GUI.GraphingCamera;
 import com.kotcrab.vis.ui.VisUI;
 
 /**
- *
+ * This class just exists, by now...
  */
 public class Pantalla implements Screen {
 
@@ -27,6 +28,8 @@ public class Pantalla implements Screen {
     protected final FitViewport viewport;
     protected final ShapeRenderer shapeRenderer;
     protected boolean debugEnabled;
+    private Json json = new Json();
+    private Const config = json.fromJson(Const.class, Gdx.app.getPreferences(Const.pref_name).getString(Const.id));
 
     public Pantalla(Game game) {
         this.game = game;
@@ -49,12 +52,12 @@ public class Pantalla implements Screen {
     }
 
     /**
-     * Renderiza por defecto, SIEMPRE MANDE LLAMAR renderTop al ultimo, es necesario para que la GUI este encima de todos
+     * Renderiza por defecto, SIEMPRE MANDE LLAMAR renderGUI al ultimo, es necesario para que la GUI este encima de todos
      * @param delta tiempo de renderizado por defecto
      */
     @Override
     public void render(float delta) {
-        Gdx.gl20.glClearColor(0, 0, 0, 1);
+        Gdx.gl20.glClearColor(config.backgroundColor[0],config.backgroundColor[1],config.backgroundColor[2], config.backgroundColor[3]);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
         viewport.apply();
         camera.update();
@@ -63,7 +66,7 @@ public class Pantalla implements Screen {
     /**
      * It renders the GUI above everything, so it looks nice
      */
-    public void renderTop(){
+    public void renderGUI(){
         camera_stage.act();
         camera_stage.draw();
         gui_stage.act();
@@ -93,5 +96,14 @@ public class Pantalla implements Screen {
         camera_stage.dispose();
         shapeRenderer.dispose();
         VisUI.dispose();
+    }
+
+    public void reloadConfig() {
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                config = json.fromJson(Const.class, Gdx.app.getPreferences(Const.pref_name).getString(Const.id));
+            }
+        });
     }
 }
