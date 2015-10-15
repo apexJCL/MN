@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.I18NBundle;
 import com.itc.mn.Metodos.MatrixOperation;
 import com.itc.mn.Metodos.MatrixOperation.Operation;
 import com.kotcrab.vis.ui.widget.*;
@@ -11,19 +12,18 @@ import com.kotcrab.vis.ui.widget.*;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-import static com.itc.mn.Metodos.MatrixOperation.Operation.*;
-
 /**
  * This window will hold a little program that will evaluate two matrix with the given options.
  */
 public class Matrix extends VisWindow {
 
-    private final VisLabel l_opciones = new VisLabel("Operacion a realizar");
-    private final VisLabel lma = new VisLabel("Matriz A");
-    private final VisLabel lmb = new VisLabel("Matriz B");
+    private final VisLabel l_opciones; // Change with i18n file
+    private final VisLabel lma;
+    private final VisLabel lmb;
+    private final I18NBundle bundle;
     private VisLabel mensaje = new VisLabel("");
-    private final VisTextButton calcular = new VisTextButton("Calcular");
-    private final VisTextButton cerrar = new VisTextButton("Cerrar");
+    private final VisTextButton calcular;
+    private final VisTextButton cerrar;
     private VisSelectBox opciones;
     private VisTextArea matrix_a, matrix_b;
     private VisTable inputTable, showTable;
@@ -31,15 +31,18 @@ public class Matrix extends VisWindow {
     private MatrixOperation matrixOperation;
     private double[][] ans;
 
-    public Matrix() {
-        super("Matrices", true);
+    public Matrix(I18NBundle bundle) {
+        super(bundle.get("l_matrixtitle"), true); // Change with i18n file
+        this.bundle = bundle;
         // Create the table that will hold our input stuff
         inputTable = new VisTable(true);
         // Create the showTable where we will show the matrices
         showTable = new VisTable(true);
         // We create the matrix operations
         opciones = new VisSelectBox();
-        opciones.setItems(new Operation[]{SUMA, RESTA, MULTIPLICACION});
+        // Create the array of strings that will show the options
+        String[] options = {bundle.get("add"), bundle.get("substract"), bundle.get("multiply")};
+        opciones.setItems(options);
         // We add the fields for the matrix
         matrix_a = new VisTextArea();
         matrix_b = new VisTextArea();
@@ -49,18 +52,23 @@ public class Matrix extends VisWindow {
         addCloseButton();
         closeOnEscape();
         // Adding events to default buttons
+        cerrar = new VisTextButton(bundle.get("b_close"));
         cerrar.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 close();
             }
         });
+        calcular = new VisTextButton(bundle.get("l_calculate"));
         calcular.addListener(new corroboraEvalua());
         // We add the stuff
+        l_opciones = new VisLabel(bundle.get("l_matrixoptions"));
         inputTable.add(l_opciones).expandX().pad(2f);
         inputTable.add(opciones).expandX().pad(2f).row();
+        lma = new VisLabel(bundle.get("l_amatrix"));
         inputTable.add(lma).expandX().center().pad(1f);
         inputTable.add(matrix_a).expandX().left().pad(2f).colspan(2).row();
+        lmb = new VisLabel(bundle.get("l_bmatrix"));
         inputTable.add(lmb).expandX().center().pad(1f);
         inputTable.add(matrix_b).expandX().left().pad(2f).colspan(2).row();
         inputTable.add(mensaje).expandX().center().pad(2f).colspan(2).row();
@@ -98,14 +106,23 @@ public class Matrix extends VisWindow {
             }
             try {
                 matrixOperation = new MatrixOperation(mat_a, mat_b);
-                switch ((Operation) opciones.getSelected()) {
+                Operation op = null;
+                if (opciones.getSelected().equals(bundle.get("add")))
+                    op = Operation.SUMA;
+                else {
+                    if (opciones.getSelected().equals(bundle.get("substract")))
+                        op = Operation.RESTA;
+                    else
+                        op = Operation.MULTIPLICACION;
+                }
+                switch (op) {
                     case SUMA:
                     case RESTA:
                         if (!matrixOperation.areMatrixEqualSized())
-                            throw new Exception("Estas matrices no se pueden sumar/restar");
+                            throw new Exception(bundle.get("l_cantaddmatrix"));
                         // We clean the table
                         showTable.clear();
-                        ans = matrixOperation.a_s_Matrix((Operation) opciones.getSelected());
+                        ans = matrixOperation.a_s_Matrix(op);
                         // Now we display it on screen!
                         for (double[] row : ans) {
                             for (double element : row) {
@@ -117,7 +134,7 @@ public class Matrix extends VisWindow {
                         break;
                     case MULTIPLICACION:
                         if (!matrixOperation.areMatrixMultiplicable())
-                            throw new Exception("Estas matrices no se pueden multiplicar");
+                            throw new Exception(bundle.get("l_cantmultiplymatrix")); // Change with i18n file
                         // We clean the table
                         showTable.clear();
                         ans = matrixOperation.multiplyMatrix();
@@ -167,7 +184,7 @@ public class Matrix extends VisWindow {
                 if (!colsCounted)
                     colsCounted = true;
                 else if (cols != colsVerifier)
-                    throw new Exception("Inconsistent Matrix");
+                    throw new Exception(bundle.get("l_inconsistentmatrix"));
                 numbers.add("nr"); // This will generate errors, that's when we know our matrices are malformed
                 colsVerifier = 0;
             }

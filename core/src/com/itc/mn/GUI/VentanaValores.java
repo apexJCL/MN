@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.I18NBundle;
 import com.itc.mn.Cosas.FuncionX;
 import com.itc.mn.Metodos.*;
 import com.itc.mn.Pantallas.RenderScreen;
@@ -25,8 +26,8 @@ public class VentanaValores extends VisWindow {
     private final Game game;
     private VisTextButton aceptar, cancelar;
     private FuncionX fx;
-    private VentanaCarga vc = new VentanaCarga();
     private Metodo.Tipo tipo;
+    private I18NBundle bundle;
 
     /**
      * Crea una v con los campos mandados.
@@ -35,11 +36,12 @@ public class VentanaValores extends VisWindow {
      * @param title Titulo de la v
      * @param campos String[] de 2, [0] = hint, [1] = nombre variable
      */
-    public VentanaValores(String title, String[][] campos, Game game, Metodo.Tipo tipo) {
+    public VentanaValores(String title, String[][] campos, Game game, Metodo.Tipo tipo, I18NBundle bundle) {
         super(title);
         setName(title); // La ventana se llamara igual que el titulo que reciba
         this.game = game; // Una referencia a Game para poder intercambiar la pantalla
         this.tipo = tipo; // Guardamos referencia al tipo
+        this.bundle = bundle; // Save a reference for the i18n bundle
         for(String[] campo: campos){
             VisTextField tmp = new VisTextField();
             tmp.setMessageText(campo[0]);
@@ -48,8 +50,8 @@ public class VentanaValores extends VisWindow {
             tmp.addListener(new AndroidInput(tmp));
         }
         // Creamos los botones
-        aceptar = new VisTextButton("Aceptar");
-        cancelar = new VisTextButton("Cancelar");
+        aceptar = new VisTextButton(bundle.get("b_accept"));
+        cancelar = new VisTextButton(bundle.get("b_close"));
         // Los agregamos a la v
         add(cancelar).expandX().pad(3f);
         add(aceptar).expandX().pad(3f).row();
@@ -129,7 +131,7 @@ public class VentanaValores extends VisWindow {
             if (textField.getName() != null)
                 if (textField.getName().equals(variable))
                     return ((VisTextField)textField).getText();
-        throw new Exception("Variable no encontrada");
+        throw new Exception(bundle.get("undefined_variable"));
     }
 
     /**

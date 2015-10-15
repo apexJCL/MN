@@ -12,7 +12,7 @@ public class MainGame extends Game {
 	@Override
 	public void create () {
 		buildPrefs();
-		this.setScreen(new RenderScreen(this));
+        this.setScreen(new RenderScreen(this));
     }
 
 	@Override

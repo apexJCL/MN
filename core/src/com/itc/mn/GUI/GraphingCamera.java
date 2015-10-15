@@ -37,8 +37,6 @@ public class GraphingCamera extends Stage {
 
             @Override
             public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                System.out.println("Button: " + button);
-                System.out.println("Pointer: " + pointer);
                 // Para eventos tactiles de android, usamos puntero, para PC usamos button
                 if (button == 1)
                     gui_stage.getMenu().showMenu(gui_stage, x, y);

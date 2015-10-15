@@ -30,7 +30,7 @@ public class VentanaConfig extends VisWindow {
     private ColorPicker picker;
 
     public VentanaConfig(FrontEnd gui) {
-        super("Ajustes");
+        super(gui.getBundle().get("m_settings"));
         // Default config
         closeOnEscape();
         addCloseButton();
@@ -46,23 +46,23 @@ public class VentanaConfig extends VisWindow {
         // Load the decimal amount
         String dec = prefs.getFormat().substring(prefs.getFormat().indexOf('.')+1);
         // Initialize tags
-        l_decimales = new VisLabel("Decimales");
-        l_bgcolor = new VisLabel("Color fondo:");
-        l_sgcolor = new VisLabel("Color grafica:");
-        l_axiscolor = new VisLabel("Color ejes:");
+        l_decimales = new VisLabel(gui.getBundle().get("decimalpos"));
+        l_bgcolor = new VisLabel(gui.getBundle().get("bgcolor") + ":");
+        l_sgcolor = new VisLabel(gui.getBundle().get("plotcolor") + ":");
+        l_axiscolor = new VisLabel(gui.getBundle().get("axiscolor") + ":");
         decimales = new VisSlider(1, 16, 1, false);
         // Set the current value
         decimales.setValue(dec.length());
         l_decimales_valor = new VisLabel(String.valueOf((int)decimales.getValue()));
         // Buttons
-        bg_cambiar = new VisTextButton("Cambiar...");
-        sg_cambiar = new VisTextButton("Cambiar...");
-        axis_cambiar = new VisTextButton("Cambiar...");
+        bg_cambiar = new VisTextButton(gui.getBundle().get("change"));
+        sg_cambiar = new VisTextButton(gui.getBundle().get("change"));
+        axis_cambiar = new VisTextButton(gui.getBundle().get("change"));
         bg_cambiar.setColor(prefs.backgroundColor[0], prefs.backgroundColor[1], prefs.backgroundColor[2], prefs.backgroundColor[3]);
         sg_cambiar.setColor(prefs.singleGraphic);
         axis_cambiar.setColor(prefs.axisColor);
-        aceptar = new VisTextButton("Aceptar");
-        cancelar = new VisTextButton("Cancelar");
+        aceptar = new VisTextButton(gui.getBundle().get("b_accept"));
+        cancelar = new VisTextButton(gui.getBundle().get("b_close"));
         // Adjust listeners
         decimales.addListener(new ChangeListener() {
             @Override
