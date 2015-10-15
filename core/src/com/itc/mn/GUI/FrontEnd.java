@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.itc.mn.Cosas.Const;
@@ -22,6 +23,7 @@ import com.kotcrab.vis.ui.widget.file.FileChooser;
 import com.kotcrab.vis.ui.widget.file.FileChooserAdapter;
 
 import java.io.File;
+import java.util.Locale;
 
 /**
  * This is the class that will hold all the GUI elements, creation and stuff
@@ -47,14 +49,18 @@ public class FrontEnd extends Stage {
     private String fileToSave;
     private VentanaConfig v_config;
     public Const config;
-    private Preferences preferences = Gdx.app.getPreferences(Const.pref_name);
+    private Preferences preferences = Gdx.app.getPreferences(Const.pref_name); // This loads the user prefs
+    private FileHandle fileHandle = Gdx.files.internal("i18n/uilang"); // Loads the language file
+    private Locale locale = new Locale(Locale.getDefault().toString().substring(0, Locale.getDefault().toString().indexOf('_'))); // Defines the locale to use
+    private I18NBundle bundle = I18NBundle.createBundle(fileHandle, locale);
+
 
     public FrontEnd(Viewport viewport, Game game, Pantalla pantalla) {
         super(viewport);
         config = json.fromJson(Const.class, Gdx.app.getPreferences(Const.pref_name).getString(Const.id));
         this.game = game;
         this.pantalla = pantalla;
-        VisUI.load();
+        VisUI.load(VisUI.SkinScale.X2);
         loadFileChooser(); // Setup the FileChooser
         v_config = new VentanaConfig(this); // Instantiate the preferences Window
         // We begin with the GUI creation
@@ -198,7 +204,7 @@ public class FrontEnd extends Stage {
 
     private void createGeneralGUI() {
         // Un panel de entrada para re-evaluar
-        funcion = new VisLabel("Funcion: ");
+        funcion = new VisLabel(bundle.get("function")+": "); // change with i18n file
         entrada = new VisTextField();
         entrada.setMessageText("f(x) = ");
         entrada.pack();
@@ -227,12 +233,12 @@ public class FrontEnd extends Stage {
             }
         });
         // Los agregamos a la tabla
-        VisLabel ajuste = new VisLabel("Ajuste ejes");
+        VisLabel ajuste = new VisLabel(bundle.get("l_axisadjust")); // change with i18n file
         table.add(ajuste).bottom().right().pad(4f);
         table.add(ejeX).expandY().bottom().left().pad(5f);
         table.add(ejeY).expandY().bottom().left().pad(5f);
         // Para reestablecer escala
-        VisTextButton restablece = new VisTextButton("Reinicia ejes");
+        VisTextButton restablece = new VisTextButton(bundle.get("b_restoreaxis")); // change with i18n file
         restablece.addListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -283,29 +289,29 @@ public class FrontEnd extends Stage {
         banner.setDisabled(true);
         banner.setColor(Color.CYAN);
         // Create each menu element
-        metodos = new MenuItem("Metodo");
-        archivo = new MenuItem("Archivo");
+        metodos = new MenuItem(bundle.get("m_methods")); // Change with i18n file
+        archivo = new MenuItem(bundle.get("m_file")); // Change with i18n file
         // We define the submenues
         metodos.setSubMenu(m_metodos);
         archivo.setSubMenu(m_archivo);
         // We create the other element
-        matrices = new MenuItem("Matrices");
-        graficador = new MenuItem("Graficador");
-        tabla_iter = new MenuItem("Tabla iteraciones");
-        tabla_iter.setDisabled(true);
-        configuracion = new MenuItem("Ajustes");
+        matrices = new MenuItem(bundle.get("m_matrix")); // Change with i18n file
+        graficador = new MenuItem(bundle.get("m_grapher")); // Change with i18n file
+        tabla_iter = new MenuItem(bundle.get("m_itertable")); // Change with i18n file
+        tabla_iter.setDisabled(true); // Change with i18n file
+        configuracion = new MenuItem(bundle.get("m_settings")); // Change with i18n file
         // Instantiate the elements of submenu methods
-        a_abrir = new MenuItem("Abrir");
+        a_abrir = new MenuItem(bundle.get("m_openfile")); // Change with i18n file
         a_abrir.setShortcut("Ctrl+O");
-        a_guardar = new MenuItem("Guardar");
+        a_guardar = new MenuItem(bundle.get("m_savefile")); // Change with i18n file
         a_guardar.setShortcut("Ctrl+S");
-        a_salir = new MenuItem("Salir");
+        a_salir = new MenuItem(bundle.get("m_exit")); // Change with i18n file
         a_salir.setShortcut("Ctrl+E");
-        metodos_biseccion = new MenuItem("Biseccion");
-        metodos_reglafalsa = new MenuItem("Regla Falsa");
-        metodos_PFijo = new MenuItem("Punto Fijo");
-        metodos_nrapson = new MenuItem("Newton-Raphson");
-        metodos_secante = new MenuItem("Secante");
+        metodos_biseccion = new MenuItem(bundle.get("m_bisection")); // Change with i18n file
+        metodos_reglafalsa = new MenuItem(bundle.get("m_falseposition")); // Change with i18n file
+        metodos_PFijo = new MenuItem(bundle.get("m_fixedpoint")); // Change with i18n file
+        metodos_nrapson = new MenuItem(bundle.get("m_nr")); // Change with i18n file
+        metodos_secante = new MenuItem(bundle.get("m_secant")); // Change with i18n file
         // Assign events to each element
         asignaEventos();
         // Add the elements to the submenu
@@ -342,7 +348,7 @@ public class FrontEnd extends Stage {
         banner.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                addActor(new VentanaMensajes("Acerca de", "Creado por Jose Carlos Lopez\nGithub: nchuck\nRepo: MN\n2015\nPowered by JEP 2.24GPL").fadeIn());
+                addActor(new VentanaMensajes(bundle.get("l_about"), "Creado por Jose Carlos Lopez\nGithub: nchuck\nRepo: MN\n2015\nPowered by JEP 2.24GPL").fadeIn()); // Change with i18n file
             }
         });
         matrices.addListener(new ClickListener() {
@@ -443,36 +449,36 @@ public class FrontEnd extends Stage {
     }
 
     private void mostrar_secante() {
-        String[][] campos = new String[][]{{"Funcion Original", "fx"}, {"xi-1", "xi_1"}, {"xi", "xi"}, {"Error (0-100)", "ep"}};
-        ventanaValores = new VentanaValores("Secante", campos, game, Metodo.Tipo.NEWTON_RAPHSON);
+        String[][] campos = new String[][]{{bundle.get("original_function"), "fx"}, {"xi-1", "xi_1"}, {"xi", "xi"}, {bundle.get("error")+"(0-100)", "ep"}}; // Change with i18n file
+        ventanaValores = new VentanaValores(bundle.get("m_secant"), campos, game, Metodo.Tipo.NEWTON_RAPHSON);
         ventanaValores.asignaEvento(Metodo.Tipo.SECANTE);
         addActor(ventanaValores.fadeIn(0.3f));
     }
 
     private void mostrar_pfijo() {
-        String[][] campos = new String[][]{{"Funcion Original", "f1"}, {"Funcion Despejada", "f2"}, {"Valor inicial", "vi"}, {"Error (0-100)", "ep"}};
-        ventanaValores = new VentanaValores("Punto Fijo", campos, game, Metodo.Tipo.PUNTO_FIJO);
+        String[][] campos = new String[][]{{bundle.get("original_function"), "f1"}, {bundle.get("gx"), "f2"}, {bundle.get("initial_value"), "vi"}, {bundle.get("error")+"(0-100)", "ep"}}; // Change with i18n file
+        ventanaValores = new VentanaValores(bundle.get("m_fixedpoint"), campos, game, Metodo.Tipo.PUNTO_FIJO);
         ventanaValores.asignaEvento(Metodo.Tipo.PUNTO_FIJO);
         addActor(ventanaValores.fadeIn(0.3f));
     }
 
     private void mostrar_nr() {
-        String[][] campos = new String[][]{{"Funcion Original", "fx"}, {"Primer Derivada", "f'x"}, {"Valor inicial", "vi"}, {"Error (0-100)", "ep"}};
-        ventanaValores = new VentanaValores("Newton-Raphson", campos, game, Metodo.Tipo.NEWTON_RAPHSON);
+        String[][] campos = new String[][]{{bundle.get("original_function"), "fx"}, {bundle.get("first_derivative"), "f'x"}, {bundle.get("initial_value"), "vi"}, {bundle.get("error")+"(0-100)", "ep"}}; // Change with i18n file
+        ventanaValores = new VentanaValores(bundle.get("m_nr"), campos, game, Metodo.Tipo.NEWTON_RAPHSON);
         ventanaValores.asignaEvento(Metodo.Tipo.NEWTON_RAPHSON);
         addActor(ventanaValores.fadeIn(0.3f));
     }
 
     private void mostrar_biseccion() {
-        String[][] campos = new String[][]{{"Funcion", "f"}, {"Valor a", "a"}, {"Valor b", "b"}, {"Error (0-100)", "ep"}};
-        ventanaValores = new VentanaValores("Biseccion", campos, game, Metodo.Tipo.BISECCION);
+        String[][] campos = new String[][]{{bundle.get("function"), "f"}, {bundle.get("a_value"), "a"}, {bundle.get("b_value"), "b"}, {bundle.get("error")+"(0-100)", "ep"}}; // Change with i18n file
+        ventanaValores = new VentanaValores(bundle.get("m_bisection"), campos, game, Metodo.Tipo.BISECCION);
         ventanaValores.asignaEvento(Metodo.Tipo.BISECCION);
         addActor(ventanaValores.fadeIn(0.3f));
     }
 
     private void mostrar_rf() {
-        String[][] campos = new String[][]{{"Funcion", "f"}, {"Valor a", "a"}, {"Valor b", "b"}, {"Error (0-100)", "ep"}};
-        ventanaValores = new VentanaValores("Regla Falsa", campos, game, Metodo.Tipo.REGLA_FALSA);
+        String[][] campos = new String[][]{{bundle.get("function"), "f"}, {bundle.get("a_value"), "a"}, {bundle.get("b_value"), "b"}, {bundle.get("error")+"(0-100)", "ep"}}; // Change with i18n file
+        ventanaValores = new VentanaValores(bundle.get("m_falseposition"), campos, game, Metodo.Tipo.REGLA_FALSA);
         ventanaValores.asignaEvento(Metodo.Tipo.REGLA_FALSA);
         addActor(ventanaValores.fadeIn(0.3f));
     }

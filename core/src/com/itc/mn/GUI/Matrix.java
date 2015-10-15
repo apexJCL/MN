@@ -18,7 +18,7 @@ import static com.itc.mn.Metodos.MatrixOperation.Operation.*;
  */
 public class Matrix extends VisWindow {
 
-    private final VisLabel l_opciones = new VisLabel("Operacion a realizar");
+    private final VisLabel l_opciones = new VisLabel("Operacion a realizar"); // Change with i18n file
     private final VisLabel lma = new VisLabel("Matriz A");
     private final VisLabel lmb = new VisLabel("Matriz B");
     private VisLabel mensaje = new VisLabel("");
@@ -32,7 +32,7 @@ public class Matrix extends VisWindow {
     private double[][] ans;
 
     public Matrix() {
-        super("Matrices", true);
+        super("Matrices", true); // Change with i18n file
         // Create the table that will hold our input stuff
         inputTable = new VisTable(true);
         // Create the showTable where we will show the matrices
@@ -117,7 +117,7 @@ public class Matrix extends VisWindow {
                         break;
                     case MULTIPLICACION:
                         if (!matrixOperation.areMatrixMultiplicable())
-                            throw new Exception("Estas matrices no se pueden multiplicar");
+                            throw new Exception("Estas matrices no se pueden multiplicar"); // Change with i18n file
                         // We clean the table
                         showTable.clear();
                         ans = matrixOperation.multiplyMatrix();

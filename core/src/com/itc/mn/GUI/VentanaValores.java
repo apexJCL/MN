@@ -25,7 +25,6 @@ public class VentanaValores extends VisWindow {
     private final Game game;
     private VisTextButton aceptar, cancelar;
     private FuncionX fx;
-    private VentanaCarga vc = new VentanaCarga();
     private Metodo.Tipo tipo;
 
     /**

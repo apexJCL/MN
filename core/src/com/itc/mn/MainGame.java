@@ -7,12 +7,17 @@ import com.badlogic.gdx.utils.Json;
 import com.itc.mn.Cosas.Const;
 import com.itc.mn.Pantallas.RenderScreen;
 
+import java.util.Locale;
+
 public class MainGame extends Game {
 
 	@Override
 	public void create () {
 		buildPrefs();
-		this.setScreen(new RenderScreen(this));
+        String s = Locale.getDefault().toString();
+        System.out.println(s.substring(0, s.indexOf('_')));
+        System.out.println(s.substring(s.indexOf('_')+1, s.length()));
+        this.setScreen(new RenderScreen(this));
     }
 
 	@Override
