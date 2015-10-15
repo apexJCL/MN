@@ -1,20 +1,14 @@
 package com.itc.mn.Pantallas;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Json;
 import com.itc.mn.Cosas.Const;
 import com.itc.mn.Cosas.FuncionX;
 import com.itc.mn.Cosas.Results;
 import com.itc.mn.Metodos.Metodo;
-import com.kotcrab.vis.ui.widget.VisTextField;
 
 import java.util.ArrayList;
 
@@ -26,7 +20,7 @@ public class RenderScreen extends Pantalla {
     private double raiz;
     private double[][] valores;
     private volatile boolean isRootAvailable;
-    private ArrayList<float[][]> funciones;
+    private ArrayList<double[][]> funciones;
     private Color[] colores = {Color.BLUE, Color.GREEN, Color.CYAN, Color.YELLOW, Color.FIREBRICK, Color.ROYAL, Color.RED, Color.SALMON, Color.MAGENTA, Color.LIME, Color.TAN, Color.TEAL, Color.VIOLET};
     private Metodo metodo;
     private Json json = new Json();
@@ -35,7 +29,6 @@ public class RenderScreen extends Pantalla {
     {
         gui_stage.setDebugAll(true);
         isRootAvailable = false;
-        gui_stage.getInputField().addListener(new UIListener(gui_stage.getInputField()));
     }
 
     /**
@@ -94,7 +87,7 @@ public class RenderScreen extends Pantalla {
      * @param game      Referencia a Game para manejo de pantallas
      * @param funciones ArrayList con arreglos de valores para cada funcion
      */
-    public RenderScreen(Game game, ArrayList<float[][]> funciones, boolean isInputVisible) {
+    public RenderScreen(Game game, ArrayList<double[][]> funciones, boolean isInputVisible) {
         super(game);
         this.funciones = funciones;
         // Este valor es por si se desea mostrar para "graficar" al vuelo o solo se quieren ver resultados
@@ -121,18 +114,18 @@ public class RenderScreen extends Pantalla {
             // Obviamente define el color
             shapeRenderer.setColor(config.singleGraphic);
             // Procesando arreglo
-            for (double[] valore : valores)
-                shapeRenderer.point((float) (valore[0] * scaleX), (float) (valore[1] * scaleY), 0);
+            for (double[] valor : valores)
+                shapeRenderer.point((float) (valor[0] * scaleX), (float) (valor[1] * scaleY), 0);
         } else {
             int counter = 0;
-            for (float[][] funcion : funciones) {
+            for (double[][] funcion : funciones) {
                 if (counter < funciones.size())
                     counter++;
                 else
                     counter = 0;
                 shapeRenderer.setColor(colores[counter]);
                 for (int i = 0; i < funcion.length - 1; i++)
-                    shapeRenderer.point(funcion[i][0] * scaleX, funcion[i][1] * scaleY, 0);
+                    shapeRenderer.point((float)funcion[i][0] * scaleX,(float)funcion[i][1] * scaleY, 0);
             }
         }
         shapeRenderer.end(); // Para finalizar el renderizado
@@ -172,6 +165,13 @@ public class RenderScreen extends Pantalla {
         return metodo;
     }
 
+    public void updateValores(double[][] valores) { this.valores = valores; }
+
+    public void updateMulti(ArrayList funciones){
+        this.funciones = funciones;
+        valores = null;
+    }
+
     public void reloadConfig(){
         super.reloadConfig();
         Gdx.app.postRunnable(new Runnable() {
@@ -201,75 +201,5 @@ public class RenderScreen extends Pantalla {
 
     @Override
     public void hide() {
-    }
-
-    private class UIListener extends ClickListener {
-
-        private final Actor actor;
-
-        public UIListener(Actor actor) {
-            this.actor = actor;
-        }
-
-        @Override
-        public void clicked(InputEvent event, float x, float y) {
-            // Android es Java 6, asi que no hay switch de Strings :(
-            if (actor.getName().equals("entrada")) { // Aqui borramos el texto por defecto del campo
-                ((VisTextField) actor).setText(((VisTextField) actor).getText());
-                if (Gdx.app.getType().equals(Application.ApplicationType.Android))
-                    Gdx.input.getTextInput(new MyTextListener(actor), "Funcion", "", "f(x) = ");
-            }
-            super.clicked(event, x, y);
-        }
-
-        @Override
-        public boolean keyTyped(InputEvent event, char character) {
-            if (actor.getName().equals("entrada"))
-                if (event.getKeyCode() == Input.Keys.ENTER) {
-                    final FuncionX fx = new FuncionX(((VisTextField) actor).getText());
-                    Gdx.app.postRunnable(new Runnable() {
-                        @Override
-                        public void run() {
-                            valores = fx.obtenerRango(-10, 10, 0.001f);
-                        }
-                    });
-                    gui_stage.getEjeX().setValue(10);
-                    gui_stage.getEjeX().setValue(10);
-                }
-            return super.keyTyped(event, character);
-        }
-
-        @Override
-        public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-            super.touchUp(event, x, y, pointer, button);
-        }
-    }
-
-    private class MyTextListener implements Input.TextInputListener {
-
-        private Actor actor;
-
-        public MyTextListener(Actor actor) {
-            this.actor = actor;
-        }
-
-        @Override
-        public void input(String text) {
-            ((VisTextField) actor).setText(text);
-            final FuncionX fx = new FuncionX(text);
-            Gdx.app.postRunnable(new Runnable() {
-                @Override
-                public void run() {
-                    valores = fx.obtenerRango(-10, 10, 0.001f);
-                }
-            });
-            gui_stage.getEjeX().setValue(10);
-            gui_stage.getEjeX().setValue(10);
-        }
-
-        @Override
-        public void canceled() {
-
-        }
     }
 }

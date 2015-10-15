@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 public class Const {
     public static final int WIDTH = 16;
     public static final int HEIGHT = 10;
+    public static float XY_AXIS_DEFAULT = 10f;
     public static String pref_name = "mn_prefs";
     public static String id = "general";
     public String format = "#.####";

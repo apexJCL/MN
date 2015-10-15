@@ -31,7 +31,7 @@ public class PFijo extends Metodo{
         // Creamos la funcion g(x), que es la que se evaluara
         g = new FuncionX(funcion2);
         // Creamos los encabezados
-        encabezados = new String[]{"Iteracion", "x", "g(x)", "ep%"};
+        encabezados = new String[]{bundle.get("iteration"), "x", "g(x)", bundle.get("ep")};
         // Calculamos la raiz para que este lista
         calculaRaiz();
         // Definimos el titulo para la ventana

@@ -16,16 +16,14 @@ public class Secante extends Metodo {
         this.ep = ep;
         this.x_i = x_i;
         this.xi = xi;
-        // Inicializamos las funciones
-        fx_1 = new FuncionX(funcion);
+        fx_1 = new FuncionX(funcion); // Inicializamos las funciones
         fx = new FuncionX(funcion);
         fx1 = new FuncionX(funcion);
-        // Actualizamos los valores de las funciones con los valores iniciales dados
-        fx_1.valorVariable(x_i);
+        fx_1.valorVariable(x_i); // Actualizamos los valores de las funciones con los valores iniciales dados
         fx.valorVariable(xi);
         ep_porcentual = String.valueOf(ep * 100d) + "%";
         // Definimos encabezados
-        encabezados = new String[]{"Iteracion", "xi-1", "xi", "f(xi-1)", "f(xi)", "xi+1", "f(xi+1)", "ep%"};
+        encabezados = new String[]{bundle.get("iteration"), "xi-1", "xi", "f(xi-1)", "f(xi)", "xi+1", "f(xi+1)", bundle.get("ep")};
         calculaRaiz();
         creaTitulo();
     }

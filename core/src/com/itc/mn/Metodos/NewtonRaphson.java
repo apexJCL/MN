@@ -29,7 +29,7 @@ public class NewtonRaphson extends Metodo {
         xi = v_inicial;
         calculaRaiz();
         ep_porcentual = String.valueOf(ep*100)+"%";
-        encabezados = new String[]{"Iteracion", "xi", "f(xi)", "f'(xi)", "xi+1", "ep"};
+        encabezados = new String[]{bundle.get("iteration"), "xi", "f(xi)", "f'(xi)", "xi+1", bundle.get("ep")};
         creaTitulo();
     }
 

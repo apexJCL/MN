@@ -12,7 +12,8 @@ public class MainGame extends Game {
 	@Override
 	public void create () {
 		buildPrefs();
-        this.setScreen(new RenderScreen(this));
+		System.out.println(Gdx.graphics.getDensity());
+		this.setScreen(new RenderScreen(this));
     }
 
 	@Override

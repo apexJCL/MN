@@ -25,7 +25,7 @@ public class Biseccion extends Metodo {
         fb = new FuncionX(funcion);
         fx = new FuncionX(funcion);
         //Creamos los encabezados para la tabla de iteraciones
-        encabezados = new String[]{"Iteracion", "a", "b", "f(a)", "f(b)", "xr", "f(xr)", "ep"};
+        encabezados = new String[]{bundle.get("iteration"), "a", "b", "f(a)", "f(b)", "xr", "f(xr)", bundle.get("ep")};
         calculaRaiz();
         ep_porcentual = String.valueOf(ep*100d)+"%";
         // Creamos el titulo para la ventana

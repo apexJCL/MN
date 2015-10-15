@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.itc.mn.Cosas.Const;
+import com.itc.mn.Cosas.FuncionX;
 import com.itc.mn.Cosas.Results;
 import com.itc.mn.Metodos.Metodo;
 import com.itc.mn.Pantallas.Pantalla;
@@ -23,7 +24,9 @@ import com.kotcrab.vis.ui.widget.file.FileChooser;
 import com.kotcrab.vis.ui.widget.file.FileChooserAdapter;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Locale;
+import java.util.StringTokenizer;
 
 /**
  * This is the class that will hold all the GUI elements, creation and stuff
@@ -252,6 +255,7 @@ public class FrontEnd extends Stage {
                 return true;
             }
         });
+        entrada.addListener(new InputManager(entrada));
         // Agregamos el boton
         table.add(restablece).right().expandY().bottom().pad(5f);
     }
@@ -551,6 +555,79 @@ public class FrontEnd extends Stage {
             results.setResultados(metodo.getResultados());
             results.setTitulo(metodo.getTitulo());
             return json.prettyPrint(results);
+        }
+    }
+
+    private class InputManager extends ClickListener implements Input.TextInputListener{
+
+        private VisTextField field;
+
+        public InputManager(VisTextField field){
+            this.field = field;
+        }
+
+        @Override
+        public void clicked(InputEvent event, float x, float y) {
+            if(Gdx.app.getType().equals(Application.ApplicationType.Android))
+                Gdx.input.getTextInput(new InputManager(field), field.getName(), field.getText(), field.getMessageText());
+        }
+
+        @Override
+        public void input(String text) {
+            field.setText(text);
+            if(!text.matches(".*,+"))
+                singlePlot();
+            else
+                multiPlot();
+        }
+
+        @Override
+        public boolean keyTyped(InputEvent event, char character) {
+            if(event.getKeyCode() == Input.Keys.ENTER){
+                System.out.println(field.getText());
+                if(!field.getText().matches("(.*,+.*)*"))
+                    return singlePlot();
+                else
+                    return multiPlot();
+            }
+            return false;
+        }
+
+        @Override
+        public void canceled() {
+
+        }
+
+        private boolean singlePlot(){
+            final FuncionX fx = new FuncionX(field.getText());
+            Gdx.app.postRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    ((RenderScreen)game.getScreen()).updateValores(fx.obtenerRango(-10, 10, 0.001f));
+                }
+            });
+            ejeX.setValue(Const.XY_AXIS_DEFAULT);
+            ejeY.setValue(Const.XY_AXIS_DEFAULT);
+            return true;
+        }
+
+        private boolean multiPlot(){
+            StringTokenizer stk = new StringTokenizer(field.getText(), ",", false);
+            final ArrayList<double[][]> functions = new ArrayList(0);
+            while(stk.hasMoreElements()){
+                FuncionX tmp = new FuncionX(stk.nextToken());
+                functions.add(tmp.obtenerRango(-10, 10, 0.001f));
+            }
+            Gdx.app.postRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    ((RenderScreen)game.getScreen()).updateMulti(functions);
+                }
+            });
+            //game.setScreen(new RenderScreen(game, functions, true));
+            ejeX.setValue(Const.XY_AXIS_DEFAULT);
+            ejeY.setValue(Const.XY_AXIS_DEFAULT);
+            return true;
         }
     }
 }

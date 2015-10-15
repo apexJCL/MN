@@ -240,7 +240,7 @@ public class VentanaValores extends VisWindow {
         @Override
         public void clicked(InputEvent event, float x, float y) {
             if(Gdx.app.getType().equals(Application.ApplicationType.Android))
-                Gdx.input.getTextInput(new AndroidInput(field), field.getName(), "", field.getMessageText());
+                Gdx.input.getTextInput(new AndroidInput(field), field.getName(), field.getText(), field.getMessageText());
         }
 
         @Override

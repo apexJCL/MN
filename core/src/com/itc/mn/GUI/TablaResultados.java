@@ -69,7 +69,7 @@ public class TablaResultados extends VisWindow {
         innerTable.row();
         for (double[] valores : metodo.getResultados()) {
             for (double valor : valores)
-                innerTable.add(new DecimalFormat(format).format(valor)).left().padRight(5f).expandX();
+                innerTable.add(new DecimalFormat(format).format(valor)).center().padRight(5f).expandX();
             innerTable.row();
         }
     }

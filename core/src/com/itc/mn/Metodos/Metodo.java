@@ -2,6 +2,7 @@ package com.itc.mn.Metodos;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.Json;
 import com.itc.mn.Cosas.Const;
 import com.itc.mn.Cosas.FuncionX;
@@ -9,6 +10,7 @@ import com.itc.mn.Cosas.Results;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Default base-class for Methods
@@ -25,6 +27,7 @@ public strictfp class Metodo {
     protected String titulo_ventana;
     private Json json = new Json();
     private Preferences prefs = Gdx.app.getPreferences(Const.pref_name);
+    protected I18NBundle bundle = I18NBundle.createBundle(Gdx.files.internal("i18n/uilang"), new Locale(Locale.getDefault().toString().substring(0, Locale.getDefault().toString().indexOf('_'))));
 
     {
         // Inicializamos el ArrayList para guardar los valores de las iteraciones
@@ -56,22 +59,22 @@ public strictfp class Metodo {
         Const tmp = json.fromJson(Const.class, prefs.getString(Const.id));
         switch (tipo){
             case PUNTO_FIJO:
-                titulo_ventana = "Punto Fijo | ";
+                titulo_ventana = bundle.get("m_fixedpoint")+" | ";
                 break;
             case BISECCION:
-                titulo_ventana = "Biseccion | ";
+                titulo_ventana = bundle.get("m_bisection")+" | ";
                 break;
             case NEWTON_RAPHSON:
-                titulo_ventana = "Newton-Raphson | ";
+                titulo_ventana = bundle.get("m_nr")+" | ";
                 break;
             case REGLA_FALSA:
-                titulo_ventana = "Regla Falsa | ";
+                titulo_ventana = bundle.get("m_falseposition")+" | ";
                 break;
             case SECANTE:
-                titulo_ventana = "Secante | ";
+                titulo_ventana = bundle.get("m_secant")+" | ";
                 break;
         }
-        titulo_ventana += "Funcion: "+funcion+"| Raiz: "+new DecimalFormat(tmp.getFormat()).format(raiz)+" | ep: "+ep_porcentual;
+        titulo_ventana += bundle.get("function")+": "+funcion+"| "+bundle.get("root")+": "+new DecimalFormat(tmp.getFormat()).format(raiz)+" | "+bundle.get("epa")+": "+ep_porcentual;
     }
 
     public enum Tipo{
@@ -98,16 +101,6 @@ public strictfp class Metodo {
         return tipo;
     }
 
-    public String getTipo(){
-        switch (tipo){
-            case PUNTO_FIJO:
-                return "Punto Fijo";
-            case BISECCION:
-                return "Biseccion";
-        }
-        return "";
-    }
-
     public String getFuncion() {
         return funcion;
     }
@@ -131,8 +124,6 @@ public strictfp class Metodo {
     public double getPaso_r() {
         return paso_r;
     }
-
-    // Esto regresa en forma de tabla las iteraciones
 
     /**
      * Regresa los datos, en este caso, una tabla con los valores correspondientes (i, x, fx, fg, xi, etx...)
