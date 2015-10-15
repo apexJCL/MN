@@ -106,7 +106,7 @@ public class Matrix extends VisWindow {
             }
             try {
                 matrixOperation = new MatrixOperation(mat_a, mat_b);
-                Operation op = null;
+                Operation op;
                 if (opciones.getSelected().equals(bundle.get("add")))
                     op = Operation.SUMA;
                 else {
