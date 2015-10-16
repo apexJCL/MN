@@ -21,8 +21,8 @@ import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
  */
 public class VentanaConfig extends VisWindow {
 
-    private VisSlider decimales;
-    private VisLabel l_decimales, l_decimales_valor, l_bgcolor, l_sgcolor, l_axiscolor;
+    private VisSlider decimals, points;
+    private VisLabel l_decimales, l_decimales_valor, l_bgcolor, l_sgcolor, l_axiscolor, l_points, l_points_value;
     private VisTextButton aceptar, cancelar, bg_cambiar, sg_cambiar, axis_cambiar;
     private Json json = new Json();
     private Preferences prefReader = Gdx.app.getPreferences(Const.pref_name); // Load preferences from file
@@ -38,6 +38,7 @@ public class VentanaConfig extends VisWindow {
         Const prefs = json.fromJson(Const.class, generalPrefs); // Create the object instance
         construct(prefs, gui);
         pack();
+        setSize(getWidth()*1.1f, getHeight());
     }
 
     private VisWindow getWindow(){ return this; }
@@ -50,10 +51,14 @@ public class VentanaConfig extends VisWindow {
         l_bgcolor = new VisLabel(gui.getBundle().get("bgcolor") + ":");
         l_sgcolor = new VisLabel(gui.getBundle().get("plotcolor") + ":");
         l_axiscolor = new VisLabel(gui.getBundle().get("axiscolor") + ":");
-        decimales = new VisSlider(1, 16, 1, false);
+        l_points = new VisLabel(gui.getBundle().get("points"));
+        decimals = new VisSlider(1, 16, 1, false);
+        points = new VisSlider(Const.minPoints, Const.maxPoints, Const.minPoints, false);
         // Set the current value
-        decimales.setValue(dec.length());
-        l_decimales_valor = new VisLabel(String.valueOf((int)decimales.getValue()));
+        decimals.setValue(dec.length());
+        points.setValue(prefs.currentPoints);
+        l_decimales_valor = new VisLabel(String.valueOf((int) decimals.getValue()));
+        l_points_value = new VisLabel(String.valueOf(points.getValue()));
         // Buttons
         bg_cambiar = new VisTextButton(gui.getBundle().get("change"));
         sg_cambiar = new VisTextButton(gui.getBundle().get("change"));
@@ -64,19 +69,26 @@ public class VentanaConfig extends VisWindow {
         aceptar = new VisTextButton(gui.getBundle().get("b_accept"));
         cancelar = new VisTextButton(gui.getBundle().get("b_close"));
         // Adjust listeners
-        decimales.addListener(new ChangeListener() {
+        decimals.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                l_decimales_valor.setText(String.valueOf((int)decimales.getValue()));
+                l_decimales_valor.setText(String.valueOf((int) decimals.getValue()));
+            }
+        });
+        points.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                l_points_value.setText(String.valueOf(points.getValue()));
             }
         });
         aceptar.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 String format = "#.";
-                for(int i = 0; i < decimales.getValue(); i++)
+                for(int i = 0; i < decimals.getValue(); i++)
                     format+="#";
                 prefs.setFormat(format);
+                prefs.setCurrentPoints(points.getValue());
                 updatePrefs(prefs);
                 gui.reloadConfig();
                 fadeOut();
@@ -132,8 +144,11 @@ public class VentanaConfig extends VisWindow {
         });
         // Adding to Window
         add(l_decimales).pad(3f).left();
-        add(decimales).pad(3f).left().expandX();
-        add(l_decimales_valor).pad(5f).left().row();
+        add(decimals).pad(3f).left();
+        add(l_decimales_valor).left().padLeft(3f).row();
+        add(l_points).pad(3f).left();
+        add(points).pad(3f).left();
+        add(l_points_value).center().expandX().row();
         add(l_bgcolor).pad(3f).left();
         add(bg_cambiar).pad(3f).row();
         add(l_sgcolor).pad(3f).left();
@@ -141,7 +156,7 @@ public class VentanaConfig extends VisWindow {
         add(l_axiscolor).pad(3f).left();
         add(axis_cambiar).pad(3f).row();
         add(cancelar).right().pad(1f);
-        add(aceptar).right().pad(3f).row();
+        add(aceptar).left().pad(3f).row();
     }
 
     private void saveAndReload(Const prefs, FrontEnd gui){

@@ -182,7 +182,6 @@ public class FrontEnd extends Stage {
         fileChooser.setListener(new FileChooserAdapter() {
             @Override
             public void selected(FileHandle file) {
-                System.out.println(fileChooser.getMode());
                 if (fileChooser.getMode().equals(FileChooser.Mode.SAVE)) {
                     if (file.name().matches("(.*\\.mn*)")) {
                         file.writeString(fileToSave, false);
@@ -217,7 +216,7 @@ public class FrontEnd extends Stage {
         table.add(funcion).bottom().left().pad(4);
         table.add(entrada).expand().bottom().left().pad(4);
         // Para ajustar la grafica
-        ejeX = new VisSlider(0.1f, 50, 0.001f, false);
+        ejeX = new VisSlider(0.1f, config.maxScaleX, 0.001f, false);
         ejeX.setValue(pantalla.scaleX);
         // Agregamos un escuchador de eventos
         ejeX.addListener(new ChangeListener() {
@@ -226,7 +225,7 @@ public class FrontEnd extends Stage {
                 pantalla.scaleX = ((VisSlider) actor).getValue();
             }
         });
-        ejeY = new VisSlider(0.1f, 50, 0.001f, false);
+        ejeY = new VisSlider(0.1f, config.maxScaleY, 0.001f, false);
         ejeY.setValue(pantalla.scaleY);
         // Agregamos un escuchador de eventos
         ejeY.addListener(new ChangeListener() {
@@ -289,7 +288,7 @@ public class FrontEnd extends Stage {
 
     private void createMenu() {
         // We create a banner
-        banner = new MenuItem("Graph v0.1a");
+        banner = new MenuItem("Graph v"+Const.version);
         banner.setDisabled(true);
         banner.setColor(Color.CYAN);
         // Create each menu element
@@ -352,7 +351,7 @@ public class FrontEnd extends Stage {
         banner.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                addActor(new VentanaMensajes(bundle.get("l_about"), "Creado por Jose Carlos Lopez\nGithub: nchuck\nRepo: MN\n2015\nPowered by JEP 2.24GPL").fadeIn()); // Change with i18n file
+                addActor(new VentanaMensajes(bundle.get("l_about"), "Creado por Jos? Carlos Lopez\nGithub: nchuck\nRepo: MN\n2015\nPowered by:\nJEP 2.24GPL\nlibGDX\nVisUI").fadeIn()); // Change with i18n file
             }
         });
         matrices.addListener(new ClickListener() {
@@ -584,7 +583,6 @@ public class FrontEnd extends Stage {
         @Override
         public boolean keyTyped(InputEvent event, char character) {
             if(event.getKeyCode() == Input.Keys.ENTER){
-                System.out.println(field.getText());
                 if(!field.getText().matches("(.*,+.*)*"))
                     return singlePlot();
                 else
@@ -603,7 +601,7 @@ public class FrontEnd extends Stage {
             Gdx.app.postRunnable(new Runnable() {
                 @Override
                 public void run() {
-                    ((RenderScreen)game.getScreen()).updateValores(fx.obtenerRango(-10, 10, 0.001f));
+                    ((RenderScreen)game.getScreen()).updateValores(fx.obtenerRango(-10, 10, config.maxPoints));
                 }
             });
             ejeX.setValue(Const.XY_AXIS_DEFAULT);
@@ -616,7 +614,7 @@ public class FrontEnd extends Stage {
             final ArrayList<double[][]> functions = new ArrayList(0);
             while(stk.hasMoreElements()){
                 FuncionX tmp = new FuncionX(stk.nextToken());
-                functions.add(tmp.obtenerRango(-10, 10, 0.001f));
+                functions.add(tmp.obtenerRango(-10, 10, config.maxPoints));
             }
             Gdx.app.postRunnable(new Runnable() {
                 @Override

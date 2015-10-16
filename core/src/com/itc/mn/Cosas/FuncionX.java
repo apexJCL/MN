@@ -1,5 +1,7 @@
 package com.itc.mn.Cosas;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Json;
 import org.nfunk.jep.JEP;
 
 /**
@@ -12,6 +14,7 @@ public strictfp class FuncionX {
     private String ecuacion, variable;
     private double valorVariable;
     private double inicio, fin;
+    private Const config = new Json().fromJson(Const.class, Gdx.app.getPreferences(Const.pref_name).getString(Const.id));
 
     {
         parser = new JEP();
@@ -103,7 +106,7 @@ public strictfp class FuncionX {
      * @return Valores de la expresion evaluada en el rango dado
      */
     public double[][] obtenerRango(float inicio, float fin){
-        return obtenerRango(inicio, fin, 0.001f);
+        return obtenerRango(inicio, fin, config.currentPoints);
     }
 
     private double menor(double a, double b){
