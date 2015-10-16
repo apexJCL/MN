@@ -5,15 +5,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.Json;
 import com.itc.mn.Cosas.Const;
-import com.itc.mn.Pantallas.RenderScreen;
+import com.itc.mn.Pantallas.SplashScreen;
 
 public class MainGame extends Game {
 
 	@Override
 	public void create () {
 		buildPrefs();
-		System.out.println(Gdx.graphics.getDensity());
-		this.setScreen(new RenderScreen(this));
+		this.setScreen(new SplashScreen(this));
     }
 
 	@Override

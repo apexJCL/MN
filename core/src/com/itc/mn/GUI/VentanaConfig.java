@@ -111,6 +111,7 @@ public class VentanaConfig extends VisWindow {
                         saveAndReload(prefs, gui);
                     }
                 });
+                picker.setColor(prefs.backgroundColor[0],prefs.backgroundColor[1],prefs.backgroundColor[2],prefs.backgroundColor[3]);
                 getParent().addActor(picker.fadeIn());
             }
         });
@@ -125,6 +126,7 @@ public class VentanaConfig extends VisWindow {
                         saveAndReload(prefs, gui);
                     }
                 });
+                picker.setColor(prefs.singleGraphic);
                 getParent().addActor(picker.fadeIn());
             }
         });
@@ -139,6 +141,7 @@ public class VentanaConfig extends VisWindow {
                         saveAndReload(prefs, gui);
                     }
                 });
+                picker.setColor(prefs.axisColor);
                 getParent().addActor(picker.fadeIn());
             }
         });
