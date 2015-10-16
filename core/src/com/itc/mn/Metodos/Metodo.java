@@ -1,9 +1,7 @@
 package com.itc.mn.Metodos;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.I18NBundle;
-import com.badlogic.gdx.utils.Json;
 import com.itc.mn.Cosas.Const;
 import com.itc.mn.Cosas.FuncionX;
 import com.itc.mn.Cosas.Results;
@@ -25,8 +23,6 @@ public strictfp class Metodo {
     protected int contador;
     protected String[] encabezados;
     protected String titulo_ventana;
-    private Json json = new Json();
-    private Preferences prefs = Gdx.app.getPreferences(Const.pref_name);
     protected I18NBundle bundle = I18NBundle.createBundle(Gdx.files.internal("i18n/uilang"), new Locale(Locale.getDefault().toString().substring(0, Locale.getDefault().toString().indexOf('_'))));
 
     {
@@ -56,7 +52,7 @@ public strictfp class Metodo {
 
     public void creaTitulo(){
         // We get the format to show the root on the window
-        Const tmp = json.fromJson(Const.class, prefs.getString(Const.id));
+        Const tmp = Const.Load();
         switch (tipo){
             case PUNTO_FIJO:
                 titulo_ventana = bundle.get("m_fixedpoint")+" | ";
@@ -77,11 +73,7 @@ public strictfp class Metodo {
         titulo_ventana += bundle.get("function")+": "+funcion+"| "+bundle.get("root")+": "+new DecimalFormat(tmp.getFormat()).format(raiz)+" | "+bundle.get("epa")+": "+ep_porcentual;
     }
 
-    public enum Tipo{
-        PUNTO_FIJO, BISECCION, NEWTON_RAPHSON, REGLA_FALSA, SECANTE
-    }
-
-    public double[][] obtenerRango(double inicio, double fin, double paso){
+    public double[][] obtenerRango(double inicio, double fin, double paso) {
         return new FuncionX(funcion).obtenerRango(inicio, fin, paso);
     }
 
@@ -131,6 +123,10 @@ public strictfp class Metodo {
      */
     public ArrayList<double[]> getResultados(){
         return resultados;
+    }
+
+    public enum Tipo {
+        PUNTO_FIJO, BISECCION, NEWTON_RAPHSON, REGLA_FALSA, SECANTE
     }
 
 }

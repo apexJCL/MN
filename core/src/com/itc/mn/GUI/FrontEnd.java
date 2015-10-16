@@ -33,12 +33,13 @@ import java.util.StringTokenizer;
  */
 public class FrontEnd extends Stage {
 
-    protected TablaResultados tabla_res;
-    protected boolean isInputVisible = true;
     private final Pantalla pantalla;
     private final VisTable table;
     private final PopupMenu menu;
     private final Game game;
+    public Const config;
+    protected TablaResultados tabla_res;
+    protected boolean isInputVisible = true;
     private PopupMenu m_metodos, m_archivo;
     private MenuItem banner, archivo, a_abrir, a_guardar, a_salir, graficador, tabla_iter, configuracion, metodos_biseccion, metodos_reglafalsa, metodos_nrapson, metodos_PFijo, metodos_secante;
     private VentanaValores ventanaValores;
@@ -48,19 +49,17 @@ public class FrontEnd extends Stage {
     private VisTextField entrada;
     private VisLabel funcion;
     private FileChooser fileChooser;
-    private Json json = new Json();
     private String fileToSave;
     private VentanaConfig v_config;
-    public Const config;
-    private Preferences preferences = Gdx.app.getPreferences(Const.pref_name); // This loads the user prefs
     private FileHandle fileHandle = Gdx.files.internal("i18n/uilang"); // Loads the language file
     private Locale locale = new Locale(Locale.getDefault().toString().substring(0, Locale.getDefault().toString().indexOf('_'))); // Defines the locale to use
     private I18NBundle bundle = I18NBundle.createBundle(fileHandle, locale);
+    private Json json = new Json();
 
 
     public FrontEnd(Viewport viewport, Game game, Pantalla pantalla) {
         super(viewport);
-        config = json.fromJson(Const.class, Gdx.app.getPreferences(Const.pref_name).getString(Const.id));
+        config = Const.Load();
         this.game = game;
         this.pantalla = pantalla;
         VisUI.load(VisUI.SkinScale.X2);
@@ -108,7 +107,7 @@ public class FrontEnd extends Stage {
 
     public FrontEnd(Viewport viewport, Game game, Pantalla pantalla, boolean isInputVisible) {
         super(viewport);
-        config = json.fromJson(Const.class, Gdx.app.getPreferences(Const.pref_name).getString(Const.id));
+        config = Const.Load();
         this.game = game;
         this.pantalla = pantalla;
         this.isInputVisible = isInputVisible;
@@ -157,12 +156,16 @@ public class FrontEnd extends Stage {
     }
 
     public Const getConfig(){
-        Const tmp = json.fromJson(Const.class, preferences.getString(Const.id));
+        Const tmp = Const.Load();
         return tmp;
     }
 
+    public void setConfig(Const config) {
+        this.config = config;
+    }
+
     public void reloadConfig(){
-        config = json.fromJson(Const.class, Gdx.app.getPreferences(Const.pref_name).getString(Const.id));
+        config = Const.Load();
         ((RenderScreen)game.getScreen()).reloadConfig();
     }
 
@@ -211,7 +214,7 @@ public class FrontEnd extends Stage {
         entrada.setMessageText("f(x) = ");
         entrada.pack();
         // Le agregamos un nombre para que pueda ser identificado
-        entrada.setName("entrada");
+        entrada.setName(bundle.get("input"));
         // Los agregamos a la tabla
         table.add(funcion).bottom().left().pad(4);
         table.add(entrada).expand().bottom().left().pad(4);
@@ -266,8 +269,6 @@ public class FrontEnd extends Stage {
     public VisSlider getEjeX() {
         return ejeX;
     }
-
-    public void setConfig(Const config){ this.config = config; }
 
     public VisSlider getEjeY() {
         return ejeY;
@@ -496,12 +497,12 @@ public class FrontEnd extends Stage {
 
     public void showTablaIter(){ tabla_res.show(getStage());}
 
-    public enum Accion {
-        ABRIR, GUARDAR, CERRAR
-    }
-
     public I18NBundle getBundle() {
         return bundle;
+    }
+
+    public enum Accion {
+        ABRIR, GUARDAR, CERRAR
     }
 
     private class FileAction extends ClickListener {
@@ -533,14 +534,15 @@ public class FrontEnd extends Stage {
                 case GUARDAR:
                     RenderScreen actual = (RenderScreen) game.getScreen();
                     if (actual.getMetodo() == null)
-                        addActor(new VentanaMensajes("Lo sentimos.", "No hay algo que guardar.").fadeIn());
+                        addActor(new VentanaMensajes(bundle.get("l_nodatatosavetitle"), bundle.get("l_nodatatosavemessage")).fadeIn());
                     else {
                         fileToSave = buildJson(actual.getMetodo());
                         addActor(fileChooser.fadeIn());
                     }
                     break;
                 case CERRAR:
-                    Gdx.app.exit();
+                    Gdx.app.exit()
+                    ;
                     break;
             }
         }
@@ -574,7 +576,7 @@ public class FrontEnd extends Stage {
         @Override
         public void input(String text) {
             field.setText(text);
-            if(!text.matches(".*,+"))
+            if(!text.matches("(.*,+.*)*"))
                 singlePlot();
             else
                 multiPlot();

@@ -5,7 +5,7 @@ import com.itc.mn.Cosas.FuncionX;
 /**
  * Bisection Method
  */
-public class Biseccion extends Metodo {
+public strictfp class Biseccion extends Metodo {
 
     private FuncionX fa, fb, fx;
     private Double xr, xranterior;
@@ -27,7 +27,7 @@ public class Biseccion extends Metodo {
         //Creamos los encabezados para la tabla de iteraciones
         encabezados = new String[]{bundle.get("iteration"), "a", "b", "f(a)", "f(b)", "xr", "f(xr)", bundle.get("ep")};
         calculaRaiz();
-        ep_porcentual = String.valueOf(ep*100d)+"%";
+        ep_porcentual = (ep*100)+"%";
         // Creamos el titulo para la ventana
         creaTitulo();
     }
@@ -42,10 +42,11 @@ public class Biseccion extends Metodo {
                 v_final = xr;
             else if (fa.obtenerValor() * fx.obtenerValor() > 0)
                 v_inicial = xr;
+            System.out.println(fa.obtenerValor()*fx.obtenerValor());
             xranterior = xr;
             contador++;
         }
-        while (error > ep && Math.abs(fa.obtenerValor() * fx.obtenerValor()) != 0d);
+        while (error > ep && Math.abs(fa.obtenerValor() * fx.obtenerValor()) != 0);
         raiz = xr;
     }
 }

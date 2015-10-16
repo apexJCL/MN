@@ -49,11 +49,11 @@ public class TablaResultados extends VisWindow {
         pane.setScrollbarsOnTop(false);
     }
 
-    public void show(Stage stage){
-        if(!stage.getActors().contains(this, true)) {
+    public void show(Stage stage) {
+        if (!stage.getActors().contains(this, true)) {
             stage.addActor(this);
             fadeIn();
-            if(pane.getWidth() < Gdx.graphics.getWidth())
+            if (pane.getWidth() < Gdx.graphics.getWidth())
                 setSize(pane.getWidth() * 1.2f, Gdx.graphics.getHeight() * 0.2f);
             else
                 setSize(pane.getWidth() * 0.8f, Gdx.graphics.getHeight() * 0.2f);
@@ -63,8 +63,8 @@ public class TablaResultados extends VisWindow {
         }
     }
 
-    private void buildTable(String format){
-        for(String s: metodo.getEncabezados())
+    private void buildTable(String format) {
+        for (String s : metodo.getEncabezados())
             innerTable.add(s).left().expandX().pad(5f);
         innerTable.row();
         for (double[] valores : metodo.getResultados()) {

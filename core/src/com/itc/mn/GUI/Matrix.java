@@ -21,9 +21,9 @@ public class Matrix extends VisWindow {
     private final VisLabel lma;
     private final VisLabel lmb;
     private final I18NBundle bundle;
-    private VisLabel mensaje = new VisLabel("");
     private final VisTextButton calcular;
     private final VisTextButton cerrar;
+    private VisLabel mensaje = new VisLabel("");
     private VisSelectBox opciones;
     private VisTextArea matrix_a, matrix_b;
     private VisTable inputTable, showTable;
@@ -157,6 +157,7 @@ public class Matrix extends VisWindow {
         private String fixString(String matrix) {
             return matrix.replace(" ", "");
         }
+
         private double[][] generateMatrix(String input) throws Exception {
             ArrayList<String> rowHolder = new ArrayList(0);
             ArrayList<String> numbers = new ArrayList(0);

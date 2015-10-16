@@ -36,7 +36,7 @@ public class SplashIcon extends Actor {
                 return false;
             }
         };
-        addAction(Actions.sequence(Actions.fadeIn(0.5f), Actions.delay(0.2f), Actions.fadeOut(0.5f), changeScreen));
+        addAction(Actions.sequence(Actions.fadeIn(0.6f), Actions.delay(0.8f), Actions.fadeOut(0.6f), changeScreen));
         return this;
     }
 

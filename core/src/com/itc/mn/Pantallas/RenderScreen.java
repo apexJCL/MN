@@ -4,7 +4,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.Json;
 import com.itc.mn.Cosas.Const;
 import com.itc.mn.Cosas.FuncionX;
 import com.itc.mn.Cosas.Results;
@@ -23,8 +22,7 @@ public class RenderScreen extends Pantalla {
     private ArrayList<double[][]> funciones;
     private Color[] colores = {Color.BLUE, Color.GREEN, Color.CYAN, Color.YELLOW, Color.FIREBRICK, Color.ROYAL, Color.RED, Color.SALMON, Color.MAGENTA, Color.LIME, Color.TAN, Color.TEAL, Color.VIOLET};
     private Metodo metodo;
-    private Json json = new Json();
-    private Const config = json.fromJson(Const.class, Gdx.app.getPreferences(Const.pref_name).getString(Const.id));
+    private Const config = Const.Load();
 
     {
         gui_stage.setDebugAll(true);
@@ -125,7 +123,7 @@ public class RenderScreen extends Pantalla {
                     counter = 0;
                 shapeRenderer.setColor(colores[counter]);
                 for (int i = 0; i < funcion.length - 1; i++)
-                    shapeRenderer.point((float)funcion[i][0] * scaleX,(float)funcion[i][1] * scaleY, 0);
+                    shapeRenderer.point((float) funcion[i][0] * scaleX, (float) funcion[i][1] * scaleY, 0);
             }
         }
         shapeRenderer.end(); // Para finalizar el renderizado
@@ -165,19 +163,21 @@ public class RenderScreen extends Pantalla {
         return metodo;
     }
 
-    public void updateValores(double[][] valores) { this.valores = valores; }
+    public void updateValores(double[][] valores) {
+        this.valores = valores;
+    }
 
-    public void updateMulti(ArrayList funciones){
+    public void updateMulti(ArrayList funciones) {
         this.funciones = funciones;
         valores = null;
     }
 
-    public void reloadConfig(){
+    public void reloadConfig() {
         super.reloadConfig();
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-                config = json.fromJson(Const.class, Gdx.app.getPreferences(Const.pref_name).getString(Const.id));
+                config = Const.Load();
             }
         });
     }

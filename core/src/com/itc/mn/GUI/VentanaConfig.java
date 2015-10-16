@@ -25,8 +25,6 @@ public class VentanaConfig extends VisWindow {
     private VisLabel l_decimales, l_decimales_valor, l_bgcolor, l_sgcolor, l_axiscolor, l_points, l_points_value;
     private VisTextButton aceptar, cancelar, bg_cambiar, sg_cambiar, axis_cambiar;
     private Json json = new Json();
-    private Preferences prefReader = Gdx.app.getPreferences(Const.pref_name); // Load preferences from file
-    private String generalPrefs;
     private ColorPicker picker;
 
     public VentanaConfig(FrontEnd gui) {
@@ -34,8 +32,7 @@ public class VentanaConfig extends VisWindow {
         // Default config
         closeOnEscape();
         addCloseButton();
-        generalPrefs = prefReader.getString(Const.id); // Retrieve the general preferences, that is a stored object in json format
-        Const prefs = json.fromJson(Const.class, generalPrefs); // Create the object instance
+        Const prefs = Const.Load(); // Create the object instance
         construct(prefs, gui);
         pack();
         setSize(getWidth()*1.1f, getHeight());
@@ -169,9 +166,10 @@ public class VentanaConfig extends VisWindow {
 
     public void updatePrefs(Const prefs){
         String newPrefs = json.prettyPrint(prefs);
-        if(!newPrefs.equals(generalPrefs)){
-            prefReader.putString(Const.id, newPrefs);
-            prefReader.flush();
+        if (!newPrefs.equals(Const.id)) {
+            Preferences tmp = Gdx.app.getPreferences(Const.pref_name);
+            tmp.putString(Const.id, newPrefs);
+            tmp.flush();
         }
     }
 

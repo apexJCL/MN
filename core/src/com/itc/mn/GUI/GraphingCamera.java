@@ -83,6 +83,16 @@ public class GraphingCamera extends Stage {
                     camera.zoom += (camera.zoom > 0.02f) ? -0.015f : 0;
                 return super.scrolled(event, x, y, amount);
             }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                System.out.println("Exit!");
+            }
+
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                System.out.println("Enter!");
+            }
         });
     }
 }

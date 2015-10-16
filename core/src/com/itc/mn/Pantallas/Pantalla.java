@@ -7,7 +7,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.itc.mn.Cosas.Const;
 import com.itc.mn.GUI.FrontEnd;
@@ -19,17 +18,16 @@ import com.kotcrab.vis.ui.VisUI;
  */
 public class Pantalla implements Screen {
 
-    public float scaleX = 10f;
-    public float scaleY = 10f;
-    protected Game game;
     protected final OrthographicCamera camera;
     protected final GraphingCamera camera_stage;
     protected final FrontEnd gui_stage;
     protected final FitViewport viewport;
     protected final ShapeRenderer shapeRenderer;
+    public float scaleX = 10f;
+    public float scaleY = 10f;
+    protected Game game;
     protected boolean debugEnabled;
-    private Json json = new Json();
-    private Const config = json.fromJson(Const.class, Gdx.app.getPreferences(Const.pref_name).getString(Const.id));
+    private Const config = Const.Load();
 
     public Pantalla(Game game) {
         this.game = game;
@@ -102,7 +100,7 @@ public class Pantalla implements Screen {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-                config = json.fromJson(Const.class, Gdx.app.getPreferences(Const.pref_name).getString(Const.id));
+                config = Const.Load();
             }
         });
     }
