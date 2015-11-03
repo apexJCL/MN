@@ -8,15 +8,57 @@ public class MatrixOperation {
     private double[][] matrix_a, matrix_b;
     private double[][] multipliedMatrix, addedMatrices, substractedMatrices;
     private boolean matrixChanged;
-
+    private boolean singleMatrix = false;
+    /**
+     * This is used to realize operations between two matrix.
+     *
+     * Give this two matrix, you can add, substract and multiply them (as long as
+     * is possible)
+     * @param matrix_a First Matrix
+     * @param matrix_b Second Matrix
+     */
     public MatrixOperation(double[][] matrix_a, double[][] matrix_b) {
         this.matrix_a = matrix_a;
         this.matrix_b = matrix_b;
         matrixChanged = false;
     }
 
+    /**
+     * Handles single-matrix operations, such as Gauss, Gauss-Jordan, Transpose.
+     * @param matrix
+     */
+    public MatrixOperation(double[][] matrix){
+        this.matrix_a = matrix;
+        singleMatrix = true;
+    }
+
     public enum Operation {
-        SUMA, RESTA, MULTIPLICACION
+        SUMA, RESTA, MULTIPLICACION, TRANSPUESTA, GAUSS, GAUSS_JORDAN
+    }
+
+    public double[][] traspose(){
+        double[][] tmp = new double[matrix_a[0].length][matrix_a.length];
+        for(int i = 0; i < matrix_a.length; i++)
+            for(int j = 0; j < matrix_a[0].length; j++)
+                tmp[j][i] = matrix_a[i][j];
+        return tmp;
+    }
+
+    public double[][] gauss(){
+        double[][] tmp = matrix_a;
+        int i = 0;
+        while(i < tmp.length) {
+            if (tmp[i][i] != 1)
+                for (int j = i; j < tmp[0].length; j++)
+                    tmp[i][j] = tmp[i][j] / tmp[i][i];
+            if (i + 1 < tmp.length) { // To avoid array out of bounds
+                for (int j = i + 1; j < tmp.length; j++) // To scroll all the column
+                    if (tmp[j][i] != 0) // If our value isn't 0 already
+                        if (tmp[j][i] * tmp[i][i] < 0) // To know if we must add or substract
+                            return tmp; // TODO finish Gauss method
+            }
+        }
+        return tmp;
     }
 
     /**

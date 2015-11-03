@@ -12,6 +12,8 @@ import com.kotcrab.vis.ui.widget.*;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+import static com.itc.mn.Metodos.MatrixOperation.Operation.*;
+
 /**
  * This window will hold a little program that will evaluate two matrix with the given options.
  */
@@ -41,7 +43,7 @@ public class Matrix extends VisWindow {
         // We create the matrix operations
         opciones = new VisSelectBox();
         // Create the array of strings that will show the options
-        String[] options = {bundle.get("add"), bundle.get("substract"), bundle.get("multiply")};
+        String[] options = {bundle.get("add"), bundle.get("substract"), bundle.get("multiply"), bundle.get("transpose"), bundle.get("gauss")};
         opciones.setItems(options);
         // We add the fields for the matrix
         matrix_a = new VisTextArea();
@@ -82,6 +84,7 @@ public class Matrix extends VisWindow {
         // Adjusting
         pack();
         //setSize(Gdx.graphics.getWidth()*0.5f, Gdx.graphics.getHeight()*0.5f);
+        setResizable(true);
         setPosition((Gdx.graphics.getWidth() - getWidth()) / 2f, (Gdx.graphics.getHeight() - getHeight()) / 2f);
     }
 
@@ -106,15 +109,17 @@ public class Matrix extends VisWindow {
             }
             try {
                 matrixOperation = new MatrixOperation(mat_a, mat_b);
-                Operation op;
+                Operation op = null;
                 if (opciones.getSelected().equals(bundle.get("add")))
-                    op = Operation.SUMA;
-                else {
-                    if (opciones.getSelected().equals(bundle.get("substract")))
-                        op = Operation.RESTA;
-                    else
-                        op = Operation.MULTIPLICACION;
-                }
+                    op = SUMA;
+                else if (opciones.getSelected().equals(bundle.get("substract")))
+                    op = RESTA;
+                else if(opciones.getSelected().equals(bundle.get("multiply")))
+                    op = MULTIPLICACION;
+                else if(opciones.getSelected().equals(bundle.get("transpose")))
+                    op = TRANSPUESTA;
+                else if(opciones.getSelected().equals(bundle.get("gauss")))
+                    op = GAUSS;
                 switch (op) {
                     case SUMA:
                     case RESTA:
@@ -123,14 +128,7 @@ public class Matrix extends VisWindow {
                         // We clean the table
                         showTable.clear();
                         ans = matrixOperation.a_s_Matrix(op);
-                        // Now we display it on screen!
-                        for (double[] row : ans) {
-                            for (double element : row) {
-                                showTable.add(new VisLabel(String.valueOf(element))).center().pad(1f);
-                            }
-                            showTable.row();
-                        }
-                        splitPane.setSplitAmount(0.2f);
+                        display();
                         break;
                     case MULTIPLICACION:
                         if (!matrixOperation.areMatrixMultiplicable())
@@ -138,14 +136,14 @@ public class Matrix extends VisWindow {
                         // We clean the table
                         showTable.clear();
                         ans = matrixOperation.multiplyMatrix();
-                        // Now we display it on screen!
-                        for (double[] row : ans) {
-                            for (double element : row) {
-                                showTable.add(new VisLabel(String.valueOf(element))).center().pad(1f);
-                            }
-                            showTable.row();
-                        }
-                        splitPane.setSplitAmount(0.2f);
+                        display();
+                        break;
+                    case TRANSPUESTA:
+                        showTable.clear();
+                        ans = matrixOperation.traspose();
+                        display();
+                    break;
+                    default:
                         break;
                 }
             } catch (Exception e) {
@@ -200,5 +198,16 @@ public class Matrix extends VisWindow {
             }
             return matrix;
         }
+    }
+
+    private void display(){
+        // Now we display it on screen!
+        for (double[] row : ans) {
+            for (double element : row) {
+                showTable.add(new VisLabel(String.valueOf(element))).center().pad(1f);
+            }
+            showTable.row();
+        }
+        splitPane.setSplitAmount(0.2f);
     }
 }

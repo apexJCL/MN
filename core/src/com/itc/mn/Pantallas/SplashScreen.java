@@ -51,7 +51,6 @@ public class SplashScreen implements Screen {
         stage.act();
         stage.draw();
         d += delta;
-        System.out.println(1f - (config.backgroundColor[0] * (d - 1f)));
     }
 
     @Override
