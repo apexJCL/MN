@@ -1,4 +1,4 @@
-package com.itc.mn.Metodos;
+package com.itc.mn.Methods;
 
 /**
  * Created by zero_ on 08/10/2015.
@@ -44,22 +44,22 @@ public class MatrixOperation {
         return tmp;
     }
 
-    public double[][] gauss(){
-        double[][] tmp = matrix_a;
-        int i = 0;
-        while(i < tmp.length) {
-            if (tmp[i][i] != 1)
-                for (int j = i; j < tmp[0].length; j++)
-                    tmp[i][j] = tmp[i][j] / tmp[i][i];
-            if (i + 1 < tmp.length) { // To avoid array out of bounds
-                for (int j = i + 1; j < tmp.length; j++) // To scroll all the column
-                    if (tmp[j][i] != 0) // If our value isn't 0 already
-                        if (tmp[j][i] * tmp[i][i] < 0) // To know if we must add or substract
-                            return tmp; // TODO finish Gauss method
-            }
-        }
-        return tmp;
-    }
+//    public double[][] gauss(){
+//        double[][] tmp = matrix_a;
+//        int i = 0;
+//        while(i < tmp.length) {
+//            if (tmp[i][i] != 1)
+//                for (int j = i; j < tmp[0].length; j++)
+//                    tmp[i][j] = tmp[i][j] / tmp[i][i];
+//            if (i + 1 < tmp.length) { // To avoid array out of bounds
+//                for (int j = i + 1; j < tmp.length; j++) // To scroll all the column
+//                    if (tmp[j][i] != 0) // If our value isn't 0 already
+//                        if (tmp[j][i] * tmp[i][i] < 0) // To know if we must add or substract
+//                            tmp[j][i] += (tmp[j][i]);
+//            }
+//        }
+//        return tmp;
+//    }
 
     /**
      * Returns the previous given matrix

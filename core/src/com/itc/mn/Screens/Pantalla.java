@@ -1,4 +1,4 @@
-package com.itc.mn.Pantallas;
+package com.itc.mn.Screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.itc.mn.Cosas.Const;
+import com.itc.mn.Things.Const;
 import com.itc.mn.GUI.FrontEnd;
 import com.itc.mn.GUI.GraphingCamera;
 import com.kotcrab.vis.ui.VisUI;
@@ -29,6 +29,8 @@ public class Pantalla implements Screen {
     protected boolean debugEnabled;
     private Const config = Const.Load();
 
+
+
     public Pantalla(Game game) {
         this.game = game;
         shapeRenderer = new ShapeRenderer();// We instantiate the shapeRenderer so we can draw on screen with it
@@ -40,7 +42,6 @@ public class Pantalla implements Screen {
         camera_stage = new GraphingCamera(viewport, camera, gui_stage);// Create the cameraStage that will hold the visual of the graphics
         InputMultiplexer multiplexer = new InputMultiplexer(gui_stage, camera_stage);// Multiplexing inputs so camera pan doesn't affect GUI movements
         Gdx.input.setInputProcessor(multiplexer);// Set multiplexer as default Input Processor
-        VisUI.load();// Import VisUI so it loads the skin for the UI
     }
 
     @Override

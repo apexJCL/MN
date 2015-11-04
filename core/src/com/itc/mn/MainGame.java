@@ -4,9 +4,8 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.Json;
-import com.itc.mn.Cosas.Const;
-import com.itc.mn.Pantallas.SplashScreen;
-import org.nfunk.jep.JEP;
+import com.itc.mn.Things.Const;
+import com.itc.mn.Screens.SplashScreen;
 
 public class MainGame extends Game {
 
@@ -14,13 +13,6 @@ public class MainGame extends Game {
 	public void create () {
 		buildPrefs();
 		this.setScreen(new SplashScreen(this));
-		// JEP Test
-        JEP jep = new JEP();
-        jep.addComplex();
-        jep.setImplicitMul(true);
-        jep.addVariable("x", 0.5f);
-        jep.parseExpression("sec(x)");
-        System.out.println(jep.getValue());
     }
 
 	@Override

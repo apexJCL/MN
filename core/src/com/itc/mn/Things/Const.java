@@ -1,4 +1,4 @@
-package com.itc.mn.Cosas;
+package com.itc.mn.Things;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;

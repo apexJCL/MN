@@ -1,4 +1,4 @@
-package com.itc.mn.Pantallas;
+package com.itc.mn.Screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -7,8 +7,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.itc.mn.Cosas.Const;
-import com.itc.mn.Cosas.SplashIcon;
+import com.itc.mn.Things.Const;
+import com.itc.mn.Things.SplashIcon;
 
 /**
  * A simple splashscreen

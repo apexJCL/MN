@@ -5,14 +5,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.I18NBundle;
-import com.itc.mn.Metodos.MatrixOperation;
-import com.itc.mn.Metodos.MatrixOperation.Operation;
+import com.itc.mn.Methods.MatrixOperation;
+import com.itc.mn.Methods.MatrixOperation.Operation;
 import com.kotcrab.vis.ui.widget.*;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-import static com.itc.mn.Metodos.MatrixOperation.Operation.*;
+import static com.itc.mn.Methods.MatrixOperation.Operation.*;
 
 /**
  * This window will hold a little program that will evaluate two matrix with the given options.

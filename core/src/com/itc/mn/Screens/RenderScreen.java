@@ -1,13 +1,13 @@
-package com.itc.mn.Pantallas;
+package com.itc.mn.Screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.itc.mn.Cosas.Const;
-import com.itc.mn.Cosas.FuncionX;
-import com.itc.mn.Cosas.Results;
-import com.itc.mn.Metodos.Metodo;
+import com.itc.mn.Things.Const;
+import com.itc.mn.Things.FuncionX;
+import com.itc.mn.Things.Results;
+import com.itc.mn.Methods.Metodo;
 
 import java.util.ArrayList;
 

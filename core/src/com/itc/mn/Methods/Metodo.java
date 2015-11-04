@@ -1,10 +1,10 @@
-package com.itc.mn.Metodos;
+package com.itc.mn.Methods;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.I18NBundle;
-import com.itc.mn.Cosas.Const;
-import com.itc.mn.Cosas.FuncionX;
-import com.itc.mn.Cosas.Results;
+import com.itc.mn.Things.Const;
+import com.itc.mn.Things.FuncionX;
+import com.itc.mn.Things.Results;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

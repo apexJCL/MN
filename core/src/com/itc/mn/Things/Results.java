@@ -1,6 +1,6 @@
-package com.itc.mn.Cosas;
+package com.itc.mn.Things;
 
-import com.itc.mn.Metodos.Metodo;
+import com.itc.mn.Methods.Metodo;
 
 import java.util.ArrayList;
 

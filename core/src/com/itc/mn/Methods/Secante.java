@@ -1,6 +1,6 @@
-package com.itc.mn.Metodos;
+package com.itc.mn.Methods;
 
-import com.itc.mn.Cosas.FuncionX;
+import com.itc.mn.Things.FuncionX;
 
 public class Secante extends Metodo {
 

@@ -1,4 +1,4 @@
-package com.itc.mn.Cosas;
+package com.itc.mn.Things;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.itc.mn.Pantallas.RenderScreen;
+import com.itc.mn.Screens.RenderScreen;
 
 /**
  * Created by zero_ on 16/10/2015.
