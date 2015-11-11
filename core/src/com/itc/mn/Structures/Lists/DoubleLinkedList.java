@@ -21,7 +21,7 @@ public class DoubleLinkedList {
 
     /**
      * Creates a double linked list with a given name, in case
-     * it happens to be many dll's.
+     * it happens to be many
      * @param label Name of the linked list
      */
     public DoubleLinkedList(String label){
