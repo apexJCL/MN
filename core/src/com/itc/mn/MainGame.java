@@ -4,15 +4,19 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.Json;
+import com.itc.mn.GUI.Statistics;
 import com.itc.mn.Things.Const;
 import com.itc.mn.Screens.SplashScreen;
+import com.kotcrab.vis.ui.VisUI;
 
 public class MainGame extends Game {
 
 	@Override
 	public void create () {
 		buildPrefs();
-		this.setScreen(new SplashScreen(this));
+        VisUI.load();
+		//this.setScreen(new SplashScreen(this));
+		this.setScreen(new Statistics());
     }
 
 	@Override

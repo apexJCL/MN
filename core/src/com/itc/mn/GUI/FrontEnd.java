@@ -41,7 +41,7 @@ public class FrontEnd extends Stage {
     protected TablaResultados tabla_res;
     protected boolean isInputVisible = true;
     private PopupMenu m_metodos, m_archivo;
-    private MenuItem banner, archivo, a_abrir, a_guardar, a_salir, graficador, tabla_iter, configuracion, metodos_biseccion, metodos_reglafalsa, metodos_nrapson, metodos_PFijo, metodos_secante;
+    private MenuItem banner, archivo, a_abrir, a_guardar, a_salir, graficador, tabla_iter, configuracion, metodos_biseccion, metodos_reglafalsa, metodos_nrapson, metodos_PFijo, metodos_secante, statistic;
     private VentanaValores ventanaValores;
     private MenuItem metodos, matrices;
     private int lastKey;
@@ -316,6 +316,7 @@ public class FrontEnd extends Stage {
         metodos_PFijo = new MenuItem(bundle.get("m_fixedpoint")); // Change with i18n file
         metodos_nrapson = new MenuItem(bundle.get("m_nr")); // Change with i18n file
         metodos_secante = new MenuItem(bundle.get("m_secant")); // Change with i18n file
+        statistic = new MenuItem(bundle.get("statistic"));
         // Assign events to each element
         asignaEventos();
         // Add the elements to the submenu
@@ -325,6 +326,7 @@ public class FrontEnd extends Stage {
         menu.addItem(matrices);
         menu.addItem(graficador);
         menu.addItem(tabla_iter);
+        menu.addItem(statistic);
         menu.addSeparator();
         menu.addItem(configuracion);
         // Add the elements to the submenu
@@ -448,6 +450,12 @@ public class FrontEnd extends Stage {
                 if (!tabla_iter.isDisabled()) {
                     tabla_res.show(getStage());
                 }
+            }
+        });
+        statistic.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                addActor(new ListGUI(bundle));
             }
         });
     }
