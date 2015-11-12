@@ -27,7 +27,7 @@ public class Statistics implements Screen {
         root.setFillParent(true);
         stage.addActor(root);
         Gdx.input.setInputProcessor(stage);
-        menuBar = new GlobalMenu();
+        //menuBar = new GlobalMenu();
         root.add(menuBar.getTable()).expandX().fillX().row();
         root.add().expand().fill();
     }

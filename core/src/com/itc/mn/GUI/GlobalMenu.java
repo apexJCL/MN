@@ -2,7 +2,11 @@ package com.itc.mn.GUI;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.I18NBundle;
+import com.itc.mn.UI.MainScreen;
+import com.itc.mn.UI.Modules.MatrixModule;
 import com.kotcrab.vis.ui.widget.Menu;
 import com.kotcrab.vis.ui.widget.MenuBar;
 import com.kotcrab.vis.ui.widget.MenuItem;
@@ -12,6 +16,7 @@ import java.util.Locale;
 
 public class GlobalMenu extends MenuBar {
 
+    private final MainScreen mainScreen;
     private FileHandle fileHandle = Gdx.files.internal("i18n/uilang"); // Loads the language file
     private Locale locale = new Locale(Locale.getDefault().toString().substring(0, Locale.getDefault().toString().indexOf('_'))); // Defines the locale to use
     private I18NBundle bundle = I18NBundle.createBundle(fileHandle, locale);
@@ -20,8 +25,10 @@ public class GlobalMenu extends MenuBar {
     private MenuItem s_methods, s_matrix, s_statistics, s_help, s_about;
     private MenuItem m_bisection, m_fauxrule, m_nraphson, m_fixedpoint, m_secant;
 
-    public GlobalMenu(){
+    public GlobalMenu(MainScreen mainScreen){
+        this.mainScreen = mainScreen;
         createMenus();
+        addActions();
     }
 
     private void createMenus () {
@@ -89,4 +96,30 @@ public class GlobalMenu extends MenuBar {
         return menu;
     }
 
+    private void addActions(){
+        s_matrix.addListener(new MenuListener(ButtonType.MATRIX));
+    }
+
+    private enum ButtonType{
+        MATRIX
+    }
+
+    private class MenuListener extends ClickListener {
+
+        private ButtonType type;
+
+        public MenuListener(ButtonType type){
+            this.type = type;
+        }
+
+        @Override
+        public void clicked(InputEvent event, float x, float y) {
+            switch (type){
+                case MATRIX:
+                    mainScreen.showModule(new MatrixModule(bundle));
+                    System.out.println("Added");
+                    break;
+            }
+        }
+    }
 }

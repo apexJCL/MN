@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Json;
 import com.itc.mn.GUI.Statistics;
 import com.itc.mn.Things.Const;
 import com.itc.mn.Screens.SplashScreen;
+import com.itc.mn.UI.MainScreen;
 import com.kotcrab.vis.ui.VisUI;
 
 public class MainGame extends Game {
@@ -16,7 +17,8 @@ public class MainGame extends Game {
 		buildPrefs();
         VisUI.load();
 		//this.setScreen(new SplashScreen(this));
-		this.setScreen(new Statistics());
+		//this.setScreen(new Statistics());
+		setScreen(new MainScreen());
     }
 
 	@Override
