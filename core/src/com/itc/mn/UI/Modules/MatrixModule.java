@@ -2,10 +2,14 @@ package com.itc.mn.UI.Modules;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.itc.mn.Methods.MatrixOperation;
+import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.*;
+import com.kotcrab.vis.ui.widget.tabbedpane.Tab;
+
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 import static com.itc.mn.Methods.MatrixOperation.Operation.*;
@@ -13,8 +17,9 @@ import static com.itc.mn.Methods.MatrixOperation.Operation.*;
 /**
  * Created by zero_ on 12/11/2015.
  */
-public class MatrixModule extends VisTable {
+public class MatrixModule extends Tab {
 
+    private Table container;
     private final VisLabel l_opciones; // Change with i18n file
     private final VisLabel lma;
     private final VisLabel lmb;
@@ -29,8 +34,11 @@ public class MatrixModule extends VisTable {
     private double[][] ans;
 
     public MatrixModule(I18NBundle bundle) {
-        super(true); // Change with i18n file
+        super(true, true); // Change with i18n file
         this.bundle = bundle;
+        // Create the container
+        container = new Table();
+        container.setBackground(VisUI.getSkin().getDrawable("window-bg"));
         // Create the table that will hold our input stuff
         inputTable = new VisTable(true);
         // Create the showTable where we will show the matrices
@@ -62,11 +70,20 @@ public class MatrixModule extends VisTable {
         // Creating the splitpanel
         splitPane = new VisSplitPane(inputTable, showTable, false);
         // Adding the splitpane to the window
-        add(splitPane).expand().fill();
+        container.add(splitPane).expand().fill();
         splitPane.setSplitAmount(1);
         // Adjusting
-        pack();
-        setFillParent(true);
+        container.pack();
+    }
+
+    @Override
+    public String getTabTitle() {
+        return bundle.get("m_matrix");
+    }
+
+    @Override
+    public Table getContentTable() {
+        return container;
     }
 
     private class corroboraEvalua extends ClickListener {

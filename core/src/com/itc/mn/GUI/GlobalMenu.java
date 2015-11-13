@@ -5,8 +5,11 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.I18NBundle;
+import com.itc.mn.Things.FuncionX;
 import com.itc.mn.UI.MainScreen;
 import com.itc.mn.UI.Modules.MatrixModule;
+import com.itc.mn.UI.Modules.RenderModule;
+import com.itc.mn.UI.Modules.WelcomeModule;
 import com.kotcrab.vis.ui.widget.Menu;
 import com.kotcrab.vis.ui.widget.MenuBar;
 import com.kotcrab.vis.ui.widget.MenuItem;
@@ -24,11 +27,18 @@ public class GlobalMenu extends MenuBar {
     private MenuItem i_exit, i_open, i_save, i_settings;
     private MenuItem s_methods, s_matrix, s_statistics, s_help, s_about;
     private MenuItem m_bisection, m_fauxrule, m_nraphson, m_fixedpoint, m_secant;
+    private MenuItem s_render;
 
     public GlobalMenu(MainScreen mainScreen){
         this.mainScreen = mainScreen;
         createMenus();
         addActions();
+        setupTab();
+    }
+
+    private void setupTab() {
+        mainScreen.getTabbedPane().add(new WelcomeModule(bundle));
+        mainScreen.getTabbedPane().add(new RenderModule(new FuncionX("x^2").obtenerRango(-10, 10)));
     }
 
     private void createMenus () {
@@ -36,13 +46,11 @@ public class GlobalMenu extends MenuBar {
         sectionMenu = new Menu(bundle.get("sections"));
         //windowMenu = new Menu("Window");
         Menu helpMenu = new Menu(bundle.get("help"));
-
         // Creating menu Items
         i_open = new MenuItem(bundle.get("m_openfile"));
         i_save = new MenuItem(bundle.get("m_savefile"));
         i_exit = new MenuItem(bundle.get("m_exit"));
         i_settings = new MenuItem(bundle.get("m_settings")); // Change with i18n file
-
         fileMenu.addItem(i_open);
         fileMenu.addItem(i_save);
         fileMenu.addItem(i_exit);
@@ -70,10 +78,11 @@ public class GlobalMenu extends MenuBar {
         // Creating help menu stuff
         s_about = new MenuItem(bundle.get("l_about"));
         s_help = new MenuItem(bundle.get("m_help"));
+        s_render = new MenuItem("Toggle Render");
 
         helpMenu.addItem(s_help);
         helpMenu.addItem(s_about);
-
+        helpMenu.addItem(s_render);
 
         addMenu(fileMenu);
         addMenu(sectionMenu);
@@ -97,11 +106,13 @@ public class GlobalMenu extends MenuBar {
     }
 
     private void addActions(){
+        s_render.addListener(new MenuListener(ButtonType.RENDER));
+        i_exit.addListener(new MenuListener(ButtonType.EXIT));
         s_matrix.addListener(new MenuListener(ButtonType.MATRIX));
     }
 
     private enum ButtonType{
-        MATRIX
+        RENDER, EXIT, MATRIX
     }
 
     private class MenuListener extends ClickListener {
@@ -115,8 +126,14 @@ public class GlobalMenu extends MenuBar {
         @Override
         public void clicked(InputEvent event, float x, float y) {
             switch (type){
+                case RENDER:
+                    mainScreen.setRenderStatus(!mainScreen.getRenderStatus());
+                    break;
+                case EXIT:
+                    Gdx.app.exit();
+                    break;
                 case MATRIX:
-                    mainScreen.showModule(new MatrixModule(bundle));
+                    mainScreen.getTabbedPane().add(new MatrixModule(bundle));
                     System.out.println("Added");
                     break;
             }
