@@ -1,5 +1,6 @@
 package com.itc.mn.UI;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -7,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
@@ -22,7 +24,7 @@ import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPaneAdapter;
 
 import java.util.ArrayList;
 
-public class MainScreen implements Screen{
+public class MainScreen implements Screen {
 
     protected Stage stage;
     private GlobalMenu menuBar;
@@ -39,14 +41,17 @@ public class MainScreen implements Screen{
     private boolean isRootAvailable = false;
     private float raiz = 0;
     private float xoffset, yoffset;
+    private OrthographicCamera renderCamera;
 
     {
         scaleX = scaleY = 10;
-        xoffset = yoffset = 0;
     }
 
-    public MainScreen(){
-        VisUI.load(VisUI.SkinScale.X1);
+    public MainScreen() {
+        if(Gdx.app.getType() == Application.ApplicationType.Desktop)
+            VisUI.load(VisUI.SkinScale.X1);
+        else
+            VisUI.load(VisUI.SkinScale.X2);
         instantiateThings();
         addGUI();
         // Test
@@ -54,11 +59,14 @@ public class MainScreen implements Screen{
         setStageProperties();
     }
 
-    private void instantiateThings(){
+    private void instantiateThings() {
         stage = new Stage(new ScreenViewport());
         System.out.println(stage.getWidth());
         System.out.println(stage.getHeight());
-        camera = (OrthographicCamera)stage.getCamera();
+        camera = (OrthographicCamera) stage.getCamera();
+        // Create the camera that will render stuff
+        renderCamera = new OrthographicCamera();
+        renderCamera.setToOrtho(false, stage.getViewport().getScreenWidth(), stage.getViewport().getScreenHeight());
         //stage.setDebugAll(true);
         root = new Table();
         // This table with hold the menu and the container for the modules
@@ -77,7 +85,7 @@ public class MainScreen implements Screen{
         root.add(container).fill().expand().row();
     }
 
-    private void setupTabs(){
+    private void setupTabs() {
         tabbedPane.addListener(new TabbedPaneAdapter() {
 
             @Override
@@ -85,7 +93,7 @@ public class MainScreen implements Screen{
                 Table content = tab.getContentTable();
                 container.clearChildren();
                 container.add(content).center().expand().fill();
-                if(content instanceof RenderModule.CustomTable)
+                if (content instanceof RenderModule.CustomTable)
                     setRenderStatus(true);
                 else
                     setRenderStatus(false);
@@ -93,30 +101,44 @@ public class MainScreen implements Screen{
         });
     }
 
-    private void setStageProperties(){
+    private void setStageProperties() {
         stage.addListener(new ActorGestureListener() {
             @Override
             public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
-                if (render) {
-                    for (double[] value : renderValues) {
-                        value[0] += deltaX * 0.1f;
-                        value[1] += deltaY * 0.1f;
-                    }
-                    xoffset += deltaX;
-                    yoffset += deltaY;
-                }
+                if (render)
+                    renderCamera.position.set(renderCamera.position.x - deltaX * renderCamera.zoom, renderCamera.position.y - deltaY * renderCamera.zoom, 0);
             }
 
             @Override
             public void zoom(InputEvent event, float initialDistance, float distance) {
-                System.out.println("Zoom!");
+                if(render) {
+                    float diff = initialDistance - distance;
+                    if (diff > 0 && render)
+                        renderCamera.zoom += (renderCamera.zoom < 1) ? renderCamera.zoom * 0.01f : 0;
+                    else
+                        renderCamera.zoom -= (renderCamera.zoom > 0.02f) ? renderCamera.zoom * 0.01f : 0;
+                }
+            }
+        });
+        stage.addListener(new InputListener(){
+            @Override
+            public boolean scrolled(InputEvent event, float x, float y, int amount) {
+                if(render) {
+                    if (amount > 0)
+                        renderCamera.zoom += (renderCamera.zoom < 1) ? 0.015f : 0;
+                    else
+                        renderCamera.zoom += (renderCamera.zoom > 0.02f) ? -0.015f : 0;
+                }
+                return super.scrolled(event, x, y, amount);
             }
         });
     }
 
-    public boolean getRenderStatus() { return render; }
-    
-    public void setRenderStatus(final boolean status){
+    public boolean getRenderStatus() {
+        return render;
+    }
+
+    public void setRenderStatus(final boolean status) {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
@@ -125,7 +147,9 @@ public class MainScreen implements Screen{
         });
     }
 
-    public TabbedPane getTabbedPane(){ return tabbedPane; }
+    public TabbedPane getTabbedPane() {
+        return tabbedPane;
+    }
 
     @Override
     public void show() {
@@ -135,7 +159,8 @@ public class MainScreen implements Screen{
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        if(render) {
+        if (render) {
+            renderCamera.update();
             renderAxis();
             renderArray();
             renderRoot();
@@ -143,7 +168,7 @@ public class MainScreen implements Screen{
         renderGUI(delta);
     }
 
-    private void renderGUI(float delta){
+    private void renderGUI(float delta) {
         stage.act(delta);
         stage.draw();
     }
@@ -173,33 +198,18 @@ public class MainScreen implements Screen{
 
     }
 
-    public Stage getStage() {
-        return stage;
-    }
-
     private void renderArray() {
-        // Para que se renderize con la camara
-        shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
-        // Para comenzar el renderizado
+        // Begins shaperenderer with renderCamera
+        shapeRenderer.setProjectionMatrix(renderCamera.combined);
+        // Begins process
         shapeRenderer.begin(ShapeRenderer.ShapeType.Point);
-        // Para renderizar solo cuando tenemos el arreglo sencillo de valores
+        // Here we check if we have values to render
         if (renderValues != null) {
-            // Obviamente define el color
+            // Define the color of the graphic
             shapeRenderer.setColor(config.singleGraphic);
-            // Procesando arreglo
+            // Draw x and y points to simulate function
             for (double[] valor : renderValues)
-                shapeRenderer.point((float) (valor[0] * scaleX) + stage.getWidth()/2f, (float) (valor[1] * scaleY) + stage.getHeight()/2f, 0);
-        } else {
-//            int counter = 0;
-//            for (double[][] funcion : funciones) {
-//                if (counter < funciones.size())
-//                    counter++;
-//                else
-//                    counter = 0;
-//                shapeRenderer.setColor(colores[counter]);
-//                for (int i = 0; i < funcion.length - 1; i++)
-//                    shapeRenderer.point((float) funcion[i][0] * scaleX, (float) funcion[i][1] * scaleY, 0);
-//            }
+                shapeRenderer.point(centerX(valor[0]* scaleX), centerY(valor[1]* scaleY), 0);
         }
         shapeRenderer.end(); // Para finalizar el renderizado
     }
@@ -216,21 +226,26 @@ public class MainScreen implements Screen{
     }
 
     private void renderAxis() {
-        shapeRenderer.setProjectionMatrix(camera.combined);
+        shapeRenderer.setProjectionMatrix(renderCamera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(config.axisColor);
-        // Renderizan X e Y
-        shapeRenderer.line(0, stage.getHeight()/2f + yoffset, 0, stage.getWidth(), stage.getHeight()/2f + yoffset, 0);
-        shapeRenderer.line(stage.getWidth()/2f + xoffset, 0, 0, stage.getWidth()/2f + xoffset, stage.getHeight(), 0);
-        // Renderiza la graduacion de los ejejejes
-        for (double i = 0; i < stage.getWidth(); i += scaleX) {
-            shapeRenderer.line((float) i, -1, (float) i, 1);
-            shapeRenderer.line((float) -i, -1, (float) -i, 1);
+        // This renders continuosly x and y axis
+        shapeRenderer.line(centerX(), -renderCamera.viewportHeight + renderCamera.position.y, centerX(), renderCamera.viewportHeight + renderCamera.position.y);
+        shapeRenderer.line(-renderCamera.viewportWidth + renderCamera.position.x + xoffset, centerY(), renderCamera.viewportWidth + renderCamera.position.x, centerY());
+        // Renders axis graduation
+        for (double i = 0; i < renderCamera.viewportWidth + Math.abs(renderCamera.position.x); i += scaleX) {
+            shapeRenderer.line(centerX(i), centerY(1), centerX(i), centerY(-1)); // This renders positive graduation
+            shapeRenderer.line(centerX(-i), centerY(-1), centerX(-i) , centerY(1)); // This renders negative graduation
         }
-        for (double i = 0; i < camera.viewportHeight + Math.abs(camera.position.y); i += scaleY) {
-            shapeRenderer.line(-1, (float) i, 1, (float) i);
-            shapeRenderer.line(-1, (float) -i, 1, (float) -i);
+        for (double i = 0; i < renderCamera.viewportHeight + Math.abs(renderCamera.position.y); i += scaleY) {
+            shapeRenderer.line(centerX(1), centerY(i), centerX(-1), centerY(i));
+            shapeRenderer.line(centerX(-1), centerY(-i), centerX(1), centerY(-i));
         }
         shapeRenderer.end();
     }
+
+    private float centerX(){ return renderCamera.viewportWidth/2f; }
+    private float centerY(){ return renderCamera.viewportHeight/2f; }
+    private float centerX(double number){ return (float)(centerX()+number); }
+    private float centerY(double number){ return  (float) (centerY()+number); }
 }

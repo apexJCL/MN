@@ -1,5 +1,6 @@
 package com.itc.mn.UI.Modules;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab;
