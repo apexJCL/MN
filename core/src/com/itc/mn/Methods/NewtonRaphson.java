@@ -5,7 +5,7 @@ import com.itc.mn.Things.FuncionX;
 /**
  * Created by zero_ on 30/09/2015.
  */
-public class NewtonRaphson extends Metodo {
+public class NewtonRaphson extends Method {
 
     private FuncionX f, f1;
     private Double xi1;
@@ -15,7 +15,7 @@ public class NewtonRaphson extends Metodo {
     }
 
     /**
-     * Metodo Newton-Raphson
+     * Method Newton-Raphson
      * @param funcion Funcion original
      * @param derivada Primer derivada de la funcion original
      * @param aprox Aproximacion inicial

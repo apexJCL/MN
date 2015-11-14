@@ -4,8 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.itc.mn.Methods.Method;
 import com.itc.mn.Things.Results;
-import com.itc.mn.Methods.Metodo;
 import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisWindow;
@@ -14,13 +14,13 @@ import java.text.DecimalFormat;
 
 public class TablaResultados extends VisWindow {
 
-    private Metodo metodo;
+    private Method metodo;
     private VisTable innerTable;
     private VisScrollPane pane;
 
 
-    public TablaResultados(Metodo metodo, FrontEnd gui) {
-        super(metodo.getTitulo());
+    public TablaResultados(Method metodo, FrontEnd gui) {
+        super(metodo.getWindowTitle());
         this.metodo = metodo;
         // Inicializamos la tabla interna para los valores
         innerTable = new VisTable();
@@ -36,7 +36,7 @@ public class TablaResultados extends VisWindow {
 
     public TablaResultados(Results res, FrontEnd gui) {
         super(res.getTitulo());
-        this.metodo = new Metodo(res);
+        this.metodo = new Method(res);
         innerTable = new VisTable();
         closeOnEscape();
         addCloseButton();
@@ -64,7 +64,7 @@ public class TablaResultados extends VisWindow {
     }
 
     private void buildTable(String format) {
-        for (String s : metodo.getEncabezados())
+        for (String s : metodo.getTitles())
             innerTable.add(s).left().expandX().pad(5f);
         innerTable.row();
         for (double[] valores : metodo.getResultados()) {

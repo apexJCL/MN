@@ -1,6 +1,6 @@
 package com.itc.mn.Things;
 
-import com.itc.mn.Methods.Metodo;
+import com.itc.mn.Methods.Method;
 
 import java.util.ArrayList;
 
@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 public class Results {
 
-    private Metodo.Tipo tipo;
+    private Method.Tipo tipo;
     private String[] encabezados;
     private ArrayList<double[]> resultados;
     private Double raiz;
@@ -37,11 +37,11 @@ public class Results {
         this.titulo = titulo;
     }
 
-    public void setTipo(Metodo.Tipo tipo) {
+    public void setTipo(Method.Tipo tipo) {
         this.tipo = tipo;
     }
 
-    public Metodo.Tipo getTipo() {
+    public Method.Tipo getTipo() {
         return tipo;
     }
 

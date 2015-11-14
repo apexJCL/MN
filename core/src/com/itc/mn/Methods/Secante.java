@@ -2,7 +2,7 @@ package com.itc.mn.Methods;
 
 import com.itc.mn.Things.FuncionX;
 
-public class Secante extends Metodo {
+public class Secante extends Method {
 
     private FuncionX fx_1, fx, fx1;
     private Double xi1, xi1ant;

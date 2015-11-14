@@ -6,7 +6,7 @@ import com.itc.mn.Things.FuncionX;
 /**
  * Created by zero_ on 23/09/2015.
  */
-public class PFijo extends Metodo{
+public class PFijo extends Method {
 
     private FuncionX g;
     private double x, xi;

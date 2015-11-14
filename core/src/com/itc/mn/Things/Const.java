@@ -1,8 +1,12 @@
 package com.itc.mn.Things;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.Json;
+
+import java.util.Locale;
 
 /**
  * A class that holds constants
@@ -25,9 +29,13 @@ public class Const {
     public float currentPoints = 0.001f;
     public float maxScaleX = 100f;
     public float maxScaleY = 100f;
+    private static FileHandle fileHandle = Gdx.files.internal("i18n/uilang"); // Loads the language file
+    private static Locale locale = new Locale(Locale.getDefault().toString().substring(0, Locale.getDefault().toString().indexOf('_'))); // Defines the locale to use
+    private static I18NBundle bundle = I18NBundle.createBundle(fileHandle, locale);
 
-    public Const() {
-    }
+    public Const() {}
+
+    public static I18NBundle loadBundle() { return bundle; }
 
     public static Const Load() {
         config = new Json().fromJson(Const.class, Gdx.app.getPreferences(pref_name).getString(id));

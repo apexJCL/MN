@@ -13,7 +13,7 @@ import java.util.Locale;
 /**
  * Default base-class for Methods
  */
-public strictfp class Metodo {
+public strictfp class Method {
 
     public Tipo tipo;
     public ArrayList<double[]> resultados;
@@ -38,10 +38,10 @@ public strictfp class Metodo {
         error = 1d;
     }
 
-    public Metodo() {
+    public Method() {
     }
 
-    public Metodo(Results result) {
+    public Method(Results result) {
         this.tipo = result.getTipo();
         this.raiz = result.getRaiz();
         this.funcion = result.getFuncion();
@@ -73,19 +73,24 @@ public strictfp class Metodo {
         titulo_ventana += bundle.get("function")+": "+funcion+"| "+bundle.get("root")+": "+new DecimalFormat(tmp.getFormat()).format(raiz)+" | "+bundle.get("epa")+": "+ep_porcentual;
     }
 
-    public double[][] obtenerRango(double inicio, double fin, double paso) {
+    public double[][] getRange(double inicio, double fin, double paso) {
         return new FuncionX(funcion).obtenerRango(inicio, fin, paso);
     }
 
-    public String getTitulo(){ return titulo_ventana; }
+    public String getWindowTitle(){ return titulo_ventana; }
 
-    public String[] getEncabezados() { return encabezados; }
+    public String[] getTitles() { return encabezados; }
 
-    public double[][] obtenerRango(){
+    /**
+     * Returns an array of the function evalued in the default given limits (-10 to 10)
+     * Used for graphing
+     * @return bidimensional double array
+     */
+    public double[][] getRange(){
         return new  FuncionX(funcion).obtenerRango(inicio_r, fin_r, paso_r);
     }
 
-    public double getRaiz(){
+    public double getRoot(){
         return raiz;
     }
 

@@ -54,7 +54,7 @@ public class Matrix extends VisWindow {
         addCloseButton();
         closeOnEscape();
         // Adding events to default buttons
-        cerrar = new VisTextButton(bundle.get("b_close"));
+        cerrar = new VisTextButton(bundle.get("close"));
         cerrar.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

@@ -5,7 +5,7 @@ import com.itc.mn.Things.FuncionX;
 /**
  * Bisection Method
  */
-public strictfp class Biseccion extends Metodo {
+public strictfp class Bisection extends Method {
 
     private FuncionX fa, fb, fx;
     private Double xr, xranterior;
@@ -14,7 +14,7 @@ public strictfp class Biseccion extends Metodo {
         this.tipo = Tipo.BISECCION;
     }
 
-    public Biseccion(String funcion, double a, double b, double ep){
+    public Bisection(String funcion, double a, double b, double ep){
         this.funcion = funcion;
         // Aqui v_inicial y v_final fungen como a y b
         this.v_inicial = a;

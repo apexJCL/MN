@@ -2,7 +2,7 @@ package com.itc.mn.Methods;
 
 import com.itc.mn.Things.FuncionX;
 
-public class ReglaFalsa extends Metodo{
+public class ReglaFalsa extends Method {
 
     private double xr;
     private double xranterior;

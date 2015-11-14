@@ -4,10 +4,10 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.itc.mn.Methods.Method;
 import com.itc.mn.Things.Const;
 import com.itc.mn.Things.FuncionX;
 import com.itc.mn.Things.Results;
-import com.itc.mn.Methods.Metodo;
 
 import java.util.ArrayList;
 
@@ -21,7 +21,7 @@ public class RenderScreen extends Pantalla {
     private volatile boolean isRootAvailable;
     private ArrayList<double[][]> funciones;
     private Color[] colores = {Color.BLUE, Color.GREEN, Color.CYAN, Color.YELLOW, Color.FIREBRICK, Color.ROYAL, Color.RED, Color.SALMON, Color.MAGENTA, Color.LIME, Color.TAN, Color.TEAL, Color.VIOLET};
-    private Metodo metodo;
+    private Method metodo;
     private Const config = Const.Load();
 
     {
@@ -56,11 +56,11 @@ public class RenderScreen extends Pantalla {
      * @param game   Instancia Game para cambiar pantallas
      * @param metodo Objeto metodo
      */
-    public RenderScreen(Game game, Metodo metodo, boolean inputEnabled) {
+    public RenderScreen(Game game, Method metodo, boolean inputEnabled) {
         super(game);
         this.metodo = metodo;
-        this.valores = metodo.obtenerRango();
-        this.raiz = metodo.getRaiz();
+        this.valores = metodo.getRange();
+        this.raiz = metodo.getRoot();
         isRootAvailable = true;
         gui_stage.createTablaRes(metodo);
         gui_stage.enableIterTable(true);
@@ -159,7 +159,7 @@ public class RenderScreen extends Pantalla {
         shapeRenderer.end();
     }
 
-    public Metodo getMetodo() {
+    public Method getMetodo() {
         return metodo;
     }
 

@@ -13,10 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.itc.mn.GUI.GlobalMenu;
 import com.itc.mn.Things.Const;
-import com.itc.mn.Things.FuncionX;
-import com.itc.mn.UI.Modules.RenderModule;
+import com.itc.mn.UI.Modules.MethodModule;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab;
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane;
@@ -39,7 +37,7 @@ public class MainScreen implements Screen {
     private ArrayList<double[][]> funciones;
     private Color[] colores = {Color.BLUE, Color.GREEN, Color.CYAN, Color.YELLOW, Color.FIREBRICK, Color.ROYAL, Color.RED, Color.SALMON, Color.MAGENTA, Color.LIME, Color.TAN, Color.TEAL, Color.VIOLET};
     private boolean isRootAvailable = false;
-    private float raiz = 0;
+    private double raiz = 0;
     private float xoffset, yoffset;
     private OrthographicCamera renderCamera;
 
@@ -55,7 +53,6 @@ public class MainScreen implements Screen {
         instantiateThings();
         addGUI();
         // Test
-        renderValues = new FuncionX("x^2").obtenerRango(-30, 30);
         setStageProperties();
     }
 
@@ -93,8 +90,12 @@ public class MainScreen implements Screen {
                 Table content = tab.getContentTable();
                 container.clearChildren();
                 container.add(content).center().expand().fill();
-                if (content instanceof RenderModule.CustomTable)
+                if (content instanceof MethodModule.CustomTable) {
+                    isRootAvailable = true;
+                    renderValues = ((MethodModule)tab).getValues();
+                    raiz = ((MethodModule)tab).getRoot();
                     setRenderStatus(true);
+                }
                 else
                     setRenderStatus(false);
             }
@@ -216,10 +217,10 @@ public class MainScreen implements Screen {
 
     private void renderRoot() {
         if (isRootAvailable) { // Para que se renderize con la camara
-            shapeRenderer.setProjectionMatrix(camera.combined);
+            shapeRenderer.setProjectionMatrix(renderCamera.combined);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(config.rootColor);
-            shapeRenderer.circle((float) (raiz * scaleX), 0, 5 * camera.zoom, 50);
+            shapeRenderer.circle(centerX(raiz * scaleX), centerY(), 5 * renderCamera.zoom, 50);
             shapeRenderer.setColor(Color.CYAN);
             shapeRenderer.end();
         }
@@ -248,4 +249,8 @@ public class MainScreen implements Screen {
     private float centerY(){ return renderCamera.viewportHeight/2f; }
     private float centerX(double number){ return (float)(centerX()+number); }
     private float centerY(double number){ return  (float) (centerY()+number); }
+
+    public Stage getStage() {
+        return stage;
+    }
 }

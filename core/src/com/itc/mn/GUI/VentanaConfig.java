@@ -63,8 +63,8 @@ public class VentanaConfig extends VisWindow {
         bg_cambiar.setColor(prefs.backgroundColor[0], prefs.backgroundColor[1], prefs.backgroundColor[2], prefs.backgroundColor[3]);
         sg_cambiar.setColor(prefs.singleGraphic);
         axis_cambiar.setColor(prefs.axisColor);
-        aceptar = new VisTextButton(gui.getBundle().get("b_accept"));
-        cancelar = new VisTextButton(gui.getBundle().get("b_close"));
+        aceptar = new VisTextButton(gui.getBundle().get("accept"));
+        cancelar = new VisTextButton(gui.getBundle().get("close"));
         // Adjust listeners
         decimals.addListener(new ChangeListener() {
             @Override

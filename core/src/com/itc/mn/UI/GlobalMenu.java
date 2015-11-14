@@ -1,33 +1,25 @@
-package com.itc.mn.GUI;
+package com.itc.mn.UI;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.I18NBundle;
-import com.itc.mn.Things.FuncionX;
-import com.itc.mn.UI.MainScreen;
+import com.itc.mn.Things.Const;
 import com.itc.mn.UI.Modules.MatrixModule;
-import com.itc.mn.UI.Modules.RenderModule;
+import com.itc.mn.UI.Modules.MethodModule;
 import com.itc.mn.UI.Modules.WelcomeModule;
-import com.kotcrab.vis.ui.widget.Menu;
-import com.kotcrab.vis.ui.widget.MenuBar;
-import com.kotcrab.vis.ui.widget.MenuItem;
-import com.kotcrab.vis.ui.widget.PopupMenu;
-
-import java.util.Locale;
+import com.itc.mn.UI.Windows.InputWindow;
+import com.kotcrab.vis.ui.widget.*;
 
 public class GlobalMenu extends MenuBar {
 
     private final MainScreen mainScreen;
-    private FileHandle fileHandle = Gdx.files.internal("i18n/uilang"); // Loads the language file
-    private Locale locale = new Locale(Locale.getDefault().toString().substring(0, Locale.getDefault().toString().indexOf('_'))); // Defines the locale to use
-    private I18NBundle bundle = I18NBundle.createBundle(fileHandle, locale);
     private Menu fileMenu, sectionMenu, windowMenu;
     private MenuItem i_exit, i_open, i_save, i_settings;
     private MenuItem s_methods, s_matrix, s_statistics, s_help, s_about;
     private MenuItem m_bisection, m_fauxrule, m_nraphson, m_fixedpoint, m_secant;
     private MenuItem s_render;
+    private I18NBundle bundle = Const.loadBundle();
 
     public GlobalMenu(MainScreen mainScreen){
         this.mainScreen = mainScreen;
@@ -38,7 +30,6 @@ public class GlobalMenu extends MenuBar {
 
     private void setupTab() {
         mainScreen.getTabbedPane().add(new WelcomeModule(bundle));
-        mainScreen.getTabbedPane().add(new RenderModule(new FuncionX("x^2").obtenerRango(-10, 10)));
     }
 
     private void createMenus () {
@@ -106,20 +97,22 @@ public class GlobalMenu extends MenuBar {
     }
 
     private void addActions(){
-        s_render.addListener(new MenuListener(ButtonType.RENDER));
-        i_exit.addListener(new MenuListener(ButtonType.EXIT));
-        s_matrix.addListener(new MenuListener(ButtonType.MATRIX));
+        s_render.addListener(new MenuListener(ActionType.RENDER));
+        i_exit.addListener(new MenuListener(ActionType.EXIT));
+        s_matrix.addListener(new MenuListener(ActionType.MATRIX));
+        // Methods
+        m_bisection.addListener(new MenuListener(ActionType.BISECTION));
     }
 
-    private enum ButtonType{
-        RENDER, EXIT, MATRIX
+    public enum ActionType {
+        RENDER, EXIT, MATRIX, BISECTION
     }
 
     private class MenuListener extends ClickListener {
 
-        private ButtonType type;
+        private ActionType type;
 
-        public MenuListener(ButtonType type){
+        public MenuListener(ActionType type){
             this.type = type;
         }
 
@@ -135,6 +128,45 @@ public class GlobalMenu extends MenuBar {
                 case MATRIX:
                     mainScreen.getTabbedPane().add(new MatrixModule(bundle));
                     System.out.println("Added");
+                    break;
+                case BISECTION:
+                    MethodWindow();
+                    break;
+            }
+        }
+
+        /**
+         * This wii hold all the logic for the show-call windows that executes methods
+         */
+        private void MethodWindow(){
+            InputWindow tmp = null;
+            switch (type){
+                case BISECTION:
+                    tmp = new InputWindow(bundle.get("m_bisection"), new String[][]{{bundle.get("function"), "f"}, {bundle.get("a_value"), "a"}, {bundle.get("b_value"), "b"}, {bundle.get("error")+"(0-100)", "ep"}});
+                    VisTextButton accept = tmp.getAcceptButton();
+                    accept.addListener(new AcceptButtonListener(type, tmp));
+                    break;
+            }
+            if (tmp != null)
+                mainScreen.getStage().addActor(tmp.fadeIn());
+        }
+    }
+
+    private class AcceptButtonListener extends ClickListener {
+
+        private final ActionType action;
+        private InputWindow window;
+
+        public AcceptButtonListener(ActionType action, InputWindow window){
+            this.action = action;
+            this.window = window;
+        }
+
+        @Override
+        public void clicked(InputEvent event, float x, float y) {
+            switch (action){
+                case BISECTION:
+                    mainScreen.getTabbedPane().add(new MethodModule(action, window));
                     break;
             }
         }

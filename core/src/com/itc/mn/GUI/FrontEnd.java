@@ -12,12 +12,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.itc.mn.Methods.Method;
+import com.itc.mn.Screens.Pantalla;
+import com.itc.mn.Screens.RenderScreen;
 import com.itc.mn.Things.Const;
 import com.itc.mn.Things.FuncionX;
 import com.itc.mn.Things.Results;
-import com.itc.mn.Methods.Metodo;
-import com.itc.mn.Screens.Pantalla;
-import com.itc.mn.Screens.RenderScreen;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.*;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
@@ -376,7 +376,7 @@ public class FrontEnd extends Stage {
                 if (ventanaValores == null || !getActors().contains(ventanaValores, true))
                     mostrar_biseccion();
                 else {
-                    if (ventanaValores.getTipo() != Metodo.Tipo.BISECCION) {
+                    if (ventanaValores.getTipo() != Method.Tipo.BISECCION) {
                         ventanaValores.fadeOut();
                         mostrar_biseccion();
                     } else
@@ -391,7 +391,7 @@ public class FrontEnd extends Stage {
                 if (ventanaValores == null || !getActors().contains(ventanaValores, true))
                     mostrar_rf();
                 else {
-                    if (ventanaValores.getTipo() != Metodo.Tipo.REGLA_FALSA) {
+                    if (ventanaValores.getTipo() != Method.Tipo.REGLA_FALSA) {
                         ventanaValores.fadeOut();
                         mostrar_rf();
                     } else
@@ -406,7 +406,7 @@ public class FrontEnd extends Stage {
                 if (ventanaValores == null || !getActors().contains(ventanaValores, true))
                     mostrar_pfijo();
                 else {
-                    if (ventanaValores.getTipo() != Metodo.Tipo.PUNTO_FIJO) {
+                    if (ventanaValores.getTipo() != Method.Tipo.PUNTO_FIJO) {
                         ventanaValores.fadeOut();
                         mostrar_pfijo();
                     } else
@@ -421,7 +421,7 @@ public class FrontEnd extends Stage {
                 if (ventanaValores == null || !getActors().contains(ventanaValores, true))
                     mostrar_nr();
                 else {
-                    if (ventanaValores.getTipo() != Metodo.Tipo.NEWTON_RAPHSON) {
+                    if (ventanaValores.getTipo() != Method.Tipo.NEWTON_RAPHSON) {
                         ventanaValores.fadeOut();
                         mostrar_nr();
                     } else
@@ -436,7 +436,7 @@ public class FrontEnd extends Stage {
                 if (ventanaValores == null || !getActors().contains(ventanaValores, true))
                     mostrar_secante();
                 else {
-                    if (ventanaValores.getTipo() != Metodo.Tipo.PUNTO_FIJO) {
+                    if (ventanaValores.getTipo() != Method.Tipo.PUNTO_FIJO) {
                         ventanaValores.fadeOut();
                         mostrar_secante();
                     } else
@@ -462,40 +462,40 @@ public class FrontEnd extends Stage {
 
     private void mostrar_secante() {
         String[][] campos = new String[][]{{bundle.get("original_function"), "fx"}, {"xi-1", "xi_1"}, {"xi", "xi"}, {bundle.get("error")+"(0-100)", "ep"}}; // Change with i18n file
-        ventanaValores = new VentanaValores(bundle.get("m_secant"), campos, game, Metodo.Tipo.NEWTON_RAPHSON, bundle);
-        ventanaValores.asignaEvento(Metodo.Tipo.SECANTE);
+        ventanaValores = new VentanaValores(bundle.get("m_secant"), campos, game, Method.Tipo.NEWTON_RAPHSON, bundle);
+        ventanaValores.asignaEvento(Method.Tipo.SECANTE);
         addActor(ventanaValores.fadeIn(0.3f));
     }
 
     private void mostrar_pfijo() {
         String[][] campos = new String[][]{{bundle.get("original_function"), "f1"}, {bundle.get("gx"), "f2"}, {bundle.get("initial_value"), "vi"}, {bundle.get("error")+"(0-100)", "ep"}}; // Change with i18n file
-        ventanaValores = new VentanaValores(bundle.get("m_fixedpoint"), campos, game, Metodo.Tipo.PUNTO_FIJO, bundle);
-        ventanaValores.asignaEvento(Metodo.Tipo.PUNTO_FIJO);
+        ventanaValores = new VentanaValores(bundle.get("m_fixedpoint"), campos, game, Method.Tipo.PUNTO_FIJO, bundle);
+        ventanaValores.asignaEvento(Method.Tipo.PUNTO_FIJO);
         addActor(ventanaValores.fadeIn(0.3f));
     }
 
     private void mostrar_nr() {
         String[][] campos = new String[][]{{bundle.get("original_function"), "fx"}, {bundle.get("first_derivative"), "f'x"}, {bundle.get("initial_value"), "vi"}, {bundle.get("error")+"(0-100)", "ep"}}; // Change with i18n file
-        ventanaValores = new VentanaValores(bundle.get("m_nr"), campos, game, Metodo.Tipo.NEWTON_RAPHSON, bundle);
-        ventanaValores.asignaEvento(Metodo.Tipo.NEWTON_RAPHSON);
+        ventanaValores = new VentanaValores(bundle.get("m_nr"), campos, game, Method.Tipo.NEWTON_RAPHSON, bundle);
+        ventanaValores.asignaEvento(Method.Tipo.NEWTON_RAPHSON);
         addActor(ventanaValores.fadeIn(0.3f));
     }
 
     private void mostrar_biseccion() {
         String[][] campos = new String[][]{{bundle.get("function"), "f"}, {bundle.get("a_value"), "a"}, {bundle.get("b_value"), "b"}, {bundle.get("error")+"(0-100)", "ep"}}; // Change with i18n file
-        ventanaValores = new VentanaValores(bundle.get("m_bisection"), campos, game, Metodo.Tipo.BISECCION, bundle);
-        ventanaValores.asignaEvento(Metodo.Tipo.BISECCION);
+        ventanaValores = new VentanaValores(bundle.get("m_bisection"), campos, game, Method.Tipo.BISECCION, bundle);
+        ventanaValores.asignaEvento(Method.Tipo.BISECCION);
         addActor(ventanaValores.fadeIn(0.3f));
     }
 
     private void mostrar_rf() {
         String[][] campos = new String[][]{{bundle.get("function"), "f"}, {bundle.get("a_value"), "a"}, {bundle.get("b_value"), "b"}, {bundle.get("error")+"(0-100)", "ep"}}; // Change with i18n file
-        ventanaValores = new VentanaValores(bundle.get("m_falseposition"), campos, game, Metodo.Tipo.REGLA_FALSA, bundle);
-        ventanaValores.asignaEvento(Metodo.Tipo.REGLA_FALSA);
+        ventanaValores = new VentanaValores(bundle.get("m_falseposition"), campos, game, Method.Tipo.REGLA_FALSA, bundle);
+        ventanaValores.asignaEvento(Method.Tipo.REGLA_FALSA);
         addActor(ventanaValores.fadeIn(0.3f));
     }
 
-    public void createTablaRes(Metodo metodo) {
+    public void createTablaRes(Method metodo) {
         tabla_res = new TablaResultados(metodo, this);
     }
 
@@ -555,14 +555,14 @@ public class FrontEnd extends Stage {
             }
         }
 
-        private String buildJson(Metodo metodo) {
+        private String buildJson(Method metodo) {
             Results results = new Results();
             results.setTipo(metodo._getTipo());
-            results.setEncabezados(metodo.getEncabezados());
+            results.setEncabezados(metodo.getTitles());
             results.setFuncion(metodo.getFuncion());
             results.setRaiz(metodo.raiz);
             results.setResultados(metodo.getResultados());
-            results.setTitulo(metodo.getTitulo());
+            results.setTitulo(metodo.getWindowTitle());
             return json.prettyPrint(results);
         }
     }

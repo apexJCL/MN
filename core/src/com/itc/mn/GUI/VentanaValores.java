@@ -11,9 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.I18NBundle;
-import com.itc.mn.Things.FuncionX;
 import com.itc.mn.Methods.*;
 import com.itc.mn.Screens.RenderScreen;
+import com.itc.mn.Things.FuncionX;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
 import com.kotcrab.vis.ui.widget.VisWindow;
@@ -26,7 +26,7 @@ public class VentanaValores extends VisWindow {
     private final Game game;
     private VisTextButton aceptar, cancelar;
     private FuncionX fx;
-    private Metodo.Tipo tipo;
+    private Method.Tipo tipo;
     private I18NBundle bundle;
 
     /**
@@ -36,7 +36,7 @@ public class VentanaValores extends VisWindow {
      * @param title Titulo de la v
      * @param campos String[] de 2, [0] = hint, [1] = nombre variable
      */
-    public VentanaValores(String title, String[][] campos, Game game, Metodo.Tipo tipo, I18NBundle bundle) {
+    public VentanaValores(String title, String[][] campos, Game game, Method.Tipo tipo, I18NBundle bundle) {
         super(title);
         setName(title); // La ventana se llamara igual que el titulo que reciba
         this.game = game; // Una referencia a Game para poder intercambiar la pantalla
@@ -50,8 +50,8 @@ public class VentanaValores extends VisWindow {
             tmp.addListener(new AndroidInput(tmp));
         }
         // Creamos los botones
-        aceptar = new VisTextButton(bundle.get("b_accept"));
-        cancelar = new VisTextButton(bundle.get("b_close"));
+        aceptar = new VisTextButton(bundle.get("accept"));
+        cancelar = new VisTextButton(bundle.get("close"));
         // Los agregamos a la v
         add(cancelar).expandX().pad(3f);
         add(aceptar).expandX().pad(3f).row();
@@ -80,7 +80,7 @@ public class VentanaValores extends VisWindow {
                 actor.setName("");
     }
 
-    private void validacion(Metodo.Tipo tipo){
+    private void validacion(Method.Tipo tipo){
         restringeEP();
         switch (tipo){
             case PUNTO_FIJO:
@@ -155,23 +155,23 @@ public class VentanaValores extends VisWindow {
 
     /**
      * Asigna un evento personalizado dependiendo del tipo de metodo a ejecutar
-     * @param tipo Tipo de Metodo
+     * @param tipo Tipo de Method
      */
-    public void asignaEvento(Metodo.Tipo tipo){
+    public void asignaEvento(Method.Tipo tipo){
         aceptar.addListener(new Proceso(this, tipo));
     }
 
-    public Metodo.Tipo getTipo() {
+    public Method.Tipo getTipo() {
         return tipo;
     }
 
     private class Proceso extends ClickListener {
 
-        private final Metodo.Tipo tipo;
+        private final Method.Tipo tipo;
         private final VentanaValores v;
         private double a, b;
 
-        public Proceso(VentanaValores v, Metodo.Tipo tipo){
+        public Proceso(VentanaValores v, Method.Tipo tipo){
             this.v = v;
             this.tipo = tipo;
         }
@@ -187,7 +187,7 @@ public class VentanaValores extends VisWindow {
                             a = fx.obtenerValor(Double.parseDouble(v.getVariable("a")));
                             b = fx.obtenerValor(Double.parseDouble(v.getVariable("b")));
                             if((a*b) < 0) {
-                                game.setScreen(new RenderScreen(game, new Biseccion(v.getVariable("f"), Double.parseDouble(v.getVariable("a")), Double.parseDouble(v.getVariable("b")), Double.parseDouble(v.getVariable("ep") + "d") / 100d), false));
+                                game.setScreen(new RenderScreen(game, new Bisection(v.getVariable("f"), Double.parseDouble(v.getVariable("a")), Double.parseDouble(v.getVariable("b")), Double.parseDouble(v.getVariable("ep") + "d") / 100d), false));
                             }
                             else{
                                 getActor("a").setColor(1, 0, 0, 1);
