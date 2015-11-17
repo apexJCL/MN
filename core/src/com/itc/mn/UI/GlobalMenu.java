@@ -102,10 +102,12 @@ public class GlobalMenu extends MenuBar {
         s_matrix.addListener(new MenuListener(ActionType.MATRIX));
         // Methods
         m_bisection.addListener(new MenuListener(ActionType.BISECTION));
+        m_fauxrule.addListener(new MenuListener(ActionType.REGULI));
+        m_fixedpoint.addListener(new MenuListener(ActionType.FIXED_POINT));
     }
 
     public enum ActionType {
-        RENDER, EXIT, MATRIX, BISECTION
+        RENDER, EXIT, MATRIX, BISECTION, REGULI, FIXED_POINT, NR, SECANT
     }
 
     private class MenuListener extends ClickListener {
@@ -129,6 +131,10 @@ public class GlobalMenu extends MenuBar {
                     mainScreen.getTabbedPane().add(new MatrixModule(bundle));
                     System.out.println("Added");
                     break;
+                case SECANT:
+                case NR:
+                case REGULI:
+                case FIXED_POINT:
                 case BISECTION:
                     MethodWindow();
                     break;
@@ -143,10 +149,20 @@ public class GlobalMenu extends MenuBar {
             switch (type){
                 case BISECTION:
                     tmp = new InputWindow(bundle.get("m_bisection"), new String[][]{{bundle.get("function"), "f"}, {bundle.get("a_value"), "a"}, {bundle.get("b_value"), "b"}, {bundle.get("error")+"(0-100)", "ep"}});
-                    VisTextButton accept = tmp.getAcceptButton();
-                    accept.addListener(new AcceptButtonListener(type, tmp));
+                    break;
+                case REGULI:
+                    tmp = new InputWindow(bundle.get("m_falseposition"), new String[][]{{bundle.get("function"), "f"}, {bundle.get("a_value"), "a"}, {bundle.get("b_value"), "b"}, {bundle.get("error"), "ep"}});
+                    break;
+                case FIXED_POINT:
+                    tmp = new InputWindow(bundle.get("m_fixedpoint"), new String[][]{{bundle.get("original_function"), "f_1"}, {bundle.get("x_function"), "f_2"}, {bundle.get("initial_value"), "initial"}, {bundle.get("error"), "ep"}});
+                    break;
+                case NR:
+                    break;
+                case SECANT:
                     break;
             }
+            VisTextButton accept = tmp.getAcceptButton();
+            accept.addListener(new AcceptButtonListener(type, tmp));
             if (tmp != null)
                 mainScreen.getStage().addActor(tmp.fadeIn());
         }
@@ -165,6 +181,10 @@ public class GlobalMenu extends MenuBar {
         @Override
         public void clicked(InputEvent event, float x, float y) {
             switch (action){
+                case SECANT:
+                case FIXED_POINT:
+                case NR:
+                case REGULI:
                 case BISECTION:
                     mainScreen.getTabbedPane().add(new MethodModule(action, window));
                     window.fadeOut();

@@ -3,6 +3,8 @@ package com.itc.mn.UI.Modules;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.itc.mn.Methods.Bisection;
 import com.itc.mn.Methods.Method;
+import com.itc.mn.Methods.PFijo;
+import com.itc.mn.Methods.ReglaFalsa;
 import com.itc.mn.Things.Const;
 import com.itc.mn.UI.GlobalMenu;
 import com.itc.mn.UI.Windows.InputWindow;
@@ -59,8 +61,19 @@ public class MethodModule extends Tab{
     private void LoadMethod()throws Exception{
         switch (action){
             case BISECTION:
-                method = new Bisection(window.getVariable("f"), Double.parseDouble(window.getVariable("a")), Double.parseDouble(window.getVariable("b")), Double.parseDouble(window.getVariable("ep")));
+                method = new Bisection(window.getVariable("f"), Double.parseDouble(window.getVariable("a")+"d"), Double.parseDouble(window.getVariable("b")+"d"), Double.parseDouble(window.getVariable("ep")+"d"));
                 values = method.getRange();
+                break;
+            case REGULI:
+                method = new ReglaFalsa(window.getVariable("f"), Double.parseDouble(window.getVariable("a")+"d"), Double.parseDouble(window.getVariable("b")+"d"), Double.parseDouble(window.getVariable("ep")+"d"));
+                values = method.getRange();
+                break;
+            case FIXED_POINT:
+                method = new PFijo(window.getVariable("f_1"), window.getVariable("f_2"), Double.parseDouble(window.getVariable("initial")+"d"), Double.parseDouble(window.getVariable("ep")+"d"));
+                break;
+            case NR:
+                break;
+            case SECANT:
                 break;
         }
         buildResuts(method);
