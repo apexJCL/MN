@@ -2,6 +2,7 @@ package com.itc.mn.UI;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.itc.mn.Things.Const;
+import com.itc.mn.UI.EventHandlers.RenderInputHandler;
 import com.itc.mn.UI.Modules.MethodModule;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab;
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 public class MainScreen implements Screen {
 
     protected Stage stage;
+    private RenderInputHandler renderHandler;
     private GlobalMenu menuBar;
     private TabbedPane tabbedPane;
     private Table root, container;
@@ -33,13 +36,13 @@ public class MainScreen implements Screen {
     private boolean render = false;
     private ShapeRenderer shapeRenderer = new ShapeRenderer();
     private float scaleX, scaleY;
-    private OrthographicCamera camera;
     private ArrayList<double[][]> funciones;
     private Color[] colores = {Color.BLUE, Color.GREEN, Color.CYAN, Color.YELLOW, Color.FIREBRICK, Color.ROYAL, Color.RED, Color.SALMON, Color.MAGENTA, Color.LIME, Color.TAN, Color.TEAL, Color.VIOLET};
     private boolean isRootAvailable = false;
     private double raiz = 0;
     private float xoffset, yoffset;
     private OrthographicCamera renderCamera;
+    private InputMultiplexer inputMultiplexer;
 
     {
         scaleX = scaleY = 10;
@@ -58,12 +61,15 @@ public class MainScreen implements Screen {
 
     private void instantiateThings() {
         stage = new Stage(new ScreenViewport());
-        System.out.println(stage.getWidth());
-        System.out.println(stage.getHeight());
-        camera = (OrthographicCamera) stage.getCamera();
         // Create the camera that will render stuff
         renderCamera = new OrthographicCamera();
         renderCamera.setToOrtho(false, stage.getViewport().getScreenWidth(), stage.getViewport().getScreenHeight());
+        // This one will handle events on the render part
+        renderHandler = new RenderInputHandler(new ScreenViewport(), renderCamera);
+        // This will handle events for the GUI and Render Movements
+        inputMultiplexer = new InputMultiplexer(stage, renderHandler);
+        // Set the multiplexer as the input processor
+        Gdx.input.setInputProcessor(inputMultiplexer);
         //stage.setDebugAll(true);
         root = new Table();
         // This table with hold the menu and the container for the modules
@@ -76,7 +82,6 @@ public class MainScreen implements Screen {
 
     private void addGUI() {
         stage.addActor(root);
-        Gdx.input.setInputProcessor(stage);
         root.add(menuBar.getTable()).fillX().expandX().top().pad(0).row();
         root.add(tabbedPane.getTable()).left().row();
         root.add(container).fill().expand().row();
@@ -103,36 +108,7 @@ public class MainScreen implements Screen {
     }
 
     private void setStageProperties() {
-        stage.addListener(new ActorGestureListener() {
-            @Override
-            public void pan(InputEvent event, float x, float y, float deltaX, float deltaY) {
-                if (render)
-                    renderCamera.position.set(renderCamera.position.x - deltaX * renderCamera.zoom, renderCamera.position.y - deltaY * renderCamera.zoom, 0);
-            }
 
-            @Override
-            public void zoom(InputEvent event, float initialDistance, float distance) {
-                if(render) {
-                    float diff = initialDistance - distance;
-                    if (diff > 0 && render)
-                        renderCamera.zoom += (renderCamera.zoom < 1) ? renderCamera.zoom * 0.01f : 0;
-                    else
-                        renderCamera.zoom -= (renderCamera.zoom > 0.02f) ? renderCamera.zoom * 0.01f : 0;
-                }
-            }
-        });
-        stage.addListener(new InputListener(){
-            @Override
-            public boolean scrolled(InputEvent event, float x, float y, int amount) {
-                if(render) {
-                    if (amount > 0)
-                        renderCamera.zoom += (renderCamera.zoom < 1) ? 0.015f : 0;
-                    else
-                        renderCamera.zoom += (renderCamera.zoom > 0.02f) ? -0.015f : 0;
-                }
-                return super.scrolled(event, x, y, amount);
-            }
-        });
     }
 
     public boolean getRenderStatus() {
@@ -161,6 +137,8 @@ public class MainScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         if (render) {
+            renderHandler.act();
+            renderHandler.draw();
             renderCamera.update();
             renderAxis();
             renderArray();

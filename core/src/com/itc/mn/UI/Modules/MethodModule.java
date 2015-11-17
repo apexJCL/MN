@@ -3,10 +3,16 @@ package com.itc.mn.UI.Modules;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.itc.mn.Methods.Bisection;
 import com.itc.mn.Methods.Method;
+import com.itc.mn.Things.Const;
 import com.itc.mn.UI.GlobalMenu;
 import com.itc.mn.UI.Windows.InputWindow;
 import com.kotcrab.vis.ui.VisUI;
+import com.kotcrab.vis.ui.widget.VisScrollPane;
+import com.kotcrab.vis.ui.widget.VisSplitPane;
+import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab;
+
+import java.text.DecimalFormat;
 
 /**
  * This module contains the things needed by methods to execute and deliver.
@@ -19,15 +25,35 @@ public class MethodModule extends Tab{
     private final InputWindow window;
     private double[][] values = null;
     private final GlobalMenu.ActionType action;
-    private CustomTable content = new CustomTable();
+    private CustomTable content;
+    private VisTable transparentPane, resultPane;
+    private VisSplitPane splitPane;
+    private VisScrollPane resultScrollPane;
+    private String format = Const.Load().format;
 
     public MethodModule(GlobalMenu.ActionType action, InputWindow window){
         this.action = action;
         this.window = window;
+        buildUI();
         try{
             LoadMethod();
         }
         catch (Exception e){ e.printStackTrace(); }
+    }
+
+    private void buildUI() {
+        // We create our holder for the split pane, also it holds a flag to indicate rendering must be enabled
+        content = new CustomTable();
+        transparentPane = new VisTable();
+        resultPane = new VisTable();
+        // Create the scrollable pane so it can show values and move along the list
+        resultScrollPane = new VisScrollPane(resultPane);
+        // We create the splitpane so it holds the two tables with a vertical tab slider
+        splitPane = new VisSplitPane(transparentPane, resultScrollPane, false);
+        // We set the resultPane with a background so it shows all
+        resultPane.setBackground(VisUI.getSkin().getDrawable("window-bg"));
+        // Add the splitpane to the content table
+        content.add(splitPane).expand().fill();
     }
 
     private void LoadMethod()throws Exception{
@@ -36,6 +62,18 @@ public class MethodModule extends Tab{
                 method = new Bisection(window.getVariable("f"), Double.parseDouble(window.getVariable("a")), Double.parseDouble(window.getVariable("b")), Double.parseDouble(window.getVariable("ep")));
                 values = method.getRange();
                 break;
+        }
+        buildResuts(method);
+    }
+
+    private void buildResuts(Method method){
+        for(String s: method.getTitles())
+            resultPane.add(s).left().expandX().pad(5f);
+        resultPane.row();
+        for (double[] values: method.getResultados()){
+            for(double value: values)
+                resultPane.add(new DecimalFormat(format).format(value)).center().padRight(5f).expandX();
+            resultPane.row();
         }
     }
 
@@ -51,7 +89,7 @@ public class MethodModule extends Tab{
      */
     @Override
     public String getTabTitle() {
-        return "Render Screen";
+        return method.getTabTitle();
     }
 
     /**

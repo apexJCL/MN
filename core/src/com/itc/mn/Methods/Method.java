@@ -50,6 +50,23 @@ public strictfp class Method {
         this.resultados = result.getResultados();
     }
 
+    public String getTabTitle(){
+        switch (tipo){
+            case PUNTO_FIJO:
+                return bundle.get("m_fixedpoint");
+            case BISECCION:
+                return bundle.get("m_bisection");
+            case NEWTON_RAPHSON:
+                return bundle.get("m_nr");
+            case REGLA_FALSA:
+                return bundle.get("m_falseposition");
+            case SECANTE:
+                return bundle.get("m_secant");
+            default:
+                return "No";
+        }
+    }
+
     public void creaTitulo(){
         // We get the format to show the root on the window
         Const tmp = Const.Load();

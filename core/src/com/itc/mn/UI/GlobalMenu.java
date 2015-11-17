@@ -167,6 +167,7 @@ public class GlobalMenu extends MenuBar {
             switch (action){
                 case BISECTION:
                     mainScreen.getTabbedPane().add(new MethodModule(action, window));
+                    window.fadeOut();
                     break;
             }
         }
