@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.itc.mn.Methods.MatrixOperation;
+import com.itc.mn.Things.Const;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.*;
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab;
@@ -33,9 +34,9 @@ public class MatrixModule extends Tab {
     private MatrixOperation matrixOperation;
     private double[][] ans;
 
-    public MatrixModule(I18NBundle bundle) {
+    public MatrixModule() {
         super(true, true); // Change with i18n file
-        this.bundle = bundle;
+        this.bundle = Const.loadBundle();
         // Create the container
         container = new Table();
         container.setBackground(VisUI.getSkin().getDrawable("window-bg"));

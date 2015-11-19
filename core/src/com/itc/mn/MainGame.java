@@ -13,7 +13,7 @@ public class MainGame extends Game {
 	public void create () {
 		buildPrefs();
 		//this.setScreen(new SplashScreen(this));
-		//this.setScreen(new Statistics());
+		//this.setScreen(new StatisticsModule());
 		setScreen(new MainScreen());
     }
 

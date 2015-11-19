@@ -9,7 +9,7 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		new LwjglApplication(new MainGame(), config);
-		config.width = 1024;
+		config.width = 1200;
 		config.height = 600;
 		config.backgroundFPS = -1;
 		config.addIcon("icon_128.png", Files.FileType.Internal);

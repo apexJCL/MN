@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.I18NBundle;
 import com.itc.mn.Things.Const;
 import com.itc.mn.UI.Modules.MatrixModule;
 import com.itc.mn.UI.Modules.MethodModule;
+import com.itc.mn.UI.Modules.StatisticsModule;
 import com.itc.mn.UI.Modules.WelcomeModule;
 import com.itc.mn.UI.Windows.InputWindow;
 import com.kotcrab.vis.ui.widget.*;
@@ -100,6 +101,7 @@ public class GlobalMenu extends MenuBar {
         s_render.addListener(new MenuListener(ActionType.RENDER));
         i_exit.addListener(new MenuListener(ActionType.EXIT));
         s_matrix.addListener(new MenuListener(ActionType.MATRIX));
+        s_statistics.addListener(new MenuListener(ActionType.STATISTICS));
         // Methods
         m_bisection.addListener(new MenuListener(ActionType.BISECTION));
         m_fauxrule.addListener(new MenuListener(ActionType.REGULI));
@@ -109,7 +111,7 @@ public class GlobalMenu extends MenuBar {
     }
 
     public enum ActionType {
-        RENDER, EXIT, MATRIX, BISECTION, REGULI, FIXED_POINT, NR, SECANT
+        RENDER, EXIT, MATRIX, BISECTION, REGULI, FIXED_POINT, NR, SECANT, STATISTICS
     }
 
     private class MenuListener extends ClickListener {
@@ -130,8 +132,11 @@ public class GlobalMenu extends MenuBar {
                     Gdx.app.exit();
                     break;
                 case MATRIX:
-                    mainScreen.getTabbedPane().add(new MatrixModule(bundle));
+                    mainScreen.getTabbedPane().add(new MatrixModule());
                     System.out.println("Added");
+                    break;
+                case STATISTICS:
+                    mainScreen.getTabbedPane().add(new StatisticsModule());
                     break;
                 case SECANT:
                 case NR:
