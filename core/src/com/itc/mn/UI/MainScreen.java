@@ -8,11 +8,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.itc.mn.Things.Const;
 import com.itc.mn.UI.EventHandlers.RenderInputHandler;
@@ -44,10 +41,6 @@ public class MainScreen implements Screen {
     private OrthographicCamera renderCamera;
     private InputMultiplexer inputMultiplexer;
 
-    {
-        scaleX = scaleY = 10;
-    }
-
     public MainScreen() {
         if(Gdx.app.getType() == Application.ApplicationType.Desktop)
             VisUI.load(VisUI.SkinScale.X1);
@@ -78,6 +71,8 @@ public class MainScreen implements Screen {
         tabbedPane = new TabbedPane();
         setupTabs();
         menuBar = new GlobalMenu(this);
+        // Setup screen scale
+        scaleX = scaleY = (stage.getWidth()/stage.getHeight())*10f;
     }
 
     private void addGUI() {
@@ -155,6 +150,7 @@ public class MainScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
+        scaleX = scaleY = (width/height)*10f;
     }
 
     @Override

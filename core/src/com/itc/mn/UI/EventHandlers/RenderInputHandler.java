@@ -47,6 +47,7 @@ public class RenderInputHandler extends Stage {
                     camera.zoom += (camera.zoom < 1) ? 0.015f : 0;
                 else
                     camera.zoom += (camera.zoom > 0.02f) ? -0.015f : 0;
+
                 return super.scrolled(event, x, y, amount);
             }
         });

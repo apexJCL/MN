@@ -104,6 +104,8 @@ public class GlobalMenu extends MenuBar {
         m_bisection.addListener(new MenuListener(ActionType.BISECTION));
         m_fauxrule.addListener(new MenuListener(ActionType.REGULI));
         m_fixedpoint.addListener(new MenuListener(ActionType.FIXED_POINT));
+        m_nraphson.addListener(new MenuListener(ActionType.NR));
+        m_secant.addListener(new MenuListener(ActionType.SECANT));
     }
 
     public enum ActionType {
@@ -154,11 +156,13 @@ public class GlobalMenu extends MenuBar {
                     tmp = new InputWindow(bundle.get("m_falseposition"), new String[][]{{bundle.get("function"), "f"}, {bundle.get("a_value"), "a"}, {bundle.get("b_value"), "b"}, {bundle.get("error"), "ep"}});
                     break;
                 case FIXED_POINT:
-                    tmp = new InputWindow(bundle.get("m_fixedpoint"), new String[][]{{bundle.get("original_function"), "f_1"}, {bundle.get("x_function"), "f_2"}, {bundle.get("initial_value"), "initial"}, {bundle.get("error"), "ep"}});
+                    tmp = new InputWindow(bundle.get("m_fixedpoint"), new String[][]{{bundle.get("original_function"), "f"}, {bundle.get("x_function"), "f_1"}, {bundle.get("initial_value"), "initial"}, {bundle.get("error"), "ep"}});
                     break;
                 case NR:
+                    tmp = new InputWindow(bundle.get("m_nr"), new String[][]{{bundle.get("original_function"), "f"}, {bundle.get("first_derivative"), "f_1"}, {bundle.get("initial_value"), "initial"}, {bundle.get("error"), "ep"}});
                     break;
                 case SECANT:
+                    tmp = new InputWindow(bundle.get("m_secant"), new String[][]{{bundle.get("function"), "f"}, {bundle.get("x_i"), "x_i"}, {bundle.get("xi"), "xi"}, {bundle.get("error"), "ep"}});
                     break;
             }
             VisTextButton accept = tmp.getAcceptButton();
