@@ -6,6 +6,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.itc.mn.Methods.StatisticParser;
 import com.itc.mn.Screens.RenderScreen;
 import com.itc.mn.Things.Const;
 import com.itc.mn.Things.Results;
@@ -58,20 +59,10 @@ public class StatisticsModule extends Tab {
         fileChooser.setListener(new FileChooserAdapter() {
             @Override
             public void selected(FileHandle file) {
-                fileToSout(file);
+                StatisticParser statisticParser = new StatisticParser(file);
+//                statisticParser.printList();
             }
         });
-    }
-
-    private void fileToSout(FileHandle file){
-        try{
-            InputStream read = file.read();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(read));
-            String line = "";
-            while((line = reader.readLine()) != null)
-                System.out.println(line);
-        }
-        catch (Exception e){ e.printStackTrace(); }
     }
 
     private void buildUI(){
