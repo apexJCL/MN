@@ -42,6 +42,10 @@ public class Const {
         return config;
     }
 
+    public static String getBundleString(String key){
+        return loadBundle().get(key);
+    }
+
     public String getFormat() {
         return format;
     }

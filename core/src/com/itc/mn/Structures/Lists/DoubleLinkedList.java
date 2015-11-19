@@ -73,15 +73,87 @@ public class DoubleLinkedList {
         }
     }
 
-    public ArrayList getDoubleArray(){
-        ArrayList<double[]> array = new ArrayList(0);
-        Node tmp = root;
-        while (tmp.getNext() != null) {
+    public ArrayList getDoubleArray() throws NullPointerException{
+        if(isListEmpty())
+            throw new NullPointerException("There's no root available");
+        else {
+            ArrayList<double[]> array = new ArrayList(0);
+            Node tmp = root;
+            while (tmp.getNext() != null) {
+                array.add(new double[]{tmp.getValue(), tmp.getFrequency()});
+                tmp = tmp.getNext();
+            }
             array.add(new double[]{tmp.getValue(), tmp.getFrequency()});
-            tmp = tmp.getNext();
+            return array;
         }
-        array.add(new double[]{tmp.getValue(), tmp.getFrequency()});
-        return array;
+    }
+
+    /**
+     * Returns the root of the list
+     * @return Node
+     * @throws NullPointerException if there's no root available
+     */
+    public Node getRoot()throws NullPointerException {
+        if(root!= null)
+            return root;
+        else
+            throw new NullPointerException("There's no root available");
+    }
+
+    /**
+     * Returns the last node available
+     * @return Node
+     * @throws NullPointerException in case there's no root available
+     */
+    public Node getLastNode()throws NullPointerException{
+        if(isListEmpty())
+            throw new NullPointerException("There's no root available");
+        else {
+            Node tmp = root;
+            while (tmp.getNext()!= null)
+                tmp = tmp.getNext();
+            return tmp;
+        }
+    }
+
+    /**
+     * Returns only a value list
+     * @return ArrayList with values
+     * @throws NullPointerException if list is empty
+     */
+    public ArrayList getValueList()throws NullPointerException{
+        if(isListEmpty())
+            throw new NullPointerException("List is empty");
+        else{
+            ArrayList<Double> values = new ArrayList(0);
+            Node tmp = root;
+            while (tmp.getNext() != null){
+                values.add(tmp.getValue());
+                tmp = tmp.getNext();
+            }
+            values.add(tmp.getValue());
+            return values;
+        }
+    }
+
+    /**
+     * Returns an ArrayList of double[] that holds value and frequency of given data
+     * @return ArrayList of values
+     * @throws NullPointerException if list is empty
+     */
+    public ArrayList getValFreqList()throws NullPointerException{
+        if(isListEmpty())
+            throw new NullPointerException("List is empty");
+        else{
+            ArrayList<Double[]> values = new ArrayList<Double[]>(0);
+            Node tmp = root;
+            while (tmp.getNext() != null){
+                values.add(new Double[]{tmp.getValue(), tmp.getFrequency()});
+                tmp = tmp.getNext();
+            }
+            values.add(new Double[]{tmp.getValue(), tmp.getFrequency()});
+            return values;
+        }
     }
 
     public boolean isListEmpty(){
