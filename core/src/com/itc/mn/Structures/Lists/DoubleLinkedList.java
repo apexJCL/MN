@@ -156,6 +156,21 @@ public class DoubleLinkedList {
         }
     }
 
+    public int getDataAmount()throws NullPointerException{
+        if(isListEmpty())
+            throw new NullPointerException("Empty list.");
+        else{
+            int amount = 0;
+            Node tmp = root;
+            while (tmp.getNext() != null){
+                amount+=tmp.getFrequency();
+                tmp = tmp.getNext();
+            }
+            amount+=tmp.getFrequency();
+            return amount;
+        }
+    }
+
     public boolean isListEmpty(){
         return root == null;
     }

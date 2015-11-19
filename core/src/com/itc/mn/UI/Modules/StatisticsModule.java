@@ -77,8 +77,12 @@ public class StatisticsModule extends Tab {
         fileChooser.setListener(new FileChooserAdapter() {
             @Override
             public void selected(FileHandle file) {
-                statisticParser = new StatisticParser(file);
-                fillValuesList(statisticParser.getValFreqList());
+                try{
+                    statisticParser = new StatisticParser(file);
+                    fillValuesList(statisticParser.getValFreqList());
+                    o_datanumber.setText(statisticParser.getDataAmount());
+                }
+                catch (Exception e){}
             }
         });
     }

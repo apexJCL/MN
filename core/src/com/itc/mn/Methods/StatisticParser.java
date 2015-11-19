@@ -104,4 +104,7 @@ public class StatisticParser {
         return list.getValFreqList();
     }
 
+    public String getDataAmount() {
+        return String.valueOf(list.getDataAmount());
+    }
 }
