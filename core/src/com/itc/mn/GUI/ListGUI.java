@@ -3,7 +3,7 @@ package com.itc.mn.GUI;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.I18NBundle;
-import com.itc.mn.Structures.Lists.DoubleLinkedList;
+import com.itc.mn.Structures.Lists.StatisticList;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisTextField;
@@ -12,7 +12,7 @@ import com.kotcrab.vis.ui.widget.VisWindow;
 public class ListGUI extends VisWindow{
 
     // Logic
-    private DoubleLinkedList list;
+    private StatisticList list;
     // Visual
     private VisTextField value;
     private VisLabel l_value;
@@ -20,7 +20,7 @@ public class ListGUI extends VisWindow{
 
     public ListGUI(I18NBundle bundle) {
         super(bundle.get("statistic"));
-        list = new DoubleLinkedList();
+        list = new StatisticList();
         loadGUI();
         loadListener();
         setResizable(true);

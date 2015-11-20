@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * The nodes already have a frequency indicator, so we don't have
  * duplicated nodes with same values
  */
-public class DoubleLinkedList {
+public class StatisticList {
 
     private Node root;
     private String label;
@@ -19,7 +19,7 @@ public class DoubleLinkedList {
     /**
      * Creates an empty Double Linked list
      */
-    public DoubleLinkedList(){
+    public StatisticList(){
         root = null;
     }
 
@@ -28,7 +28,7 @@ public class DoubleLinkedList {
      * it happens to be many
      * @param label Name of the linked list
      */
-    public DoubleLinkedList(String label){
+    public StatisticList(String label){
         root = null;
         this.label = label;
     }
@@ -214,6 +214,12 @@ public class DoubleLinkedList {
         }
     }
 
+    /**
+     * Returns the varianze of the given data
+     * @param mode Statistic Mode
+     * @return Varianze
+     * @throws NullPointerException
+     */
     public double getVarianze(StatisticParser.MODE mode)throws NullPointerException{
         if(isListEmpty())
             throw new NullPointerException("Empty List.");
@@ -244,6 +250,12 @@ public class DoubleLinkedList {
         }
     }
 
+    /**
+     * Returns the Standard Deviation of the given data
+     * @param mode
+     * @return
+     * @throws NullPointerException
+     */
     public double getStdDeviation(StatisticParser.MODE mode)throws NullPointerException{
         if(isListEmpty())
             throw new NullPointerException("Empty List.");

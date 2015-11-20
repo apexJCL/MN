@@ -1,8 +1,10 @@
 package com.itc.mn.Methods;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.itc.mn.Structures.Lists.DoubleLinkedList;
+import com.itc.mn.Structures.GraphingData;
+import com.itc.mn.Structures.Lists.StatisticList;
 import com.itc.mn.Structures.Node;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,14 +21,15 @@ import java.util.Iterator;
 public class StatisticParser {
 
     private FileHandle fileHandle;
-    private DoubleLinkedList list;
+    private StatisticList list;
     public static int MINIMUM_CLASSES = 5;
     public static int MAXIMUM_CLASSES = 20;
     public int classes = MINIMUM_CLASSES;
+    public GraphingData data;
 
     public StatisticParser(FileHandle file){
         this.fileHandle = file;
-        list = new DoubleLinkedList();
+        list = new StatisticList();
         load();
     }
 
@@ -65,26 +68,24 @@ public class StatisticParser {
 
     /**
      * Returns the class width, given the range of data and the desired amount of classes
-     * @param range range between minimum and maximum value
      * @param desiredClasses Amount of desired classes
      * @return An integer, that defines the separation between bounds of classes
      */
-    public int getClassWidth(double range, double desiredClasses){
+    public int getClassWidth(double desiredClasses){
         try{
-            return (int)Math.ceil((range/desiredClasses));
+            return (int)Math.ceil((getRange()/desiredClasses));
         }
         catch (Exception e) {
             return 0;
         }
     }
 
-    /**
-     * Sets the amount of classes to process, given two boundaries (min and max classes amount).
-     * @param desiredClasses
-     */
-    public void setClassesAmount(int desiredClasses){
-        if(desiredClasses >= MINIMUM_CLASSES && desiredClasses <= MAXIMUM_CLASSES)
-            this.classes = desiredClasses;
+    public int getLowerBound()throws NullPointerException{
+        if(list.isListEmpty())
+            throw new NullPointerException("Empty list.");
+        else {
+            return (int)Math.floor(list.getLastNode().getValue()) - 1;
+        }
     }
 
     public String getVarianze(MODE mode){
@@ -93,6 +94,46 @@ public class StatisticParser {
 
     public String getStdDeviation(MODE mode){
         return new DecimalFormat("#.#######").format(list.getStdDeviation(mode));
+    }
+
+    /**
+     * Returs an array, containing class-grouped values of the given data
+     * @return
+     * @throws NullPointerException
+     */
+    public double[][] getValuesFreqData()throws NullPointerException{
+        if(list.isListEmpty())
+            throw new NullPointerException("Empty List.");
+        else{
+            double[][] valueFreqData = new double[classes][1];
+            // Here we process all the data to group in classes
+            Node tmp = list.getRoot();
+            int limit = getLowerBound();
+            for(int i = 0; i < classes; i++){ // We're going to calculate the classes
+                int[] actuabounds = getClassBound(i);
+                while (tmp.getNext() != null && tmp.getValue() < actuabounds[1]){
+                    valueFreqData[i][0] += tmp.getFrequency();
+                    tmp = tmp.getNext();
+                }
+            }
+            //Then we return it as an array
+            return valueFreqData;
+        }
+    }
+
+    private int getClassWidth(){
+        return getClassWidth(classes);
+    }
+
+    private int getFirstUpperBound(){
+        return (getLowerBound()+getClassWidth()) - 1;
+    }
+
+    private int[] getClassBound(int classNumber){
+        int[] bounds = new int[2];
+        bounds[0] = getLowerBound()+(getClassWidth()*classNumber);
+        bounds[1] = bounds[0]+getClassWidth();
+        return bounds;
     }
 
     public void printListToSTDOUT(){
@@ -119,5 +160,17 @@ public class StatisticParser {
 
     public String getDataAmount() {
         return String.valueOf(list.getDataAmount());
+    }
+
+    public void setClasses(int classes){ this.classes = classes; }
+
+    public GraphingData getGraphingData(){
+        if(data == null)
+            refreshData();
+        return data;
+    }
+
+    public void refreshData(){
+        data = new GraphingData(getClassWidth(classes), classes, getLowerBound());
     }
 }
