@@ -111,7 +111,8 @@ public class StatisticParser {
             Node tmp = list.getRoot();
             for(int i = 0; i < classes; i++){ // We're going to calculate the classes
                 int[] actualBounds = getClassBound(i);
-                while (tmp.getNext() != null && tmp.getValue() < actualBounds[1]){
+                while (tmp != null && tmp.getValue() < actualBounds[1]){
+                    System.out.println("Added value: "+tmp.getValue());
                     valueFreqData[i][0] += tmp.getFrequency();
                     tmp = tmp.getNext();
                 }

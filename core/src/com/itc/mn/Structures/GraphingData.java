@@ -8,8 +8,10 @@ public class GraphingData {
     public int starting_value;
     public int classesAmount;
     public double[][] freqData;
+    private StatisticParser parser;
 
     public GraphingData(int classWidth, int classesAmount, int starting_value, StatisticParser parser){
+        this.parser = parser;
         this.classWidth = classWidth;
         this.classesAmount = classesAmount;
         this.starting_value = starting_value;
@@ -23,4 +25,7 @@ public class GraphingData {
     public int getClassesAmount() { return classesAmount; }
     public void setClassesAmount(int classesAmount) { this.classesAmount = classesAmount; }
 
+    public GraphingData refreshData() {
+        return parser.getGraphingData();
+    }
 }

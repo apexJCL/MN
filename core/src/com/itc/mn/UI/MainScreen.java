@@ -75,8 +75,21 @@ public class MainScreen implements Screen {
         tabbedPane = new TabbedPane();
         setupTabs();
         menuBar = new GlobalMenu(this);
-        // Setup screen scale
-        scaleX = scaleY = (stage.getWidth()/stage.getHeight())*10f;
+        setRenderScale();
+    }
+
+    private void setRenderScale() {
+        switch (type){
+            case GRAPHIC:
+                // Setup screen scale
+                scaleX = scaleY = (stage.getWidth()/stage.getHeight())*10f;
+                break;
+            case STATISTIC:
+                // Setup screen scale
+                scaleY = 1;
+                scaleX = (stage.getWidth()/stage.getHeight())*10f;
+                break;
+        }
     }
 
     private void addGUI() {
@@ -100,12 +113,14 @@ public class MainScreen implements Screen {
                     renderValues = ((MethodModule)tab).getValues();
                     raiz = ((MethodModule)tab).getRoot();
                     setRenderStatus(true);
+                    setRenderScale();
                 }
                 else{
                     if (content instanceof StatisticsModule.CustomTable){
                         type = RenderType.STATISTIC;
-                        statisticData = ((StatisticsModule.CustomTable)content).data;
+                        statisticData = ((StatisticsModule.CustomTable)content).refreshData();
                         setRenderStatus(true);
+                        setRenderScale();
                     }
                     else
                         setRenderStatus(false);
@@ -212,9 +227,8 @@ public class MainScreen implements Screen {
         shapeRenderer.end(); // Para finalizar el renderizado
     }
 
-    public void refreshStatisticData()//TODO Refresh data via Graphingdata itself
-    {
-
+    public void refreshStatisticData(GraphingData data){
+        statisticData = data;
     }
 
 
@@ -224,7 +238,7 @@ public class MainScreen implements Screen {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(Color.CYAN);
             for(int i = 0; i < statisticData.getClassesAmount(); i++){
-                shapeRenderer.rect(i*statisticData.getClassWidth(), 0, statisticData.getClassWidth(), (float) statisticData.freqData[i][0]);
+                shapeRenderer.rect(centerX(i*5f), centerY(), 4f, (float) statisticData.freqData[i][0] * scaleY);
             }
             shapeRenderer.end();
         }

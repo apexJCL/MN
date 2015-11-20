@@ -238,9 +238,11 @@ public class StatisticsModule extends Tab {
         statisticParser.refreshData();
         data = statisticParser.getGraphingData();
         try{
-            screen.refreshStatisticData();
+            screen.refreshStatisticData(data);
         }
-        catch (Exception e){}
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -255,17 +257,26 @@ public class StatisticsModule extends Tab {
 
     public class CustomTable extends Table{
 
-        public GraphingData data;
+        private GraphingData data;
 
         public CustomTable(Skin skin, GraphingData data) {
             super(skin);
             this.data = data;
         }
 
+        public GraphingData getData(){
+            return refreshData();
+        }
+
         public GraphingData refreshData(){
-            statisticParser.refreshData();
-            this.data = statisticParser.getGraphingData();
-            return this.data;
+            try{
+                statisticParser.refreshData();
+                this.data = statisticParser.getGraphingData();
+                return this.data;
+            }
+            catch (Exception e){
+                return null;
+            }
         }
     }
 }
