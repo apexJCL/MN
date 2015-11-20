@@ -136,7 +136,7 @@ public class GlobalMenu extends MenuBar {
                     System.out.println("Added");
                     break;
                 case STATISTICS:
-                    mainScreen.getTabbedPane().add(new StatisticsModule());
+                    mainScreen.getTabbedPane().add(new StatisticsModule(mainScreen));
                     break;
                 case SECANT:
                 case NR:

@@ -1,5 +1,7 @@
 package com.itc.mn.Structures;
 
+import com.itc.mn.Methods.StatisticParser;
+
 public class GraphingData {
 
     public int classWidth;
@@ -7,7 +9,7 @@ public class GraphingData {
     public int classesAmount;
     public double[][] freqData;
 
-    public GraphingData(int classWidth, int classesAmount, int starting_value){
+    public GraphingData(int classWidth, int classesAmount, int starting_value, StatisticParser parser){
         this.classWidth = classWidth;
         this.classesAmount = classesAmount;
         this.starting_value = starting_value;

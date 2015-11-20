@@ -167,7 +167,7 @@ public class StatisticParser {
     }
 
     public void refreshData(){
-        data = new GraphingData(getClassWidth(classes), classes, getLowerBound());
+        data = new GraphingData(getClassWidth(classes), classes, getLowerBound(), this);
         data.setFreqData(getValuesFreqData());
     }
 }

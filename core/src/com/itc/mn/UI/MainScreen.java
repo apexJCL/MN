@@ -212,8 +212,9 @@ public class MainScreen implements Screen {
         shapeRenderer.end(); // Para finalizar el renderizado
     }
 
-    public void refreshStatisticData(GraphingData statisticData){
-        this.statisticData = statisticData;
+    public void refreshStatisticData()//TODO Refresh data via Graphingdata itself
+    {
+
     }
 
 

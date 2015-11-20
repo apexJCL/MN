@@ -40,11 +40,15 @@ public class StatisticsModule extends Tab {
     private VisScrollPane listScroller;
     private VisTable valuesHolder;
     private GraphingData data;
+    private MainScreen screen;
 
     /**
      * This module holds a "pane" with basic content and a render portion, so it can render a graphic
+     * @param mainScreen
      */
-    public StatisticsModule(){
+    public StatisticsModule(MainScreen mainScreen){
+        // To update our data
+        screen = mainScreen;
         // Define our table
         content = new CustomTable(VisUI.getSkin(), data);
         // Setup the control panel
@@ -230,12 +234,14 @@ public class StatisticsModule extends Tab {
         });
     }
 
-//    private void refreshData() {
-//        statisticParser.refreshData();
-//        data = statisticParser.getGraphingData();
-//        if( content.getParent().getStage() instanceof MainScreen )
-//            System.out.println("Yep");
-//    }
+    private void refreshData() {
+        statisticParser.refreshData();
+        data = statisticParser.getGraphingData();
+        try{
+            screen.refreshStatisticData();
+        }
+        catch (Exception e){}
+    }
 
     @Override
     public String getTabTitle() {
@@ -254,6 +260,12 @@ public class StatisticsModule extends Tab {
         public CustomTable(Skin skin, GraphingData data) {
             super(skin);
             this.data = data;
+        }
+
+        public GraphingData refreshData(){
+            statisticParser.refreshData();
+            this.data = statisticParser.getGraphingData();
+            return this.data;
         }
     }
 }
