@@ -28,8 +28,9 @@ public class StatisticsModule extends Tab {
     private String file;
     private FileChooser fileChooser;
     private Table controlPane;
-    private VisLabel classesamount, datanumber, o_datanumber, varianze, stdev, o_varianze, o_stdev;
+    private VisLabel mode, classesamount, datanumber, o_datanumber, varianze, stdev, o_varianze, o_stdev;
     private VisSelectBox<Integer> classes;
+    private VisSelectBox<String> modeSelector;
     private StatisticParser statisticParser;
     // To show the values loaded
     private VisScrollPane listScroller;
@@ -53,6 +54,8 @@ public class StatisticsModule extends Tab {
     }
 
     private void createLabels() {
+        mode = new VisLabel(Const.getBundleString("mode"));
+        mode.setColor(Color.CYAN);
         classesamount = new VisLabel(Const.getBundleString("classesamount"));
         classesamount.setColor(Color.CYAN);
         datanumber = new VisLabel(Const.getBundleString("datanumber"));
@@ -81,16 +84,25 @@ public class StatisticsModule extends Tab {
                     statisticParser = new StatisticParser(file);
                     fillValuesList(statisticParser.getValFreqList());
                     o_datanumber.setText(statisticParser.getDataAmount());
+                    o_varianze.setText(statisticParser.getVarianze(getMode()));
+                    o_stdev.setText(statisticParser.getStdDeviation(getMode()));
                 }
                 catch (Exception e){}
             }
         });
     }
 
+    private StatisticParser.MODE getMode() {
+        if(modeSelector.getSelected().equals(Const.getBundleString("demographic")))
+            return StatisticParser.MODE.DEMOGRAPHIC;
+        else
+            return StatisticParser.MODE.SAMPLE;
+    }
+
     private void buildUI(){
         // Create values holder
         valuesHolder = new VisTable();
-        valuesHolder.left().top();
+        valuesHolder.left().top().padTop(5f);
         listScroller = new VisScrollPane(valuesHolder);
         // Define the open button
         VisTextButton showChooser = new VisTextButton("Open");
@@ -100,6 +112,11 @@ public class StatisticsModule extends Tab {
                 content.getStage().addActor(fileChooser.fadeIn());
             }
         });
+        // Define statistic mode
+        modeSelector = new VisSelectBox<String>();
+        String[] modes = {Const.getBundleString("sample"), Const.getBundleString("demographic")};
+        modeSelector.setItems(modes);
+        modeSelector.setColor(Color.CYAN);
         // Define the classes amount selector
         classes = new VisSelectBox<Integer>();
         Integer[] items = {5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};
@@ -110,6 +127,8 @@ public class StatisticsModule extends Tab {
         controlPane.add(new VisLabel(Const.loadBundle().get("load_file_description"))).left().top().colspan(2).row();
         controlPane.add(showChooser).padTop(5).right().padBottom(10).colspan(2).row();
         // Adding labels
+        controlPane.add(mode).left().padRight(5);
+        controlPane.add(modeSelector).left().padBottom(5f).row();
         controlPane.add(classesamount).left().padRight(5);
         controlPane.add(classes).left().row();
         controlPane.add(datanumber).left();

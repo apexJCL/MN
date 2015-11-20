@@ -6,6 +6,7 @@ import com.itc.mn.Structures.Node;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -86,6 +87,14 @@ public class StatisticParser {
             this.classes = desiredClasses;
     }
 
+    public String getVarianze(MODE mode){
+        return new DecimalFormat("#.#######").format(list.getVarianze(mode));
+    }
+
+    public String getStdDeviation(MODE mode){
+        return new DecimalFormat("#.#######").format(list.getStdDeviation(mode));
+    }
+
     public void printListToSTDOUT(){
         ArrayList<double[]> array = list.getDoubleArray();
         Iterator<double[]> iterator = array.iterator();
@@ -94,6 +103,10 @@ public class StatisticParser {
                 System.out.print(nodo + "\t");
             System.out.println("");
         }
+    }
+
+    public enum MODE{
+        DEMOGRAPHIC, SAMPLE
     }
 
     public ArrayList getValuesList(){
