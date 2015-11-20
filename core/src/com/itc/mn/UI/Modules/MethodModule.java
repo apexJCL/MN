@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.itc.mn.Methods.*;
 import com.itc.mn.Things.Const;
 import com.itc.mn.UI.GlobalMenu;
+import com.itc.mn.UI.MainScreen;
 import com.itc.mn.UI.Windows.InputWindow;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisLabel;
@@ -47,7 +48,7 @@ public class MethodModule extends Tab{
 
     private void buildUI() {
         // We create our holder for the split pane, also it holds a flag to indicate rendering must be enabled
-        content = new CustomTable(action);
+        content = new CustomTable(MainScreen.RenderType.GRAPHIC);
         transparentPane = new VisTable();
         resultPane = new VisTable();
         // Create the scrollable pane so it can show values and move along the list
@@ -143,9 +144,9 @@ public class MethodModule extends Tab{
     public class CustomTable extends Table{
 
         public boolean allowRender = true;
-        public GlobalMenu.ActionType type = null;
+        public MainScreen.RenderType type;
 
-        public CustomTable(GlobalMenu.ActionType type){
+        public CustomTable(MainScreen.RenderType type){
             super(VisUI.getSkin());
             this.type = type;
         }

@@ -11,9 +11,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.itc.mn.Structures.GraphingData;
 import com.itc.mn.Things.Const;
 import com.itc.mn.UI.EventHandlers.RenderInputHandler;
 import com.itc.mn.UI.Modules.MethodModule;
+import com.itc.mn.UI.Modules.StatisticsModule;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.tabbedpane.Tab;
 import com.kotcrab.vis.ui.widget.tabbedpane.TabbedPane;
@@ -40,6 +42,8 @@ public class MainScreen implements Screen {
     private float xoffset, yoffset;
     private OrthographicCamera renderCamera;
     private InputMultiplexer inputMultiplexer;
+    private RenderType type = RenderType.GRAPHIC;
+    private GraphingData statisticData;
 
     public MainScreen() {
         if(Gdx.app.getType() == Application.ApplicationType.Desktop)
@@ -91,13 +95,21 @@ public class MainScreen implements Screen {
                 container.clearChildren();
                 container.add(content).center().expand().fill();
                 if (content instanceof MethodModule.CustomTable) {
+                    type = RenderType.GRAPHIC;
                     isRootAvailable = true;
                     renderValues = ((MethodModule)tab).getValues();
                     raiz = ((MethodModule)tab).getRoot();
                     setRenderStatus(true);
                 }
-                else
-                    setRenderStatus(false);
+                else{
+                    if (content instanceof StatisticsModule.CustomTable){
+                        type = RenderType.STATISTIC;
+                        statisticData = ((StatisticsModule.CustomTable)content).data;
+                        setRenderStatus(true);
+                    }
+                    else
+                        setRenderStatus(false);
+                }
             }
         });
     }
@@ -136,8 +148,15 @@ public class MainScreen implements Screen {
             renderHandler.draw();
             renderCamera.update();
             renderAxis();
-            renderArray();
-            renderRoot();
+            switch (type){
+                case GRAPHIC:
+                    renderArray();
+                    renderRoot();
+                    break;
+                case STATISTIC:
+                    renderStatistics();
+                    break;
+            }
         }
         renderGUI(delta);
     }
@@ -173,6 +192,10 @@ public class MainScreen implements Screen {
 
     }
 
+    public enum RenderType{
+        GRAPHIC, STATISTIC
+    }
+
     private void renderArray() {
         // Begins shaperenderer with renderCamera
         shapeRenderer.setProjectionMatrix(renderCamera.combined);
@@ -187,6 +210,23 @@ public class MainScreen implements Screen {
                 shapeRenderer.point(centerX(valor[0]* scaleX), centerY(valor[1]* scaleY), 0);
         }
         shapeRenderer.end(); // Para finalizar el renderizado
+    }
+
+    public void refreshStatisticData(GraphingData statisticData){
+        this.statisticData = statisticData;
+    }
+
+
+    private void renderStatistics(){
+        if(statisticData != null){
+            shapeRenderer.setProjectionMatrix(renderCamera.combined);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(Color.CYAN);
+            for(int i = 0; i < statisticData.getClassesAmount(); i++){
+                shapeRenderer.rect(i*statisticData.getClassWidth(), 0, statisticData.getClassWidth(), (float) statisticData.freqData[i][0]);
+            }
+            shapeRenderer.end();
+        }
     }
 
     private void renderRoot() {

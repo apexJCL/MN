@@ -22,15 +22,16 @@ public class StatisticParser {
 
     private FileHandle fileHandle;
     private StatisticList list;
-    public static int MINIMUM_CLASSES = 5;
-    public static int MAXIMUM_CLASSES = 20;
-    public int classes = MINIMUM_CLASSES;
-    public GraphingData data;
+    private static int MINIMUM_CLASSES = 5;
+    private static int MAXIMUM_CLASSES = 20;
+    private int classes = MINIMUM_CLASSES;
+    private GraphingData data;
 
     public StatisticParser(FileHandle file){
         this.fileHandle = file;
         list = new StatisticList();
         load();
+        refreshData();
     }
 
     /**
@@ -84,7 +85,7 @@ public class StatisticParser {
         if(list.isListEmpty())
             throw new NullPointerException("Empty list.");
         else {
-            return (int)Math.floor(list.getLastNode().getValue()) - 1;
+            return (int)Math.floor(list.getRoot().getValue()) - 1;
         }
     }
 
@@ -108,10 +109,9 @@ public class StatisticParser {
             double[][] valueFreqData = new double[classes][1];
             // Here we process all the data to group in classes
             Node tmp = list.getRoot();
-            int limit = getLowerBound();
             for(int i = 0; i < classes; i++){ // We're going to calculate the classes
-                int[] actuabounds = getClassBound(i);
-                while (tmp.getNext() != null && tmp.getValue() < actuabounds[1]){
+                int[] actualBounds = getClassBound(i);
+                while (tmp.getNext() != null && tmp.getValue() < actualBounds[1]){
                     valueFreqData[i][0] += tmp.getFrequency();
                     tmp = tmp.getNext();
                 }
@@ -123,10 +123,6 @@ public class StatisticParser {
 
     private int getClassWidth(){
         return getClassWidth(classes);
-    }
-
-    private int getFirstUpperBound(){
-        return (getLowerBound()+getClassWidth()) - 1;
     }
 
     private int[] getClassBound(int classNumber){
@@ -172,5 +168,6 @@ public class StatisticParser {
 
     public void refreshData(){
         data = new GraphingData(getClassWidth(classes), classes, getLowerBound());
+        data.setFreqData(getValuesFreqData());
     }
 }

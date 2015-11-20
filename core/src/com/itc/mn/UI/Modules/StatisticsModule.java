@@ -5,11 +5,15 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.itc.mn.Methods.StatisticParser;
+import com.itc.mn.Structures.GraphingData;
 import com.itc.mn.Things.Const;
+import com.itc.mn.UI.MainScreen;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.building.StandardTableBuilder;
 import com.kotcrab.vis.ui.widget.*;
@@ -23,7 +27,7 @@ import java.util.Iterator;
 
 public class StatisticsModule extends Tab {
 
-    private Table content;
+    private CustomTable content;
     private StandardTableBuilder builder;
     private String file;
     private FileChooser fileChooser;
@@ -35,13 +39,14 @@ public class StatisticsModule extends Tab {
     // To show the values loaded
     private VisScrollPane listScroller;
     private VisTable valuesHolder;
+    private GraphingData data;
 
     /**
      * This module holds a "pane" with basic content and a render portion, so it can render a graphic
      */
     public StatisticsModule(){
         // Define our table
-        content = new VisTable();
+        content = new CustomTable(VisUI.getSkin(), data);
         // Setup the control panel
         controlPane = new Table(VisUI.getSkin());
         // Create labels
@@ -52,6 +57,8 @@ public class StatisticsModule extends Tab {
         setupSelecBoxes();
         // BUild UI
         buildUI();
+        // Set the focus handler
+        scrollFocus();
         // Set table background
         controlPane.setBackground(VisUI.getSkin().getDrawable("window-bg"));
         valuesHolder.setBackground(VisUI.getSkin().getDrawable("white"));
@@ -102,8 +109,24 @@ public class StatisticsModule extends Tab {
                     o_varianze.setText(statisticParser.getVarianze(getMode()));
                     o_stdev.setText(statisticParser.getStdDeviation(getMode()));
                     o_classWidth.setText(String.valueOf(statisticParser.getClassWidth(classes.getSelected())));
+                    data = statisticParser.getGraphingData();
+                    refreshData();
                 }
                 catch (Exception e){}
+            }
+        });
+    }
+
+    private void scrollFocus(){
+        listScroller.addListener(new InputListener(){
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                listScroller.getStage().setScrollFocus(listScroller);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                listScroller.getStage().unfocus(listScroller);
             }
         });
     }
@@ -157,6 +180,7 @@ public class StatisticsModule extends Tab {
      * @param array Array of data
      */
     private void fillValuesList(ArrayList<Double[]> array){
+        valuesHolder.clearChildren();
         VisLabel values = new VisLabel(Const.getBundleString("values"));
         VisLabel freq = new VisLabel(Const.getBundleString("freq"));
         values.setColor(Color.CYAN);
@@ -191,6 +215,7 @@ public class StatisticsModule extends Tab {
                 if(statisticParser != null){
                     statisticParser.setClasses(classes.getSelected());
                     o_classWidth.setText(String.valueOf(statisticParser.getClassWidth(classes.getSelected())));
+                    refreshData();
                 }
             }
         });
@@ -205,6 +230,13 @@ public class StatisticsModule extends Tab {
         });
     }
 
+//    private void refreshData() {
+//        statisticParser.refreshData();
+//        data = statisticParser.getGraphingData();
+//        if( content.getParent().getStage() instanceof MainScreen )
+//            System.out.println("Yep");
+//    }
+
     @Override
     public String getTabTitle() {
         return Const.loadBundle().get("statistic");
@@ -213,5 +245,15 @@ public class StatisticsModule extends Tab {
     @Override
     public Table getContentTable() {
         return content;
+    }
+
+    public class CustomTable extends Table{
+
+        public GraphingData data;
+
+        public CustomTable(Skin skin, GraphingData data) {
+            super(skin);
+            this.data = data;
+        }
     }
 }
