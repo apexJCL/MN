@@ -86,7 +86,7 @@ public class MainScreen implements Screen {
                 break;
             case STATISTIC:
                 // Setup screen scale
-                scaleY = 1;
+                scaleY = (stage.getWidth()/stage.getHeight())*5f;
                 scaleX = (stage.getWidth()/stage.getHeight())*10f;
                 break;
         }
@@ -184,7 +184,7 @@ public class MainScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
-        scaleX = scaleY = (width/height)*10f;
+        setRenderScale();
     }
 
     @Override
@@ -238,7 +238,7 @@ public class MainScreen implements Screen {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(Color.CYAN);
             for(int i = 0; i < statisticData.getClassesAmount(); i++){
-                shapeRenderer.rect(centerX(i*5f), centerY(), 4f, (float) statisticData.freqData[i][0] * scaleY);
+                shapeRenderer.rect(centerX(i*statisticData.classWidth), centerY(), statisticData.getClassWidth()*0.5f, (float) statisticData.freqData[i][0] * scaleY);
             }
             shapeRenderer.end();
         }

@@ -81,11 +81,10 @@ public class StatisticList {
         else {
             ArrayList<double[]> array = new ArrayList(0);
             Node tmp = root;
-            while (tmp.getNext() != null) {
+            while (tmp != null) {
                 array.add(new double[]{tmp.getValue(), tmp.getFrequency()});
                 tmp = tmp.getNext();
             }
-            array.add(new double[]{tmp.getValue(), tmp.getFrequency()});
             return array;
         }
     }
@@ -211,6 +210,38 @@ public class StatisticList {
                 tmp = tmp.getNext();
             }
             return mean/getDataAmount();
+        }
+    }
+
+    public double getMedian()throws NullPointerException{
+        if(isListEmpty())
+            throw new NullPointerException("Emtpy List.");
+        else{
+            double dataAmount = getDataAmount();
+            if(dataAmount%2 != 0)
+                System.out.println(dataAmount%2);
+            System.out.println(dataAmount%2);
+            return dataAmount;
+        }
+    }
+
+    /**
+     * Returns the data mode (statistic)
+     * @return
+     * @throws NullPointerException
+     */
+    public double getSMode()throws NullPointerException{
+        if(isListEmpty())
+            throw new NullPointerException("Empty list.");
+        else{
+            Node tmp = root;
+            Node mode = root;
+            while(tmp != null){
+                if(tmp.getFrequency() > mode.getFrequency())
+                    mode = tmp;
+                tmp = tmp.getNext();
+            }
+            return mode.getValue();
         }
     }
 

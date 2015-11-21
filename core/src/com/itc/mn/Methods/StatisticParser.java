@@ -4,6 +4,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.itc.mn.Structures.GraphingData;
 import com.itc.mn.Structures.Lists.StatisticList;
 import com.itc.mn.Structures.Node;
+import com.itc.mn.Things.Const;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -85,16 +86,16 @@ public class StatisticParser {
         if(list.isListEmpty())
             throw new NullPointerException("Empty list.");
         else {
-            return (int)Math.floor(list.getRoot().getValue()) - 1;
+            return (int)Math.floor(list.getRoot().getValue());
         }
     }
 
     public String getVarianze(MODE mode){
-        return new DecimalFormat("#.#######").format(list.getVarianze(mode));
+        return new DecimalFormat(Const.Load().format).format(list.getVarianze(mode));
     }
 
     public String getStdDeviation(MODE mode){
-        return new DecimalFormat("#.#######").format(list.getStdDeviation(mode));
+        return new DecimalFormat(Const.Load().format).format(list.getStdDeviation(mode));
     }
 
     /**
@@ -106,20 +107,33 @@ public class StatisticParser {
         if(list.isListEmpty())
             throw new NullPointerException("Empty List.");
         else{
-            double[][] valueFreqData = new double[classes][1];
+            double[][] valueFreqData = initializeEmptyArray(classes, 1);
             // Here we process all the data to group in classes
             Node tmp = list.getRoot();
             for(int i = 0; i < classes; i++){ // We're going to calculate the classes
                 int[] actualBounds = getClassBound(i);
-                while (tmp != null && tmp.getValue() < actualBounds[1]){
+                while (tmp.getNext() != null && tmp.getValue() < actualBounds[1]){
                     System.out.println("Added value: "+tmp.getValue());
                     valueFreqData[i][0] += tmp.getFrequency();
                     tmp = tmp.getNext();
                 }
+                if(tmp.getNext() == null && tmp.getValue() < actualBounds[1]){
+                    System.out.println("New Added value: "+tmp.getValue());
+                    valueFreqData[i][0] += tmp.getFrequency();
+                }
+                System.out.println("Class "+i+" upper bound is: "+actualBounds[1]);
             }
             //Then we return it as an array
             return valueFreqData;
         }
+    }
+
+    private double[][] initializeEmptyArray(int col, int rows){
+        double[][] tmp = new double[col][rows];
+        for(double[] row: tmp)
+            for(double value: row)
+                value = 0;
+        return tmp;
     }
 
     private int getClassWidth(){
@@ -141,6 +155,18 @@ public class StatisticParser {
                 System.out.print(nodo + "\t");
             System.out.println("");
         }
+    }
+
+    public String getMean() {
+        return new DecimalFormat(Const.Load().format).format(list.getMean());
+    }
+
+    public String getMode() {
+        return String.valueOf(list.getSMode());
+    }
+
+    public String getMedian() {
+        return new DecimalFormat(Const.Load().format).format(list.getMedian());
     }
 
     public enum MODE{
@@ -169,6 +195,9 @@ public class StatisticParser {
 
     public void refreshData(){
         data = new GraphingData(getClassWidth(classes), classes, getLowerBound(), this);
-        data.setFreqData(getValuesFreqData());
+        try{
+            data.setFreqData(getValuesFreqData());
+        }
+        catch (Exception e){}
     }
 }

@@ -32,7 +32,7 @@ public class StatisticsModule extends Tab {
     private String file;
     private FileChooser fileChooser;
     private Table controlPane;
-    private VisLabel classWidth, o_classWidth, mode, classesamount, datanumber, o_datanumber, varianze, stdev, o_varianze, o_stdev;
+    private VisLabel mode_s, o_mode_s, mean, o_mean, classWidth, o_classWidth, mode, classesamount, datanumber, o_datanumber, varianze, stdev, o_varianze, o_stdev;
     private VisSelectBox<Integer> classes;
     private VisSelectBox<String> modeSelector;
     private StatisticParser statisticParser;
@@ -77,12 +77,17 @@ public class StatisticsModule extends Tab {
     private void createLabels() {
         mode = new VisLabel(Const.getBundleString("mode"));
         mode.setColor(Color.CYAN);
+        mean = new VisLabel(Const.getBundleString("mean"));
+        mode_s = new VisLabel(Const.getBundleString("mode_s"));
         classWidth = new VisLabel(Const.getBundleString("classwidth"));
         classesamount = new VisLabel(Const.getBundleString("classesamount"));
         classesamount.setColor(Color.CYAN);
         datanumber = new VisLabel(Const.getBundleString("datanumber"));
         varianze = new VisLabel(Const.getBundleString("varianze"));
         stdev = new VisLabel(Const.getBundleString("stdeviation"));
+        // Setting output labels
+        o_mean = new VisLabel(Const.getBundleString("notavailable"));
+        o_mode_s = new VisLabel(Const.getBundleString("notavailable"));
         o_classWidth = new VisLabel(Const.getBundleString("notavailable"));
         o_datanumber = new VisLabel(Const.getBundleString("notavailable"));
         o_varianze = new VisLabel(Const.getBundleString("notavailable"));
@@ -108,11 +113,15 @@ public class StatisticsModule extends Tab {
             public void selected(FileHandle file) {
                 try{
                     statisticParser = new StatisticParser(file);
+                    statisticParser.setClasses(classes.getSelected());
                     fillValuesList(statisticParser.getValFreqList());
                     o_datanumber.setText(statisticParser.getDataAmount());
                     o_varianze.setText(statisticParser.getVarianze(getMode()));
                     o_stdev.setText(statisticParser.getStdDeviation(getMode()));
                     o_classWidth.setText(String.valueOf(statisticParser.getClassWidth(classes.getSelected())));
+                    o_mean.setText(statisticParser.getMean());
+                    o_mode_s.setText(statisticParser.getMode());
+                    statisticParser.getMedian();
                     data = statisticParser.getGraphingData();
                     refreshData();
                 }
@@ -160,22 +169,27 @@ public class StatisticsModule extends Tab {
         });
         // Setting up things
         controlPane.top().left().pad(5);
-        controlPane.add(new VisLabel(Const.loadBundle().get("load_file_description"))).left().top().colspan(2).row();
-        controlPane.add(showChooser).padTop(5).right().padBottom(10).colspan(2).row();
+        controlPane.add(new VisLabel(Const.loadBundle().get("load_file_description"))).left().top();
+        controlPane.add(showChooser).padTop(5).left().padBottom(10).row();
         // Adding SelectBoxes
         controlPane.add(mode).left().padRight(5);
-        controlPane.add(modeSelector).left().padBottom(5f).row();
+        controlPane.add(modeSelector).right().padBottom(5f).row();
         controlPane.add(classesamount).left().padRight(5);
-        controlPane.add(classes).left().row();
+        controlPane.add(classes).right().row();
         // Adding labels
         controlPane.add(classWidth).left();
-        controlPane.add(o_classWidth).left().row();
+        controlPane.add(o_classWidth).right().row();
         controlPane.add(datanumber).left();
-        controlPane.add(o_datanumber).left().row();
-        controlPane.add(varianze).left();
-        controlPane.add(o_varianze).left().row();
-        controlPane.add(stdev).left();
-        controlPane.add(o_stdev).left().row();
+        controlPane.add(o_datanumber).right().row();
+        // HEre goes basic output stuff
+        controlPane.add(mean).left().padRight(3);
+        controlPane.add(o_mean).right().row();
+        controlPane.add(mode_s).left().padRight(3);
+        controlPane.add(o_mode_s).right().row();
+        controlPane.add(varianze).left().padRight(3);
+        controlPane.add(o_varianze).right().row();
+        controlPane.add(stdev).left().padRight(3);
+        controlPane.add(o_stdev).right().row();
         controlPane.add(listScroller).left().colspan(2).fill().expand();
     }
 
