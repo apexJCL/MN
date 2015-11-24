@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -32,7 +33,8 @@ public class StatisticsModule extends Tab {
     private String file;
     private FileChooser fileChooser;
     private Table controlPane;
-    private VisLabel mode_s, o_mode_s, mean, o_mean, classWidth, o_classWidth, mode, classesamount, datanumber, o_datanumber, varianze, stdev, o_varianze, o_stdev;
+    private VisTextArea input, frequency;
+    private VisLabel value, mode_s, o_mode_s, mean, o_mean, classWidth, o_classWidth, mode, classesamount, datanumber, o_datanumber, varianze, stdev, o_varianze, o_stdev;
     private VisSelectBox<Integer> classes;
     private VisSelectBox<String> modeSelector;
     private StatisticParser statisticParser;
@@ -75,6 +77,7 @@ public class StatisticsModule extends Tab {
      * Creates the labels... maybe
      */
     private void createLabels() {
+        value = new VisLabel(Const.getBundleString("input_value_des"));
         mode = new VisLabel(Const.getBundleString("mode"));
         mode.setColor(Color.CYAN);
         mean = new VisLabel(Const.getBundleString("mean"));
@@ -157,6 +160,7 @@ public class StatisticsModule extends Tab {
     private void buildUI(){
         // Create values holder
         valuesHolder = new VisTable();
+        valuesHolder.setTouchable(Touchable.childrenOnly);
         valuesHolder.left().top();
         listScroller = new VisScrollPane(valuesHolder);
         // Define the open button
@@ -167,10 +171,45 @@ public class StatisticsModule extends Tab {
                 content.getStage().addActor(fileChooser.fadeIn());
             }
         });
+        // Define the add value button and the widgets that manage user input for values
+        VisTextButton addvalue = new VisTextButton(Const.getBundleString("insert"));
+        input = new VisTextArea();
+        input.setTextFieldFilter(new VisTextField.TextFieldFilter() {
+            @Override
+            public boolean acceptChar(VisTextField textField, char c) {
+                if((textField.getText()+c).matches("[\\+|\\-]?[0-9]+\\.?[0-9]*")) {
+                    textField.setColor(Color.WHITE);
+                    return true;
+                }
+                else{
+                    textField.setColor(Color.RED);
+                    return false;
+                }
+            }
+        });
+        input.setMessageText(Const.getBundleString("value"));
+        frequency = new VisTextArea();
+        frequency.setMessageText(Const.getBundleString("freq"));
+        frequency.setTextFieldFilter(new VisTextField.TextFieldFilter() {
+            @Override
+            public boolean acceptChar(VisTextField textField, char c) {
+                if((textField.getText()+c).matches("[1-9]+[0-9]*")){
+                    textField.setColor(Color.WHITE);
+                    return true;
+                }
+                textField.setColor(Color.RED);
+                return false;
+            }
+        });
         // Setting up things
         controlPane.top().left().pad(5);
         controlPane.add(new VisLabel(Const.loadBundle().get("load_file_description"))).left().top();
-        controlPane.add(showChooser).padTop(5).left().padBottom(10).row();
+        controlPane.add(showChooser).padTop(5).right().padBottom(10).row();
+        // Add the manual input loader
+        controlPane.add(value).left().row();
+        controlPane.add(input).left().pad(3f);
+        controlPane.add(frequency).left().pad(3f).row();
+        controlPane.add(addvalue).right().colspan(2).pad(3f).row();
         // Adding SelectBoxes
         controlPane.add(mode).left().padRight(5);
         controlPane.add(modeSelector).right().padBottom(5f).row();
