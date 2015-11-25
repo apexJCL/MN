@@ -44,6 +44,72 @@ public class MatrixOperation {
         return tmp;
     }
 
+    /**
+     * Will return gauss of the given matrix
+     * @return
+     */
+    public double[][] gauss(double[][] mat){
+        double[][] ans = mat;
+        for(int i = 0; i < mat.length; i++){
+            if(ans[i][i] == 0 && i == 0){ // If the i element of the i column equals 0, we must switch it with other
+                int x = 1;
+                while(ans[x][i] == 0 )
+                    x++;
+                switchrows(mat, i, x);
+            }
+            else{
+                divideRow(i, ans[i][i], ans); // Divides the row so the first element becomes 1
+                zeroesBelowElement(i, mat); // Turns the elements below the 1 to 0's
+            }
+        }
+        fixZeroes(ans);
+        return ans;
+    }
+
+    private void fixZeroes(double[][] mat){
+        for(int i = 0; i < mat.length; i++)
+            for(int j = 0; j < mat[0].length; j++){
+                if(String.valueOf(mat[i][j]).matches("-0.0"))
+                    mat[i][j] = 0;
+            }
+    }
+
+    private void zeroesBelowElement(int pivotCol, double[][] mat){
+        if(pivotCol+1 < mat.length) {
+            for (int i = 1 + pivotCol; i < mat.length; i++) {
+                double multiplier = mat[i][0+pivotCol] * -1; // Multiply the value so if eliminates
+                for (int j = 0; j < mat[pivotCol].length; j++) {
+                    mat[i][j] += (mat[pivotCol][j] * multiplier);
+                }
+            }
+        }
+    }
+
+    /**
+     * Divides the given row by the given number
+     * @param row
+     * @param value
+     * @param mat
+     */
+    private void divideRow(int row, double value, double[][] mat){
+        for(int i = 0; i < mat[row].length; i++)
+            mat[row][i]/=value;
+    }
+
+    /**
+     * Switch two given rows
+     * @param mat
+     * @param rowA
+     * @param rowB
+     */
+    private void switchrows(double[][] mat, int rowA, int rowB){
+        for(int i = 0; i < mat[rowA].length; i++){
+            double tmp = mat[rowA][i];
+            mat[rowA][i] = mat[rowB][i];
+            mat[rowB][i] = tmp;
+        }
+    }
+
 //    public double[][] gauss(){
 //        double[][] tmp = matrix_a;
 //        int i = 0;

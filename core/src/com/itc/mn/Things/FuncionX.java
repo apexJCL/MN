@@ -2,7 +2,7 @@ package com.itc.mn.Things;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Json;
-import org.nfunk.jep.JEP;
+import org.nfunk.jep.*;
 
 /**
  *  Es una ecuacion en funcion de x por defecto.
@@ -40,6 +40,15 @@ public strictfp class FuncionX {
         parser.parseExpression(ecuacion);
         // Asignamos x con un valor por defecto
         parser.addVariable(variable, valorVariable);
+//        Node topNode = parser.getTopNode();
+//        System.out.println("Nodos");
+//        if (topNode instanceof ASTConstant)
+//            System.out.println(((ASTConstant)topNode).getValue());
+//        if (topNode instanceof ASTVarNode)
+//            System.out.println(((ASTVarNode)topNode).getName());
+//        if (topNode instanceof ASTFunNode)
+//            System.out.println(((ASTFunNode)topNode).getName());
+//        System.out.println("Fin nodos");
     }
 
     /**

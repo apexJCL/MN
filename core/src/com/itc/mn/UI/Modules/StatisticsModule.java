@@ -16,7 +16,6 @@ import com.itc.mn.Structures.GraphingData;
 import com.itc.mn.Things.Const;
 import com.itc.mn.UI.MainScreen;
 import com.kotcrab.vis.ui.VisUI;
-import com.kotcrab.vis.ui.building.StandardTableBuilder;
 import com.kotcrab.vis.ui.widget.*;
 import com.kotcrab.vis.ui.widget.file.FileChooser;
 import com.kotcrab.vis.ui.widget.file.FileChooserAdapter;
@@ -29,8 +28,6 @@ import java.util.Iterator;
 public class StatisticsModule extends Tab {
 
     private CustomTable content;
-    private StandardTableBuilder builder;
-    private String file;
     private FileChooser fileChooser;
     private Table controlPane;
     private VisTextArea input, frequency;
