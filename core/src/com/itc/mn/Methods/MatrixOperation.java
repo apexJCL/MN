@@ -44,6 +44,13 @@ public class MatrixOperation {
         return tmp;
     }
 
+    public double[][] gauss_jordan(double[][] mat){
+        double[][] gauss = gauss(mat);
+        for(int i = gauss.length-1; i >= 0; i--)
+            zeroesBelowElement(i, gauss, Direction.UP);
+        return gauss;
+    }
+
     /**
      * Will return gauss of the given matrix
      * @return
@@ -57,14 +64,14 @@ public class MatrixOperation {
                     x++;
                 switchrows(mat, i, x);
             }
-            else{
-                divideRow(i, ans[i][i], ans); // Divides the row so the first element becomes 1
-                zeroesBelowElement(i, mat); // Turns the elements below the 1 to 0's
-            }
+            divideRow(i, ans[i][i], ans); // Divides the row so the first element becomes 1
+            zeroesBelowElement(i, mat, Direction.DOWN); // Turns the elements below the 1 to 0's
         }
         fixZeroes(ans);
         return ans;
     }
+
+    // Gauss Thingies
 
     private void fixZeroes(double[][] mat){
         for(int i = 0; i < mat.length; i++)
@@ -74,15 +81,30 @@ public class MatrixOperation {
             }
     }
 
-    private void zeroesBelowElement(int pivotCol, double[][] mat){
-        if(pivotCol+1 < mat.length) {
-            for (int i = 1 + pivotCol; i < mat.length; i++) {
-                double multiplier = mat[i][0+pivotCol] * -1; // Multiply the value so if eliminates
-                for (int j = 0; j < mat[pivotCol].length; j++) {
-                    mat[i][j] += (mat[pivotCol][j] * multiplier);
+    private void zeroesBelowElement(int pivot, double[][] mat, Direction direction){
+        if(direction == Direction.DOWN) {
+            if (pivot + 1 < mat.length) {
+                for (int i = 1 + pivot; i < mat.length; i++) {
+                    double multiplier = mat[i][pivot] * -1; // Multiply the value so if eliminates
+                    for (int j = 0; j < mat[pivot].length; j++) {
+                        mat[i][j] += (mat[pivot][j] * multiplier);
+                    }
                 }
             }
         }
+        else{
+            if(pivot -1 >= 0){
+                for(int i = pivot - 1; i >= 0; i--){
+                    double multiplier = mat[i][pivot] * -1; // Multiply the value so if eliminates
+                    for(int j = mat[i].length; j >= 0; j--)
+                        mat[i][j] += (mat[pivot][j] * multiplier);
+                }
+            }
+        }
+    }
+
+    private enum Direction{
+        UP, DOWN
     }
 
     /**
@@ -110,22 +132,7 @@ public class MatrixOperation {
         }
     }
 
-//    public double[][] gauss(){
-//        double[][] tmp = matrix_a;
-//        int i = 0;
-//        while(i < tmp.length) {
-//            if (tmp[i][i] != 1)
-//                for (int j = i; j < tmp[0].length; j++)
-//                    tmp[i][j] = tmp[i][j] / tmp[i][i];
-//            if (i + 1 < tmp.length) { // To avoid array out of bounds
-//                for (int j = i + 1; j < tmp.length; j++) // To scroll all the column
-//                    if (tmp[j][i] != 0) // If our value isn't 0 already
-//                        if (tmp[j][i] * tmp[i][i] < 0) // To know if we must add or substract
-//                            tmp[j][i] += (tmp[j][i]);
-//            }
-//        }
-//        return tmp;
-//    }
+    // End of gauss thingies
 
     /**
      * Returns the previous given matrix
