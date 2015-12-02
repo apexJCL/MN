@@ -44,4 +44,8 @@ public class NodeXY {
     public double getY() { return y; }
     public void setY(double y) { this.y = y; }
 
+    public NodeXY getPrevious() { return previous; }
+    public void setPrevious(NodeXY previous) { this.previous = previous; }
+    public NodeXY getNext() { return next; }
+    public void setNext(NodeXY next) { this.next = next; }
 }
