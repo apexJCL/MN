@@ -35,6 +35,10 @@ public class StatisticParser {
         refreshData();
     }
 
+    public StatisticParser(){
+        list = new StatisticList();
+    }
+
     /**
      * Loads the text file to a list
      */
@@ -199,5 +203,10 @@ public class StatisticParser {
             data.setFreqData(getValuesFreqData());
         }
         catch (Exception e){}
+    }
+
+    public void addValue(double val, int value){
+        Node node = list.insertNode(val);
+        node.setFrequency(value);
     }
 }

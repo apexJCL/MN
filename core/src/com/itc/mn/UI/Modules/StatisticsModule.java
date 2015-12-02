@@ -34,7 +34,7 @@ public class StatisticsModule extends Tab {
     private VisLabel value, mode_s, o_mode_s, mean, o_mean, classWidth, o_classWidth, mode, classesamount, datanumber, o_datanumber, varianze, stdev, o_varianze, o_stdev;
     private VisSelectBox<Integer> classes;
     private VisSelectBox<String> modeSelector;
-    private StatisticParser statisticParser;
+    private StatisticParser statisticParser = new StatisticParser();
     // To show the values loaded
     private VisScrollPane listScroller;
     private VisTable valuesHolder;
@@ -113,21 +113,25 @@ public class StatisticsModule extends Tab {
             public void selected(FileHandle file) {
                 try{
                     statisticParser = new StatisticParser(file);
-                    statisticParser.setClasses(classes.getSelected());
-                    fillValuesList(statisticParser.getValFreqList());
-                    o_datanumber.setText(statisticParser.getDataAmount());
-                    o_varianze.setText(statisticParser.getVarianze(getMode()));
-                    o_stdev.setText(statisticParser.getStdDeviation(getMode()));
-                    o_classWidth.setText(String.valueOf(statisticParser.getClassWidth(classes.getSelected())));
-                    o_mean.setText(statisticParser.getMean());
-                    o_mode_s.setText(statisticParser.getMode());
-                    statisticParser.getMedian();
-                    data = statisticParser.getGraphingData();
-                    refreshData();
+                    refreshAllData();
                 }
                 catch (Exception e){}
             }
         });
+    }
+
+    private void refreshAllData(){
+        statisticParser.setClasses(classes.getSelected());
+        fillValuesList(statisticParser.getValFreqList());
+        o_datanumber.setText(statisticParser.getDataAmount());
+        o_varianze.setText(statisticParser.getVarianze(getMode()));
+        o_stdev.setText(statisticParser.getStdDeviation(getMode()));
+        o_classWidth.setText(String.valueOf(statisticParser.getClassWidth(classes.getSelected())));
+        o_mean.setText(statisticParser.getMean());
+        o_mode_s.setText(statisticParser.getMode());
+        statisticParser.getMedian();
+        data = statisticParser.getGraphingData();
+        refreshData();
     }
 
     private void scrollFocus(){
@@ -169,17 +173,36 @@ public class StatisticsModule extends Tab {
             }
         });
         // Define the add value button and the widgets that manage user input for values
-        VisTextButton addvalue = new VisTextButton(Const.getBundleString("insert"));
+        final VisTextButton addvalue = new VisTextButton(Const.getBundleString("insert"));
+        addvalue.setDisabled(true);
+        addvalue.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                try{
+                    if(!addvalue.isDisabled()){
+                        statisticParser.addValue(Double.parseDouble(input.getText()), Integer.parseInt(frequency.getText()));
+                        input.setText("");
+                        frequency.setText("");
+                        refreshAllData();
+                    }
+                }catch (Exception e){
+                    input.setColor(Color.RED);
+                    frequency.setColor(Color.RED);
+                }
+            }
+        });
         input = new VisTextArea();
         input.setTextFieldFilter(new VisTextField.TextFieldFilter() {
             @Override
             public boolean acceptChar(VisTextField textField, char c) {
                 if((textField.getText()+c).matches("[\\+|\\-]?[0-9]+\\.?[0-9]*")) {
                     textField.setColor(Color.WHITE);
+                    addvalue.setDisabled(false);
                     return true;
                 }
                 else{
                     textField.setColor(Color.RED);
+                    addvalue.setDisabled(true);
                     return false;
                 }
             }
@@ -192,9 +215,11 @@ public class StatisticsModule extends Tab {
             public boolean acceptChar(VisTextField textField, char c) {
                 if((textField.getText()+c).matches("[1-9]+[0-9]*")){
                     textField.setColor(Color.WHITE);
+                    addvalue.setDisabled(false);
                     return true;
                 }
                 textField.setColor(Color.RED);
+                addvalue.setDisabled(true);
                 return false;
             }
         });

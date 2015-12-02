@@ -34,12 +34,12 @@ public strictfp class Node {
         return increase;
     }
 
+    public void setFrequency(int value){ this.frequency = value; }
     public Node getNext() { return next; }
     public Node getPrevious() { return previous; }
     public double getValue(){ return value; }
     public void setNext(Node node){ this.next = node; }
     public void setPrevious(Node node) { this.previous = node; }
-
     public double getFrequency() {
         return frequency;
     }

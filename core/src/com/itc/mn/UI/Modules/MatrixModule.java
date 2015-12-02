@@ -143,12 +143,9 @@ public class MatrixModule extends Tab {
                         display();
                         break;
                     case GAUSS:
-                        double[][] gauss = matrixOperation.gauss_jordan(mat_a);
-                        for(double[] row : gauss) {
-                            for (double val : row)
-                                System.out.print(val + " ");
-                            System.out.println("");
-                        }
+                        showTable.clear();
+                        ans = matrixOperation.gauss(mat_a);
+                        display();
                         break;
                     case GAUSS_JORDAN:
                         break;

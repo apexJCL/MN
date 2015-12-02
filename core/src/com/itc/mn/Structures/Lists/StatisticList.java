@@ -33,17 +33,22 @@ public class StatisticList {
         this.label = label;
     }
 
-    public void insertNode(double value){
-        if(isListEmpty())
+    public Node insertNode(double value){
+        Node newNode = null;
+        if(isListEmpty()) {
             root = new Node(value);
+            return root;
+        }
         else{
-            Node newNode = new Node(value); // Instantiate the node
+            newNode = new Node(value); // Instantiate the node
             Node tmp = root; // Begin from root
             while (tmp.getValue() < value && tmp.getNext() != null) // While our new value is bigger or the next node isn't null
                 tmp = tmp.getNext(); // We will traverse the list
             if(tmp == root){ // If the final node is our root
-                if(tmp.getValue() == newNode.getValue()) // If our value is the same as our new node
+                if(tmp.getValue() == newNode.getValue()) { // If our value is the same as our new node
                     tmp.frequency(true); // We increase the frequency
+                    newNode = tmp;
+                }
                 else { // Else
                     if(newNode.getValue() < tmp.getValue()){
                         root.setPrevious(newNode); // We assign the new node to the previous pointer of root
@@ -57,8 +62,10 @@ public class StatisticList {
                 }
             }
             else{ // Else
-                if(tmp.getValue() == value) // If our value is the same
+                if(tmp.getValue() == value) { // If our value is the same
                     tmp.frequency(true); // We increase the frequency
+                    newNode = tmp;
+                }
                 else{ // Else
                     if(tmp.getValue() < newNode.getValue()){ // If the last node is less than the new onw
                         tmp.setNext(newNode); // Reference the last node to the new next one
@@ -73,6 +80,7 @@ public class StatisticList {
                 }
             }
         }
+        return newNode;
     }
 
     public ArrayList getDoubleArray() throws NullPointerException{
