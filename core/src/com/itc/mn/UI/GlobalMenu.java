@@ -5,10 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.itc.mn.Things.Const;
-import com.itc.mn.UI.Modules.MatrixModule;
-import com.itc.mn.UI.Modules.MethodModule;
-import com.itc.mn.UI.Modules.StatisticsModule;
-import com.itc.mn.UI.Modules.WelcomeModule;
+import com.itc.mn.UI.Modules.*;
 import com.itc.mn.UI.Windows.InputWindow;
 import com.kotcrab.vis.ui.widget.*;
 
@@ -18,7 +15,7 @@ public class GlobalMenu extends MenuBar {
     private Menu fileMenu, sectionMenu, windowMenu;
     private MenuItem i_exit, i_open, i_save, i_settings;
     private MenuItem s_methods, s_matrix, s_statistics, s_help, s_about;
-    private MenuItem m_bisection, m_fauxrule, m_nraphson, m_fixedpoint, m_secant;
+    private MenuItem m_bisection, m_fauxrule, m_nraphson, m_fixedpoint, m_secant, m_interpolation;
     private MenuItem s_render;
     private I18NBundle bundle = Const.loadBundle();
 
@@ -89,11 +86,14 @@ public class GlobalMenu extends MenuBar {
         m_fixedpoint = new MenuItem(bundle.get("m_fixedpoint"));
         m_nraphson = new MenuItem(bundle.get("m_nr"));
         m_secant = new MenuItem(bundle.get("m_secant"));
+        m_interpolation = new MenuItem(bundle.get("interpolation"));
         menu.addItem(m_bisection);
         menu.addItem(m_fauxrule);
         menu.addItem(m_fixedpoint);
         menu.addItem(m_nraphson);
         menu.addItem(m_secant);
+        menu.addItem(m_interpolation);
+        menu.pack();
         return menu;
     }
 
@@ -102,6 +102,7 @@ public class GlobalMenu extends MenuBar {
         i_exit.addListener(new MenuListener(ActionType.EXIT));
         s_matrix.addListener(new MenuListener(ActionType.MATRIX));
         s_statistics.addListener(new MenuListener(ActionType.STATISTICS));
+        m_interpolation.addListener(new MenuListener(ActionType.INTERPOLATION));
         // Methods
         m_bisection.addListener(new MenuListener(ActionType.BISECTION));
         m_fauxrule.addListener(new MenuListener(ActionType.REGULI));
@@ -111,7 +112,7 @@ public class GlobalMenu extends MenuBar {
     }
 
     public enum ActionType {
-        RENDER, EXIT, MATRIX, BISECTION, REGULI, FIXED_POINT, NR, SECANT, STATISTICS
+        RENDER, EXIT, MATRIX, BISECTION, REGULI, FIXED_POINT, NR, SECANT, STATISTICS, INTERPOLATION
     }
 
     private class MenuListener extends ClickListener {
@@ -137,6 +138,9 @@ public class GlobalMenu extends MenuBar {
                     break;
                 case STATISTICS:
                     mainScreen.getTabbedPane().add(new StatisticsModule(mainScreen));
+                    break;
+                case INTERPOLATION:
+                    mainScreen.getTabbedPane().add(new InterpolationModule());
                     break;
                 case SECANT:
                 case NR:

@@ -49,6 +49,21 @@ public strictfp class Interpolation {
     }
 
     /**
+     * Returns a quadratic interpolation result
+     * @param x0
+     * @param fx0
+     * @param x1
+     * @param fx1
+     * @param x2
+     * @param fx2
+     * @param x
+     * @return
+     */
+    public Double q_interpolate(Double x0, Double fx0, Double x1, Double fx1, Double x2, Double fx2, Double x){
+        return fx0 + b1(x0, fx0, x1, fx1)*(x - x0) + b2(x0, fx0, x1, fx1, x2, fx2)*(x - x0)*(x - x1);
+    }
+
+    /**
      * Returns b1, useful for Quadratic interpolation
      * @param x0 First X
      * @param fx0 Function evaluated in X0
