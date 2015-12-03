@@ -143,7 +143,6 @@ public class MatrixModule extends Tab {
                         display();
                         break;
                     case GAUSS:
-                        showTable.clear();
                         ans = matrixOperation.gauss(mat_a);
                         display();
                         break;

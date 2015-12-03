@@ -1,14 +1,12 @@
 package com.itc.mn.Methods;
 
-/**
- * Created by zero_ on 08/10/2015.
- */
 public class MatrixOperation {
 
     private double[][] matrix_a, matrix_b;
     private double[][] multipliedMatrix, addedMatrices, substractedMatrices;
     private boolean matrixChanged;
     private boolean singleMatrix = false;
+
     /**
      * This is used to realize operations between two matrix.
      *
@@ -60,7 +58,7 @@ public class MatrixOperation {
         for(int i = 0; i < mat.length; i++){
             if(ans[i][i] == 0 && i == 0){ // If the i element of the i column equals 0, we must switch it with other
                 int x = 1;
-                while(ans[x][i] == 0 )
+                while(ans[x][i] == 0 && x < mat.length )
                     x++;
                 switchrows(mat, i, x);
             }

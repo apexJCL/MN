@@ -2,14 +2,21 @@ package com.itc.mn.Structures.Lists;
 
 import com.itc.mn.Structures.NodeXY;
 
+import java.util.Iterator;
+
 /**
  * This list holds values of the kind f(x) = y
  */
-public class XYList {
+public class XYList implements Iterable<NodeXY> {
 
     private NodeXY root = null;
 
-    public void insert(double x, double y){
+    /**
+     * Creates a new node with the given values and inserts it into the list
+     * @param x
+     * @param y
+     */
+    public void insert(double x, Double y){
         if(root == null)
             root = new NodeXY(x, y);
         else{
@@ -33,5 +40,86 @@ public class XYList {
                     tmp.getPrevious().setNext(new NodeXY(tmp.getPrevious(), x, y, tmp));
             }
         }
+    }
+
+    /**
+     * Inserts a node into a the list (creating a new instance)
+     * @param node
+     */
+    public void insert(NodeXY node){
+        if(root == null)
+            root = node;
+        else{
+            NodeXY tmp = root;
+            while (tmp.getNext() != null && tmp.getX() < node.getX())
+                tmp = tmp.getNext();
+            if(tmp.getNext() == null){
+                if(tmp.getX() < node.getX())
+                    tmp.setNext(new NodeXY(tmp, node.getX(), node.getY()));
+                else {
+                    if (tmp.equals(root))
+                        root = new NodeXY(node.getX(), node.getY(), root);
+                    else
+                        tmp.getPrevious().setNext(new NodeXY(tmp.getPrevious(), node.getX(), node.getY(), tmp));
+                }
+            }
+            else {
+                if (tmp.equals(root))
+                    root = new NodeXY(node.getX(), node.getY(), root);
+                else
+                    tmp.getPrevious().setNext(new NodeXY(tmp.getPrevious(), node.getX(), node.getY(), tmp));
+            }
+        }
+    }
+
+    @Override
+    public Iterator<NodeXY> iterator() {
+        Iterator<NodeXY> iterator = new Iterator<NodeXY>() {
+
+            NodeXY tmp = root;
+
+            @Override
+            public boolean hasNext() {
+                return (tmp != null);
+            }
+
+            @Override
+            public NodeXY next() {
+                NodeXY node = tmp;
+                tmp = node.getNext();
+                return node;
+            }
+        };
+        return iterator;
+    }
+
+    public boolean isEmpty(){
+        return root == null;
+    }
+
+    public int length(){
+        int i = 0;
+        if(!isEmpty()) {
+            NodeXY tmp = root;
+            while (tmp != null) {
+                i++;
+                tmp = tmp.getNext();
+            }
+        }
+        return i;
+    }
+
+    public double[][] toArray()throws Exception{
+        if(isEmpty())
+            throw new Exception("Emtpy list");
+        int length = length();
+        NodeXY tmp = root;
+        double[][] array = new double[length][2];
+        for(int i = 0; i < length; i++){
+            array[i][0] = tmp.getX();
+            array[i][1] = tmp.getY();
+            tmp = tmp.getNext();
+        }
+        return array;
     }
 }

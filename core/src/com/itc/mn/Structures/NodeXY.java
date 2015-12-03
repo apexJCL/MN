@@ -2,35 +2,36 @@ package com.itc.mn.Structures;
 
 /**
  * This class literally contains two numbers, X and it's matching Y
+ * Y will be treated as an object just for calculation matters
  */
 public class NodeXY {
 
     private NodeXY previous = null;
     private NodeXY next = null;
-    private double x;
-    private double y;
+    private Double x;
+    private Double y;
 
 
-    public NodeXY(double x, double y){
+    public NodeXY(Double x, Double y){
         this.x = x;
         this.y = y;
     }
 
-    public NodeXY(NodeXY previous, double x, double y){
+    public NodeXY(NodeXY previous, Double x, Double y){
         this.x = x;
         this.y = y;
         previous.next = this;
         this.previous = previous;
     }
 
-    public NodeXY(double x, double y, NodeXY next){
+    public NodeXY(Double x, Double y, NodeXY next){
         this.x = x;
         this.y = y;
         this.next = next;
         next.previous = this;
     }
 
-    public NodeXY(NodeXY previous, double x, double y, NodeXY next){
+    public NodeXY(NodeXY previous, Double x, Double y, NodeXY next){
         this.x = x;
         this.y = y;
         previous.next = this;
@@ -39,11 +40,10 @@ public class NodeXY {
         this.next = next;
     }
 
-    public double getX() { return x; }
-    public void setX(double x) { this.x = x; }
-    public double getY() { return y; }
-    public void setY(double y) { this.y = y; }
-
+    public Double getX() { return x; }
+    public void setX(Double x) { this.x = x; }
+    public Double getY() { return y; }
+    public void setY(Double y) { this.y = y; }
     public NodeXY getPrevious() { return previous; }
     public void setPrevious(NodeXY previous) { this.previous = previous; }
     public NodeXY getNext() { return next; }
