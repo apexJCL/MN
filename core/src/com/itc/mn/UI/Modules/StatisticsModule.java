@@ -195,7 +195,7 @@ public class StatisticsModule extends Tab {
         input.setTextFieldFilter(new VisTextField.TextFieldFilter() {
             @Override
             public boolean acceptChar(VisTextField textField, char c) {
-                if((textField.getText()+c).matches("[\\+|\\-]?[0-9]+\\.?[0-9]*")) {
+                if((textField.getText()+c).matches("[-|+]?[0-9]*\\.?[0-9]*")) {
                     textField.setColor(Color.WHITE);
                     addvalue.setDisabled(false);
                     return true;

@@ -16,7 +16,7 @@ public class XYList implements Iterable<NodeXY> {
      * @param x
      * @param y
      */
-    public void insert(double x, Double y){
+    public void insert(Double x, Double y){
         if(root == null)
             root = new NodeXY(x, y);
         else{
@@ -38,36 +38,6 @@ public class XYList implements Iterable<NodeXY> {
                     root = new NodeXY(x, y, root);
                 else
                     tmp.getPrevious().setNext(new NodeXY(tmp.getPrevious(), x, y, tmp));
-            }
-        }
-    }
-
-    /**
-     * Inserts a node into a the list (creating a new instance)
-     * @param node
-     */
-    public void insert(NodeXY node){
-        if(root == null)
-            root = node;
-        else{
-            NodeXY tmp = root;
-            while (tmp.getNext() != null && tmp.getX() < node.getX())
-                tmp = tmp.getNext();
-            if(tmp.getNext() == null){
-                if(tmp.getX() < node.getX())
-                    tmp.setNext(new NodeXY(tmp, node.getX(), node.getY()));
-                else {
-                    if (tmp.equals(root))
-                        root = new NodeXY(node.getX(), node.getY(), root);
-                    else
-                        tmp.getPrevious().setNext(new NodeXY(tmp.getPrevious(), node.getX(), node.getY(), tmp));
-                }
-            }
-            else {
-                if (tmp.equals(root))
-                    root = new NodeXY(node.getX(), node.getY(), root);
-                else
-                    tmp.getPrevious().setNext(new NodeXY(tmp.getPrevious(), node.getX(), node.getY(), tmp));
             }
         }
     }

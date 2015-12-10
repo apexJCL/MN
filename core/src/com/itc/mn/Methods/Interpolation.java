@@ -2,23 +2,24 @@ package com.itc.mn.Methods;
 
 import com.itc.mn.Structures.Lists.XYList;
 import com.itc.mn.Structures.NodeXY;
-import java.util.ArrayList;
 
 public strictfp class Interpolation {
 
-    private ArrayList<NodeXY> values;
     private XYList list;
     private double[] unknown;
+    private double[][] values;
 
     public Interpolation(){
         list = new XYList();
     }
 
+    public void setUnknown(double[] unknown){ this.unknown = unknown; }
+    public void setValues(double[][] values){ this.values = values; }
+
     /**
      * This will l_interpolate the previously given data
      */
     public double[][] l_interpolate(double[][] values, double[] unknown) throws Exception {
-        this.unknown = unknown;
         for(double[] node: values) // First we add the nodes to the list
             list.insert(node[0], node[1]);
         // Now we add the missing values to the list
