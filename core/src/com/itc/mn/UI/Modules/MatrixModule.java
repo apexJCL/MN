@@ -13,6 +13,7 @@ import com.kotcrab.vis.ui.widget.tabbedpane.Tab;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+
 import static com.itc.mn.Methods.MatrixOperation.Operation.*;
 
 public class MatrixModule extends Tab {

@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.itc.mn.Structures.GraphingData;
 import com.itc.mn.Things.Const;
+import com.itc.mn.UI.Custom.CustomTable;
 import com.itc.mn.UI.EventHandlers.RenderInputHandler;
 import com.itc.mn.UI.Modules.MethodModule;
 import com.itc.mn.UI.Modules.StatisticsModule;
@@ -107,13 +108,21 @@ public class MainScreen implements Screen {
                 Table content = tab.getContentTable();
                 container.clearChildren();
                 container.add(content).center().expand().fill();
-                if (content instanceof MethodModule.CustomTable) {
-                    type = RenderType.GRAPHIC;
-                    isRootAvailable = true;
-                    renderValues = ((MethodModule)tab).getValues();
-                    raiz = ((MethodModule)tab).getRoot();
-                    setRenderStatus(true);
-                    setRenderScale();
+                if (content instanceof CustomTable) {
+                    type = ((CustomTable) content).type;
+                    switch (type){
+                        case GRAPHIC:
+                            isRootAvailable = true;
+                            renderValues = ((MethodModule)tab).getValues();
+                            raiz = ((MethodModule)tab).getRoot();
+                            setRenderStatus(true);
+                            setRenderScale();
+                            break;
+                        case STATISTIC:
+                            break;
+                        case SINGLE_PLOT:
+                            break;
+                    }
                 }
                 else{
                     if (content instanceof StatisticsModule.CustomTable){
@@ -208,7 +217,7 @@ public class MainScreen implements Screen {
     }
 
     public enum RenderType{
-        GRAPHIC, STATISTIC
+        GRAPHIC, STATISTIC, SINGLE_PLOT
     }
 
     private void renderArray() {

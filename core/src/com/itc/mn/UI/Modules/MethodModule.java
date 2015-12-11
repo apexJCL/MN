@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.itc.mn.Methods.*;
 import com.itc.mn.Things.Const;
+import com.itc.mn.UI.Custom.CustomTable;
 import com.itc.mn.UI.GlobalMenu;
 import com.itc.mn.UI.MainScreen;
 import com.itc.mn.UI.Windows.InputWindow;
@@ -131,29 +132,11 @@ public class MethodModule extends Tab{
      */
     @Override
     public Table getContentTable() {
+
         return content;
     }
 
     public double getRoot() {
         return method.getRoot();
-    }
-
-    /**
-     * It's a normal Table, just with an extra flag that enables the rendering on the upper controlling system
-     */
-    public class CustomTable extends Table{
-
-        public boolean allowRender = true;
-        public MainScreen.RenderType type;
-
-        public CustomTable(MainScreen.RenderType type){
-            super(VisUI.getSkin());
-            this.type = type;
-        }
-
-        public boolean enableRender(){
-            return allowRender;
-        }
-
     }
 }

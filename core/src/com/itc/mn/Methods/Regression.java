@@ -3,19 +3,23 @@ package com.itc.mn.Methods;
 import com.itc.mn.Structures.Lists.XYList;
 import com.itc.mn.Structures.NodeXY;
 
-public class Regresion {
+public class Regression {
 
     private XYList list;
     private double x_average, y_average, r, a0, a1, x2_sum, xy_sum, x_sum, y_sum, Sr, St;
-    private double[] xy;
-    private double[] x2;
-    private double[] yaax; // This array will store (yi-a0-a1xi)^2 = Sr
-    private double[] yiy; // This array will store (yi-y)^2 = St
+    private Double[] xy;
+    private Double[] x2;
+    private Double[] yaax; // This array will store (yi-a0-a1xi)^2 = Sr
+    private Double[] yiy; // This array will store (yi-y)^2 = St
 
     // ao = y_average - a1x
 
-    public Regresion(){
+    public Regression(){
         list = new XYList();
+        initialize();
+    }
+
+    private void initialize(){
         x_average = 0;
         y_average = 0;
         r = 0;
@@ -39,13 +43,14 @@ public class Regresion {
      * @throws Exception
      */
     public Double calculateRegression() throws Exception{
-        Double regresion = null;
+        initialize();
+        Double regression = null;
         // First we initialize the arrays with their respective size
         int list_length = list.length(); // This returns the size of the list
-        xy = new double[list_length];
-        x2 = new double[list_length];
-        yaax = new double[list_length];
-        yiy = new double[list_length];
+        xy = new Double[list_length];
+        x2 = new Double[list_length];
+        yaax = new Double[list_length];
+        yiy = new Double[list_length];
         // Now we manipulate the list
         int i = 0; // So we can control the fixed-sized arrays
         for(NodeXY node: list){
@@ -71,21 +76,26 @@ public class Regresion {
             Sr += yaax[i];
             yiy[i] = Math.pow(node.getY() - y_average,2);
             St += yiy[i];
-        }
-        regresion = Math.sqrt((St-Sr)/St);
-        r = regresion;
-        return regresion;
+            i++;        }
+        regression = Math.sqrt((St-Sr)/St);
+        r = regression;
+        return regression;
     }
 
+    public double getR() { return r; }
     public double getSt() { return St; }
     public double getSr() { return Sr; }
-    public double getR() { return r; }
     public double getA0() { return a0; }
     public double getA1() { return a1; }
-    public double getX2_sum() { return x2_sum; }
-    public double getXy_sum() { return xy_sum; }
+    public Double[] getXy() { return xy; }
+    public Double[] getX2() { return x2; }
+    public XYList getList(){ return list; }
+    public Double[] getYiy() { return yiy; }
     public double getX_sum() { return x_sum; }
     public double getY_sum() { return y_sum; }
+    public double getXy_sum() { return xy_sum; }
+    public double getX2_sum() { return x2_sum; }
+    public Double[] getYaax() { return yaax; }
     public double getY_average() { return y_average; }
     public double getX_average() { return x_average; }
 }
