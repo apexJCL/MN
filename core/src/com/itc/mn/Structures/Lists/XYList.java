@@ -1,6 +1,7 @@
 package com.itc.mn.Structures.Lists;
 
 import com.itc.mn.Structures.NodeXY;
+import com.itc.mn.Structures.XYHolder;
 
 import java.util.Iterator;
 
@@ -40,6 +41,15 @@ public class XYList implements Iterable<NodeXY> {
                     tmp.getPrevious().setNext(new NodeXY(tmp.getPrevious(), x, y, tmp));
             }
         }
+    }
+
+    public NodeXY getRoot(){ return root; }
+
+    public NodeXY getLast(){
+        NodeXY tmp = root;
+        while (tmp.getNext() != null)
+            tmp = tmp.getNext();
+        return tmp;
     }
 
     @Override
@@ -91,5 +101,26 @@ public class XYList implements Iterable<NodeXY> {
             tmp = tmp.getNext();
         }
         return array;
+    }
+
+    public XYHolder getArrays() throws Exception {
+        if(isEmpty())
+            throw new Exception("Emtpy list");
+        int length = length();
+        NodeXY tmp = root;
+        Double[] x =  new Double[length];
+        Object[] y = new Object[length];
+        for(int i = 0; i < length; i++){
+            x[i]= tmp.getX();
+            if(tmp.getY() == null)
+                y[i] = "?";
+            else
+                y[i] = tmp.getY();
+            tmp = tmp.getNext();
+        }
+        XYHolder holder = new XYHolder();
+        holder.x = x;
+        holder.y = y;
+        return holder;
     }
 }

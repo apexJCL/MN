@@ -16,23 +16,32 @@ public strictfp class Interpolation {
     public void setUnknown(double[] unknown){ this.unknown = unknown; }
     public void setValues(double[][] values){ this.values = values; }
 
-    /**
-     * This will l_interpolate the previously given data
-     */
-    public double[][] l_interpolate(double[][] values, double[] unknown) throws Exception {
-        for(double[] node: values) // First we add the nodes to the list
-            list.insert(node[0], node[1]);
-        // Now we add the missing values to the list
-        for(double x: unknown)
-            list.insert(x, null);
+    public XYList l_interpolate_list(XYList list) throws Exception {
         // Now we l_interpolate for the missing values, using the closest value in the list
         for(NodeXY node: list){
             if(node.getY() == null && node.getNext() != null)
                 node.setY(l_interpolate(node.getPrevious().getX(), node.getPrevious().getY(), node.getNext().getX(), node.getNext().getY(), node.getX()));
         }
-        for (NodeXY node : list)
-            System.out.println("X: "+node.getX()+" Y: "+node.getY());
-        return list.toArray();
+        return list;
+    }
+
+    public XYList q_interpolate(XYList list)throws Exception{
+        for (NodeXY nodeXY: list){
+            // Three cases, 1. X value is the first in the list, X is in the middle, X is the last value
+            if(list.getRoot() == nodeXY && nodeXY.getY() == null)
+                nodeXY.setY(q_interpolate(nodeXY.getNext().getX(), nodeXY.getNext().getY(), nodeXY.getNext().getNext().getX(),  nodeXY.getNext().getNext().getY(),  nodeXY.getNext().getNext().getNext().getX(),  nodeXY.getNext().getNext().getNext().getY(), nodeXY.getX()));
+            else {
+                if (list.getLast() != nodeXY && nodeXY.getY() == null) {
+                    if (nodeXY.getNext().getNext() != null)
+                        nodeXY.setY(q_interpolate(nodeXY.getPrevious().getX(), nodeXY.getPrevious().getY(), nodeXY.getNext().getX(), nodeXY.getNext().getY(), nodeXY.getNext().getNext().getX(), nodeXY.getNext().getNext().getY(), nodeXY.getX()));
+                    else
+                        nodeXY.setY(q_interpolate(nodeXY.getPrevious().getPrevious().getX(), nodeXY.getPrevious().getPrevious().getY(), nodeXY.getPrevious().getX(), nodeXY.getPrevious().getY(), nodeXY.getNext().getX(), nodeXY.getNext().getY(), nodeXY.getX()));
+                }
+                else if (nodeXY.getY() == null)
+                    nodeXY.setY(q_interpolate(nodeXY.getPrevious().getPrevious().getPrevious().getX(), nodeXY.getPrevious().getPrevious().getPrevious().getY(), nodeXY.getPrevious().getPrevious().getX(), nodeXY.getPrevious().getPrevious().getY(), nodeXY.getPrevious().getX(), nodeXY.getPrevious().getY(), nodeXY.getX()));
+            }
+        }
+        return list;
     }
 
     /**

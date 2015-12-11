@@ -17,16 +17,6 @@ public class MainGame extends Game {
 	public void create () {
 		buildPrefs();
 		setScreen(new MainScreen());
-		Interpolation interpolation = new Interpolation();
-		double[][] values = {{8, 9.3},{25, 32.2}};
-		double[] unknown = {20};
-        try{
-            double[][] interpolate = interpolation.l_interpolate(values, unknown);
-            int x = 0;
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
     }
 
 	@Override
