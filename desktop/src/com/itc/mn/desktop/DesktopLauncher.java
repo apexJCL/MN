@@ -14,6 +14,6 @@ public class DesktopLauncher {
 		config.backgroundFPS = -1;
 		config.addIcon("icon_128.png", Files.FileType.Internal);
 		config.addIcon("icon.png", Files.FileType.Internal);
-		config.title = "Graph";
+		config.title = "MN";
 	}
 }
