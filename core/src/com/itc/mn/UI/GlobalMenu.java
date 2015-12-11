@@ -15,7 +15,7 @@ public class GlobalMenu extends MenuBar {
     private Menu fileMenu, sectionMenu, windowMenu;
     private MenuItem i_exit, i_open, i_save, i_settings;
     private MenuItem s_methods, s_matrix, s_statistics, s_help, s_about;
-    private MenuItem m_bisection, m_fauxrule, m_nraphson, m_fixedpoint, m_secant, m_interpolation;
+    private MenuItem m_bisection, m_fauxrule, m_nraphson, m_fixedpoint, m_secant, m_interpolation, m_regression;
     private MenuItem s_render;
     private I18NBundle bundle = Const.loadBundle();
 
@@ -87,12 +87,14 @@ public class GlobalMenu extends MenuBar {
         m_nraphson = new MenuItem(bundle.get("m_nr"));
         m_secant = new MenuItem(bundle.get("m_secant"));
         m_interpolation = new MenuItem(bundle.get("interpolation"));
+        m_regression = new MenuItem(bundle.get("regression"));
         menu.addItem(m_bisection);
         menu.addItem(m_fauxrule);
         menu.addItem(m_fixedpoint);
         menu.addItem(m_nraphson);
         menu.addItem(m_secant);
         menu.addItem(m_interpolation);
+        menu.addItem(m_regression);
         menu.pack();
         return menu;
     }
@@ -103,6 +105,7 @@ public class GlobalMenu extends MenuBar {
         s_matrix.addListener(new MenuListener(ActionType.MATRIX));
         s_statistics.addListener(new MenuListener(ActionType.STATISTICS));
         m_interpolation.addListener(new MenuListener(ActionType.INTERPOLATION));
+        m_regression.addListener(new MenuListener(ActionType.REGRESSION));
         // Methods
         m_bisection.addListener(new MenuListener(ActionType.BISECTION));
         m_fauxrule.addListener(new MenuListener(ActionType.REGULI));
@@ -112,7 +115,7 @@ public class GlobalMenu extends MenuBar {
     }
 
     public enum ActionType {
-        RENDER, EXIT, MATRIX, BISECTION, REGULI, FIXED_POINT, NR, SECANT, STATISTICS, INTERPOLATION
+        RENDER, EXIT, MATRIX, BISECTION, REGULI, FIXED_POINT, NR, SECANT, STATISTICS, INTERPOLATION, REGRESSION
     }
 
     private class MenuListener extends ClickListener {
@@ -141,6 +144,9 @@ public class GlobalMenu extends MenuBar {
                     break;
                 case INTERPOLATION:
                     mainScreen.getTabbedPane().add(new InterpolationModule());
+                    break;
+                case REGRESSION:
+                    mainScreen.getTabbedPane().add(new RegressionModule());
                     break;
                 case SECANT:
                 case NR:
