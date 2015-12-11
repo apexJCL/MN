@@ -15,9 +15,6 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 import static com.itc.mn.Methods.MatrixOperation.Operation.*;
 
-/**
- * Created by zero_ on 12/11/2015.
- */
 public class MatrixModule extends Tab {
 
     private Table container;

@@ -6,15 +6,10 @@ import com.itc.mn.Structures.NodeXY;
 public strictfp class Interpolation {
 
     private XYList list;
-    private double[] unknown;
-    private double[][] values;
 
     public Interpolation(){
         list = new XYList();
     }
-
-    public void setUnknown(double[] unknown){ this.unknown = unknown; }
-    public void setValues(double[][] values){ this.values = values; }
 
     public XYList l_interpolate_list(XYList list) throws Exception {
         // Now we l_interpolate for the missing values, using the closest value in the list
